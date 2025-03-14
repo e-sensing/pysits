@@ -65,8 +65,8 @@ sits_bands(cube)
 cube_reg = sits_regularize(
     cube       = cube,
     period     = "P16D",
-    res        = 60,
-    multicores = 2,
+    res        = 10,
+    multicores = 12,
     output_dir = output_dir
 )
 
