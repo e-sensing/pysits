@@ -1,0 +1,54 @@
+[project]
+name = "sitsflow"
+version = "0.0.1"
+description = "Build classification workflows in Python powered by the sits R package"
+authors = [
+    {name = "Gilberto Camara",email = "gilberto.camara.inpe@gmail.com"},
+    {name = "Felipe Carlos",email = "efelipecarlos@gmail.com"},
+    {name = "Felipe Carvalho",email = "lipecaso@gmail.com"},
+    {name = "Pedro Brito",email = "pedro_brito1997@hotmail.com"},
+    {name = "Rolf Simoes",email = "rolfsimoes@gmail.com"},
+]
+readme = "README.md"
+packages = [{include = "sitsflow"}]
+requires-python = ">=3.10"
+
+[tool.poetry.dependencies]
+python = ">=3.10"
+
+rpy2 = ">=3.5.17,<4.0.0"
+matplotlib = ">=3.10.1,<4.0.0"
+
+#
+# Development-related dependencies
+#
+[tool.poetry.group.dev]
+optional = true
+
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.1.13"
+pre-commit = "^3.6.0"
+pytest = "^7.4.4"
+
+#
+# Configurations
+#
+
+# Ruff
+[tool.ruff]
+select = [
+    "E",   # pycodestyle
+    "F",   # pyflakes
+    "UP",  # pyupgrade
+    "I",   # isort
+    "N",   # pep8 naming
+    "PL",  # pylint
+]
+
+[tool.ruff.lint.pylint]
+max-args = 10
+
+# Build
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"

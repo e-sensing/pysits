@@ -1,0 +1,75 @@
+#
+# Copyright (C) 2025 sits developers.
+#
+# This program is free software; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, see <https://www.gnu.org/licenses/>.
+#
+
+"""machine-learning operations."""
+
+from sitsflow.backend.sits import r_sits
+from sitsflow.models import SITSMachineLearningMethod
+from sitsflow.types import rpy2_fix_type
+
+
+#
+# Model factory
+#
+def _factory_ml_method(name):
+    """Factory to create ml method.
+
+    Args:
+        name (str): name of ml method.
+    """
+    if not hasattr(r_sits, name):
+        raise ValueError(f"Invalid ml method: {name}")
+
+    # define method closure
+    def _ml_model(*args, **kwargs):
+        return getattr(r_sits, name)(*args, **kwargs)
+
+    return _ml_model
+
+
+#
+# Random Forest
+#
+sits_rfor = _factory_ml_method("sits_rfor")
+
+
+#
+# TempCNN
+#
+sits_tempcnn = _factory_ml_method("sits_tempcnn")
+
+
+#
+# Light TAE
+#
+sits_lighttae = _factory_ml_method("sits_lighttae")
+
+
+#
+# Multi-layer perceptron
+#
+sits_mlp = _factory_ml_method("sits_mlp")
+
+
+#
+# High-level utility operation
+#
+@rpy2_fix_type
+def sits_train(*args, **kwargs):
+    instance = r_sits.sits_train(*args, **kwargs)
+
+    return SITSMachineLearningMethod(instance)
