@@ -15,8 +15,7 @@
 # along with this program; if not, see <https://www.gnu.org/licenses/>.
 #
 
-"""regularization example."""
-
+"""apply example."""
 
 import os
 
@@ -25,9 +24,11 @@ from sitsflow import *
 #
 # General definition
 #
-
 # Output directory
-output_dir = "data/output/regularization"
+output_dir = "data/output/apply"
+
+# Cube directory
+cube_dir = "data/cube/"
 
 
 #
@@ -40,39 +41,40 @@ os.makedirs(output_dir, exist_ok=True)
 # 2. Load cube
 #
 cube = sits_cube(
-    source="AWS",
-    collection="SENTINEL-2-L2A",
-    tiles=("20LKP", "20LLP"),
-    bands=("B8A", "CLOUD"),
-    start_date="2018-10-01",
-    end_date="2018-11-01",
+    source="BDC",
+    collection="MOD13Q1-6.1",
+    data_dir=cube_dir,
 )
 
-#
-# 3. Get cube bands
-#
-sits_bands(cube)
-
 
 #
-# 4. Get cube timeline
+# 3. Apply
 #
-sits_timeline(cube)
 
-
-#
-# 5. Regularize
-#
-cube_reg = sits_regularize(
-    cube=cube,
-    period="P16D",
-    res=10,
-    multicores=12,
+# NDVI Median
+cube_apply = sits_apply(
+    data=cube,
+    NDVIMEDIAN="w_median(NDVI)",
+    window_size=5,
     output_dir=output_dir,
+    multicores=4,
 )
 
+# NDVI / 2
+cube_apply = sits_apply(
+    data=cube_apply,
+    NDVIDIV="NDVI / 2",
+    window_size=5,
+    output_dir=output_dir,
+    multicores=4,
+)
 
 #
-# 6. Plot
+# 4. Plot
 #
-plot(cube_reg, band="B8A")
+
+# NDVI Median
+plot(cube_apply, band="NDVIMEDIAN")
+
+# NDVI / 2
+plot(cube_apply, band="NDVIDIV")

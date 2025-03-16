@@ -24,8 +24,9 @@ from sitsflow import *
 #
 # General definition
 #
+
 # Output directory
-output_dir = "data/classification"
+output_dir = "data/output/classification"
 
 # Cube directory
 cube_dir = "data/cube/"
@@ -44,9 +45,9 @@ os.makedirs(output_dir, exist_ok=True)
 # 2. Load cube
 #
 cube = sits_cube(
-    source     = "BDC",
-    collection = "MOD13Q1-6.1",
-    data_dir   = cube_dir
+    source="BDC",
+    collection="MOD13Q1-6.1",
+    data_dir=cube_dir,
 )
 
 #
@@ -65,8 +66,8 @@ sits_timeline(cube)
 # 5. Get time series
 #
 samples_ts = sits_get_data(
-    cube    = cube,
-    samples = samples_file
+    cube=cube,
+    samples=samples_file,
 )
 
 
@@ -74,8 +75,8 @@ samples_ts = sits_get_data(
 # 6. Train model
 #
 rfor_model = sits_train(
-    samples   = samples_ts,
-    ml_method = sits_rfor()
+    samples=samples_ts,
+    ml_method=sits_rfor(),
 )
 
 
@@ -83,17 +84,17 @@ rfor_model = sits_train(
 # 7. Classify cube
 #
 probs_cube = sits_classify(
-    data       = cube,
-    ml_model   = rfor_model,
-    output_dir = output_dir
+    data=cube,
+    ml_model=rfor_model,
+    output_dir=output_dir,
 )
 
 #
 # 8. Smooth classification
 #
 bayes_cube = sits_smooth(
-    cube       = probs_cube,
-    output_dir = output_dir
+    cube=probs_cube,
+    output_dir=output_dir,
 )
 
 
@@ -101,8 +102,8 @@ bayes_cube = sits_smooth(
 # 9. Label classification
 #
 label_cube = sits_label_classification(
-    cube       = bayes_cube,
-    output_dir = output_dir
+    cube=bayes_cube,
+    output_dir=output_dir,
 )
 
 

@@ -15,8 +15,7 @@
 # along with this program; if not, see <https://www.gnu.org/licenses/>.
 #
 
-"""regularization example."""
-
+"""segmentation example."""
 
 import os
 
@@ -25,9 +24,14 @@ from sitsflow import *
 #
 # General definition
 #
-
 # Output directory
-output_dir = "data/output/regularization"
+output_dir = "data/output/segmentation"
+
+# Cube directory
+cube_dir = "data/cube/"
+
+# Samples file
+samples_file = "data/samples/samples_sinop_crop.csv"
 
 
 #
@@ -40,12 +44,9 @@ os.makedirs(output_dir, exist_ok=True)
 # 2. Load cube
 #
 cube = sits_cube(
-    source="AWS",
-    collection="SENTINEL-2-L2A",
-    tiles=("20LKP", "20LLP"),
-    bands=("B8A", "CLOUD"),
-    start_date="2018-10-01",
-    end_date="2018-11-01",
+    source="BDC",
+    collection="MOD13Q1-6.1",
+    data_dir=cube_dir,
 )
 
 #
@@ -61,18 +62,53 @@ sits_timeline(cube)
 
 
 #
-# 5. Regularize
+# 5. Segment cube
 #
-cube_reg = sits_regularize(
+segments = sits_segment(
     cube=cube,
-    period="P16D",
-    res=10,
-    multicores=12,
+    seg_fn=sits_slic(),
     output_dir=output_dir,
 )
 
 
 #
-# 6. Plot
+# 6. Get time series
 #
-plot(cube_reg, band="B8A")
+samples_ts = sits_get_data(
+    cube=cube,
+    samples=samples_file,
+)
+
+
+#
+# 7. Train model
+#
+rfor_model = sits_train(
+    samples=samples_ts,
+    ml_method=sits_rfor(),
+)
+
+
+#
+# 8. Classify segments
+#
+probs_cube = sits_classify(
+    data=segments,
+    ml_model=rfor_model,
+    output_dir=output_dir,
+)
+
+
+#
+# 9. Label classification
+#
+label_cube = sits_label_classification(
+    cube=probs_cube,
+    output_dir=output_dir,
+)
+
+
+#
+# 10. Plot
+#
+plot(label_cube)
