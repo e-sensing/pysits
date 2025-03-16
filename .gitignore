@@ -231,4 +231,7 @@ rsconnect/
 # Mac users
 .DS_Store
 
+# Data
+examples/data/output/
+
 # End of https://www.toptal.com/developers/gitignore/api/python,r
