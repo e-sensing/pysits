@@ -28,3 +28,8 @@ r_base = importr("base")
 # Base - Plot
 #
 r_plot = r_base.plot
+
+#
+# Base - Class
+#
+r_class = getattr(r_base, "class")

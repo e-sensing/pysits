@@ -17,10 +17,12 @@
 
 """operations module."""
 
+from .apply import sits_apply
 from .classification import sits_classify, sits_label_classification, sits_smooth
 from .cube import sits_cube, sits_regularize
 from .data import sits_bands, sits_timeline
 from .ml import sits_lighttae, sits_mlp, sits_rfor, sits_tempcnn, sits_train
+from .segment import sits_segment, sits_slic
 from .ts import sits_get_data
 
 __all__ = (
@@ -42,4 +44,9 @@ __all__ = (
     "sits_lighttae",
     # Time series
     "sits_get_data",
+    # Segments
+    "sits_segment",
+    "sits_slic",
+    # Apply
+    "sits_apply",
 )

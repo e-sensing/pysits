@@ -18,6 +18,7 @@
 """machine-learning operations."""
 
 from sitsflow.backend.sits import r_sits
+from sitsflow.factory import factory_function
 from sitsflow.models import SITSMachineLearningMethod
 from sitsflow.types import rpy2_fix_type
 
@@ -44,25 +45,25 @@ def _factory_ml_method(name):
 #
 # Random Forest
 #
-sits_rfor = _factory_ml_method("sits_rfor")
+sits_rfor = factory_function("sits_rfor")
 
 
 #
 # TempCNN
 #
-sits_tempcnn = _factory_ml_method("sits_tempcnn")
+sits_tempcnn = factory_function("sits_tempcnn")
 
 
 #
 # Light TAE
 #
-sits_lighttae = _factory_ml_method("sits_lighttae")
+sits_lighttae = factory_function("sits_lighttae")
 
 
 #
 # Multi-layer perceptron
 #
-sits_mlp = _factory_ml_method("sits_mlp")
+sits_mlp = factory_function("sits_mlp")
 
 
 #

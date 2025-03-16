@@ -15,7 +15,22 @@
 # along with this program; if not, see <https://www.gnu.org/licenses/>.
 #
 
-"""sitsflow module."""
+"""factory utilities."""
 
-from .operations import *  # noqa
-from .plot import *  # noqa
+from sitsflow.backend.sits import r_sits
+
+
+def factory_function(name):
+    """Factory to create sits-based functions.
+
+    Args:
+        name (str): name of the sits-based function.
+    """
+    if not hasattr(r_sits, name):
+        raise ValueError(f"Invalid function: {name}")
+
+    # define method closure
+    def _fnc(*args, **kwargs):
+        return getattr(r_sits, name)(*args, **kwargs)
+
+    return _fnc

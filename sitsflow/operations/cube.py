@@ -29,8 +29,9 @@ from sitsflow.models import SITSCubeModel
 def sits_cube(*args, **kwargs):
     """Create cubes.
 
-     Creates a data cube based on spatial and temporal restrictions from image collections
-     available in cloud services or local repositories.
+     Creates a data cube based on spatial and temporal restrictions
+     from image collections available in cloud services or local
+     repositories.
 
      Supports multiple cloud providers based on the STAC protocol, including:
 
@@ -107,10 +108,12 @@ def sits_cube(*args, **kwargs):
             Delimiter character for parsing local file names.
 
         labels (dict, optional):
-            Labels associated with classification results (for `probs_cube` or `class_cube`).
+            Labels associated with classification results (for `probs_cube` or
+            `class_cube`).
 
         multicores (int, optional):
-            Number of workers for parallel processing. Must be between 1 and 2048. Default is `1`.
+            Number of workers for parallel processing. Must be between 1 and
+            2048. Default is `1`.
 
         progress (bool, optional):
             Whether to display a progress bar. Default is `False`.
@@ -184,10 +187,10 @@ def sits_regularize(*args, **kwargs):
     Produces regular data cubes for analysis-ready data (ARD) image collections.
     Analysis-ready data (ARD) collections available in AWS, MPC, USGS and DEAfrica
     are not regular in space and time. Bands may have different resolutions, images
-    may not cover the entire time, and time intervals are not regular. For this reason,
-    subsets of these collection need to be converted to regular data cubes before further
-    processing and data analysis. This function requires users to include the cloud band
-    in their ARD-based data cubes.
+    may not cover the entire time, and time intervals are not regular. For this
+    reason, subsets of these collection need to be converted to regular data cubes
+    before further processing and data analysis. This function requires users to
+    include the cloud band in their ARD-based data cubes.
     """
     cube = r_sits.sits_regularize(*args, **kwargs)
     return SITSCubeModel(cube)

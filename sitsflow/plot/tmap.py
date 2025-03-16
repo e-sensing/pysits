@@ -41,7 +41,8 @@ def save_tmap_plot(
 
         height (int): Height of the saved image (default: 1024).
 
-        fmt (str): Image format (default: ``png``). Options: ``png``, ``jpeg``, or ``tiff``.
+        fmt (str): Image format (default: ``png``). Options: ``png``,
+                   ``jpeg``, or ``tiff``.
 
     Returns:
         str: Path to the saved image.
@@ -78,7 +79,8 @@ def plot_tmap(
 
         height (int): Height of the saved image (default: 1024).
 
-        fmt (str): Image format (default: ``png``). Options: ``png``, ``jpeg``, or ``tiff``.
+        fmt (str): Image format (default: ``png``). Options: ``png``,
+                   ``jpeg``, or ``tiff``.
 
         **kwargs: Additional keyword arguments for the R plotting function.
 

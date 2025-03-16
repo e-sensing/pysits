@@ -100,7 +100,7 @@ def _convert_to_r(obj):
     # Handle ``closure`` objects
     if isinstance(
         obj,
-        (ro.functions.SignatureTranslatedFunction, ro.functions.DocumentedSTFunction),
+        (ro.functions.SignatureTranslatedFunction | ro.functions.DocumentedSTFunction),
     ):
         return obj
 
@@ -137,24 +137,40 @@ def r_to_python(obj, as_type="str"):
     Raises:
         ValueError: If the specified ``as_type`` is not supported.
     """
-    if as_type == "str":
-        return [str(s) for s in obj]
 
-    elif as_type == "date":
-        return [
-            (EPOCH_START + timedelta(days=int(d))).strftime("%Y-%m-%d") for d in obj
-        ]
+    def _convert(value, type_):
+        result = []
 
-    elif as_type == "int":
-        return [int(x) for x in obj]
+        if isinstance(value, ro.ListVector):
+            for k, v in value.items():
+                result.append(
+                    {
+                        str(k): r_to_python(v, type_),
+                    }
+                )
 
-    elif as_type == "float":
-        return [float(x) for x in obj]
+        elif isinstance(value, ro.Vector):
+            for el in value:
+                if as_type == "str":
+                    result.append(str(el))
 
-    elif as_type == "bool":
-        return [bool(x) for x in obj]
+                elif as_type == "date":
+                    result.append(
+                        (EPOCH_START + timedelta(days=int(el))).strftime("%Y-%m-%d")
+                    )
 
-    raise ValueError(f"Unsupported conversion type: {as_type}")
+                elif as_type == "int":
+                    result.append(int(el))
+
+                elif as_type == "float":
+                    result.append(float(el))
+
+                elif as_type == "bool":
+                    result.append(bool(el))
+
+        return result
+
+    return _convert(obj, as_type)
 
 
 #
