@@ -24,25 +24,6 @@ from sitsflow.types import rpy2_fix_type
 
 
 #
-# Model factory
-#
-def _factory_ml_method(name):
-    """Factory to create ml method.
-
-    Args:
-        name (str): name of ml method.
-    """
-    if not hasattr(r_sits, name):
-        raise ValueError(f"Invalid ml method: {name}")
-
-    # define method closure
-    def _ml_model(*args, **kwargs):
-        return getattr(r_sits, name)(*args, **kwargs)
-
-    return _ml_model
-
-
-#
 # Random Forest
 #
 sits_rfor = factory_function("sits_rfor")
