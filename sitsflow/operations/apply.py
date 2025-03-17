@@ -57,7 +57,7 @@ def sits_apply(data, **kwargs):
     """
     params = []
 
-    # Process parameters manully
+    # Process parameters manually
     for k, v in kwargs.items():
         current_v = v[0]
 
