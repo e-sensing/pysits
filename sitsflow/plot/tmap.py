@@ -60,9 +60,7 @@ def save_tmap_plot(
     r("tmap::tmap_save")(r_tmap_plot, filename=file_path, width=width, height=height)
 
     # Display the saved image
-    display(Image.open(file_path))
-
-    return file_path
+    return display(Image.open(file_path))
 
 
 def plot_tmap(

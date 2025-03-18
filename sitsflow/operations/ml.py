@@ -22,11 +22,16 @@ from sitsflow.factory import factory_function
 from sitsflow.models import SITSMachineLearningMethod
 from sitsflow.types import rpy2_fix_type
 
-
 #
 # Random Forest
 #
 sits_rfor = factory_function("sits_rfor")
+
+
+#
+# TAE
+#
+sits_tae = factory_function("sits_tae")
 
 
 #
@@ -45,6 +50,18 @@ sits_lighttae = factory_function("sits_lighttae")
 # Multi-layer perceptron
 #
 sits_mlp = factory_function("sits_mlp")
+
+
+#
+# SVM
+#
+sits_svm = factory_function("sits_svm")
+
+
+#
+# XGBoost
+#
+sits_xgboost = factory_function("sits_xgboost")
 
 
 #

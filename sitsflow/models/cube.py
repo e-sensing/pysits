@@ -29,4 +29,4 @@ class SITSCubeModel(SITSModel):
 
     def _plot(self, *args, **kwargs):
         """Plot cube using tmap."""
-        plot_tmap(self._instance, *args, **kwargs)
+        return plot_tmap(self._instance, *args, **kwargs)
