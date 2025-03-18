@@ -20,67 +20,47 @@
 import os
 import tempfile
 
-from IPython.display import display
-from PIL import Image
-from rpy2.robjects import r
+from rpy2.robjects import r as ro
 
 from sitsflow.backend.utils import r_plot
+from sitsflow.plot.toolbox import show_local_image
 
 
-def save_tmap_plot(
-    r_tmap_plot, filename="tmap_plot.png", width=1024, height=1024, fmt="png"
-):
+#
+# Utility function
+#
+def _save_tmap_plot(r_tmap_plot, **kwargs):
     """Saves an R tmap plot to a temporary directory and displays it.
 
     Args:
         r_tmap_plot (rpy2.robjects.RObject): The R tmap plot object.
 
-        filename (str): The name of the output file (default: ``tmap_plot.png``).
-
-        width (int): Width of the saved image (default: 1024).
-
-        height (int): Height of the saved image (default: 1024).
-
-        fmt (str): Image format (default: ``png``). Options: ``png``,
-                   ``jpeg``, or ``tiff``.
+        **kwargs (dict): Additional keyword arguments passed to ``tmap::tmap_save``.
 
     Returns:
         str: Path to the saved image.
     """
     # Create a temporary directory
     temp_dir = tempfile.mkdtemp()
-    file_path = os.path.join(temp_dir, f"tmap_plot.{fmt}")
-
-    # Ensure the format is supported
-    valid_formats = ["png", "jpeg", "tiff"]
-    if fmt not in valid_formats:
-        raise ValueError(f"Unsupported format: {fmt}. Choose from {valid_formats}.")
+    file_path = os.path.join(temp_dir, "tmap_plot.png")
 
     # Save the tmap plot using R
-    r("tmap::tmap_save")(r_tmap_plot, filename=file_path, width=width, height=height)
+    ro("tmap::tmap_save")(r_tmap_plot, filename=file_path, **kwargs)
 
     # Display the saved image
-    return display(Image.open(file_path))
+    return show_local_image(file_path)
 
 
-def plot_tmap(
-    instance, filename="tmap_plot.png", width=1024, height=1024, fmt="png", **kwargs
-):
+#
+# High-level operation
+#
+def plot_tmap(instance, **kwargs):
     """Generates and saves a tmap plot, then displays it.
 
     Args:
         instance (rpy2.robjects.RObject): The R object instance for plotting.
 
-        filename (str): Name of the output file (default: "tmap_plot.png").
-
-        width (int): Width of the saved image (default: 1024).
-
-        height (int): Height of the saved image (default: 1024).
-
-        fmt (str): Image format (default: ``png``). Options: ``png``,
-                   ``jpeg``, or ``tiff``.
-
-        **kwargs: Additional keyword arguments for the R plotting function.
+        **kwargs (dict): Additional keyword arguments passed to ``tmap::tmap_save``.
 
     Returns:
         str: Path to the saved image.
@@ -89,6 +69,4 @@ def plot_tmap(
     tmap_plot = r_plot(instance, **kwargs)
 
     # Save and display the plot
-    return save_tmap_plot(
-        tmap_plot, filename=filename, width=width, height=height, fmt=fmt
-    )
+    return _save_tmap_plot(tmap_plot)

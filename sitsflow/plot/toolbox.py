@@ -15,18 +15,34 @@
 # along with this program; if not, see <https://www.gnu.org/licenses/>.
 #
 
-"""cube models."""
+"""plot toolbox."""
 
-from sitsflow.models.base import SITSModel
-from sitsflow.plot.tmap import plot_tmap
+from PIL import Image
+import matplotlib.pyplot as plt
 
 
-#
-# Base class
-#
-class SITSCubeModel(SITSModel):
-    """Base class for sitsflow cubes."""
+def show_local_image(image_path):
+    """Displays a local image using matplotlib.
 
-    def _plot(self, **kwargs):
-        """Plot cube using tmap."""
-        return plot_tmap(self._instance, **kwargs)
+    Args:
+        image_path (str): The file path to the image to be displayed.
+
+    Returns:
+        matplotlib.image: Matplotlib image object.
+    """
+    # load and crop image
+    img = Image.open(image_path)
+    img = img.crop(img.getbbox())
+
+    # define figure object
+    plt.figure(figsize=(7, 5), dpi=300)
+
+    # show image in the figure canvas
+    plt.imshow(img)
+
+    # configure layout
+    plt.axis("off")
+    plt.tight_layout()
+
+    # show image!
+    plt.show()
