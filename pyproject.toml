@@ -17,11 +17,14 @@ requires-python = ">=3.10"
 python = ">=3.10"
 
 rpy2 = ">=3.5.17,<4.0.0"
-matplotlib = ">=3.10.1,<4.0.0"
+
+pillow = "^11.1.0"
+matplotlib = "^3.10.1"
 
 #
 # Development-related dependencies
 #
+
 [tool.poetry.group.dev]
 optional = true
 
