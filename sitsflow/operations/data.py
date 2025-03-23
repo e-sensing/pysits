@@ -40,3 +40,23 @@ def sits_timeline(*args, **kwargs):
     """
     data = r_sits.sits_timeline(*args, **kwargs)
     return r_to_python(data, as_type="date")
+
+
+@rpy2_fix_type
+def sits_labels(*args, **kwargs):
+    """Finds labels in a sits tibble or data cube."""
+    data = r_sits.sits_labels(*args, **kwargs)
+
+    return r_to_python(data, as_type="str")
+
+
+@rpy2_fix_type
+def sits_list_collections(*args, **kwargs):
+    """List collections available.
+
+    Prints the collections available in each cloud
+    service supported by sits. Users can select to get
+    information only for a single service by using the
+    source parameter.
+    """
+    r_sits.sits_list_collections(*args, **kwargs)
