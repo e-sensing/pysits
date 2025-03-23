@@ -194,3 +194,18 @@ def sits_regularize(*args, **kwargs):
     """
     cube = r_sits.sits_regularize(*args, **kwargs)
     return SITSCubeModel(cube)
+
+
+@type_utils.rpy2_fix_type
+def sits_cube_copy(*args, **kwargs):
+    """Copy cubes.
+
+    This function copies images of a cube in parallel. A region of
+    interest (roi) can be provided to crop the images
+    and a resolution (res) to resample the bands.
+
+    ToDo:
+        - Requires a data cube as input.
+    """
+    cube = r_sits.sits_cube_copy(*args, **kwargs)
+    return SITSCubeModel(cube)
