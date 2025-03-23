@@ -111,3 +111,9 @@ label_cube = sits_label_classification(
 # 10. Plot
 #
 plot(label_cube)
+
+
+#
+# 11. Classification labels
+#
+sits_labels(label_cube)

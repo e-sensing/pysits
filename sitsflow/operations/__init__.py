@@ -19,8 +19,8 @@
 
 from .apply import sits_apply
 from .classification import sits_classify, sits_label_classification, sits_smooth
-from .cube import sits_cube, sits_regularize
-from .data import sits_bands, sits_timeline
+from .cube import sits_cube, sits_regularize, sits_cube_copy
+from .data import sits_bands, sits_timeline, sits_labels, sits_list_collections
 from .ml import (
     sits_lighttae,
     sits_mlp,
@@ -42,9 +42,12 @@ __all__ = (
     # Cube
     "sits_cube",
     "sits_regularize",
+    "sits_cube_copy",
     # Data management
     "sits_bands",
     "sits_timeline",
+    "sits_labels",
+    "sits_list_collections",
     # Machine Learning methods
     "sits_train",
     "sits_mlp",
