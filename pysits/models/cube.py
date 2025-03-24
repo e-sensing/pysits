@@ -15,14 +15,18 @@
 # along with this program; if not, see <https://www.gnu.org/licenses/>.
 #
 
-"""sitsflow models."""
+"""cube models."""
 
-from .cube import SITSCubeModel
-from .ml import SITSMachineLearningMethod
-from .ts import SITSTimeSeriesModel
+from pysits.models.base import SITSModel
+from pysits.plot.tmap import plot_tmap
 
-__all__ = (
-    "SITSCubeModel",
-    "SITSTimeSeriesModel",
-    "SITSMachineLearningMethod",
-)
+
+#
+# Base class
+#
+class SITSCubeModel(SITSModel):
+    """Base class for pysits cubes."""
+
+    def _plot(self, **kwargs):
+        """Plot cube using tmap."""
+        return plot_tmap(self._instance, **kwargs)

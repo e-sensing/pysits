@@ -17,9 +17,9 @@
 
 """machine-learning operations."""
 
-from sitsflow.backend.sits import r_sits
-from sitsflow.models import SITSCubeModel
-from sitsflow.types import rpy2_fix_type
+from pysits.backend.sits import r_sits
+from pysits.models import SITSCubeModel
+from pysits.types import rpy2_fix_type
 
 
 @rpy2_fix_type

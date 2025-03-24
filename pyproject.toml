@@ -1,5 +1,5 @@
 [project]
-name = "sitsflow"
+name = "pysits"
 version = "0.0.1"
 description = "Build classification workflows in Python powered by the sits R package"
 authors = [
@@ -10,7 +10,7 @@ authors = [
     {name = "Rolf Simoes",email = "rolfsimoes@gmail.com"},
 ]
 readme = "README.md"
-packages = [{include = "sitsflow"}]
+packages = [{include = "pysits"}]
 requires-python = ">=3.10"
 
 [tool.poetry.dependencies]

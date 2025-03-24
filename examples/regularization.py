@@ -20,7 +20,7 @@
 
 import os
 
-from sitsflow import *
+from pysits import *
 
 #
 # General definition

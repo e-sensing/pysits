@@ -15,28 +15,18 @@
 # along with this program; if not, see <https://www.gnu.org/licenses/>.
 #
 
-"""segment operations."""
+"""time-series models."""
 
-from sitsflow import types as type_utils
-from sitsflow.backend.sits import r_sits
-from sitsflow.factory import factory_function
-from sitsflow.models import SITSCubeModel
-
-#
-# Segmentation functions
-#
-sits_slic = factory_function("sits_slic")
+from pysits.backend.utils import r_plot
+from pysits.models.base import SITSModel
 
 
 #
-# Segmentation operation
+# Base class
 #
-@type_utils.rpy2_fix_type
-def sits_segment(*args, **kwargs):
-    """Segment an image.
+class SITSTimeSeriesModel(SITSModel):
+    """Time-series base class."""
 
-    Apply a spatial-temporal segmentation on a data cube based on a
-    user defined segmentation function.
-    """
-    cube = r_sits.sits_segment(*args, **kwargs)
-    return SITSCubeModel(cube)
+    def _plot(self, *args, **kwargs):
+        """Plot time-series data."""
+        return r_plot(self._instance, *args, **kwargs)

@@ -15,13 +15,22 @@
 # along with this program; if not, see <https://www.gnu.org/licenses/>.
 #
 
-"""ml methods models."""
+"""factory utilities."""
 
-from sitsflow.models.base import SITSModel
+from pysits.backend.sits import r_sits
 
 
-#
-# Base class
-#
-class SITSMachineLearningMethod(SITSModel):
-    """ML Method base class."""
+def factory_function(name):
+    """Factory to create sits-based functions.
+
+    Args:
+        name (str): name of the sits-based function.
+    """
+    if not hasattr(r_sits, name):
+        raise ValueError(f"Invalid function: {name}")
+
+    # define method closure
+    def _fnc(*args, **kwargs):
+        return getattr(r_sits, name)(*args, **kwargs)
+
+    return _fnc

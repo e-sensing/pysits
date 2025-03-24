@@ -19,9 +19,9 @@
 
 import rpy2.robjects as ro
 
-from sitsflow import types as type_utils
-from sitsflow.backend.utils import r_class
-from sitsflow.models import SITSCubeModel, SITSTimeSeriesModel
+from pysits import types as type_utils
+from pysits.backend.utils import r_class
+from pysits.models import SITSCubeModel, SITSTimeSeriesModel
 
 
 #

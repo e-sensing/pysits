@@ -19,11 +19,11 @@
 
 import os
 
-from sitsflow import *
+from pysits import *
 
 
 #
-# 1. List all collections available in ``sitsflow``
+# 1. List all collections available in ``pysits``
 #
 sits_list_collections()
 

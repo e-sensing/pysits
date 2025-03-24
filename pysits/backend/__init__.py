@@ -15,7 +15,4 @@
 # along with this program; if not, see <https://www.gnu.org/licenses/>.
 #
 
-"""sitsflow module."""
-
-from .operations import *  # noqa
-from .plot import *  # noqa
+"""pysits backend module (based in R and sits)."""

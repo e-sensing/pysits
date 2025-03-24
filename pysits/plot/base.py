@@ -15,18 +15,9 @@
 # along with this program; if not, see <https://www.gnu.org/licenses/>.
 #
 
-"""cube models."""
-
-from sitsflow.models.base import SITSModel
-from sitsflow.plot.tmap import plot_tmap
+"""plot models."""
 
 
-#
-# Base class
-#
-class SITSCubeModel(SITSModel):
-    """Base class for sitsflow cubes."""
-
-    def _plot(self, **kwargs):
-        """Plot cube using tmap."""
-        return plot_tmap(self._instance, **kwargs)
+def plot(obj, *args, **kwargs):
+    """Plot pysits models."""
+    return obj._plot(*args, **kwargs)

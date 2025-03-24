@@ -22,8 +22,8 @@ import tempfile
 
 from rpy2.robjects import r as ro
 
-from sitsflow.backend.utils import r_plot
-from sitsflow.plot.toolbox import show_local_image
+from pysits.backend.utils import r_plot
+from pysits.plot.toolbox import show_local_image
 
 
 #

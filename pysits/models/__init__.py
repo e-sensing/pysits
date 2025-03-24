@@ -15,22 +15,14 @@
 # along with this program; if not, see <https://www.gnu.org/licenses/>.
 #
 
-"""factory utilities."""
+"""pysits models."""
 
-from sitsflow.backend.sits import r_sits
+from .cube import SITSCubeModel
+from .ml import SITSMachineLearningMethod
+from .ts import SITSTimeSeriesModel
 
-
-def factory_function(name):
-    """Factory to create sits-based functions.
-
-    Args:
-        name (str): name of the sits-based function.
-    """
-    if not hasattr(r_sits, name):
-        raise ValueError(f"Invalid function: {name}")
-
-    # define method closure
-    def _fnc(*args, **kwargs):
-        return getattr(r_sits, name)(*args, **kwargs)
-
-    return _fnc
+__all__ = (
+    "SITSCubeModel",
+    "SITSTimeSeriesModel",
+    "SITSMachineLearningMethod",
+)

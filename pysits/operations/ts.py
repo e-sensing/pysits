@@ -15,18 +15,22 @@
 # along with this program; if not, see <https://www.gnu.org/licenses/>.
 #
 
-"""time-series models."""
+"""time series operations."""
 
-from sitsflow.backend.utils import r_plot
-from sitsflow.models.base import SITSModel
+from pysits.backend.sits import r_sits
+from pysits.models import SITSTimeSeriesModel
+from pysits.types import rpy2_fix_type
 
 
 #
-# Base class
+# High-level operation
 #
-class SITSTimeSeriesModel(SITSModel):
-    """Time-series base class."""
+@rpy2_fix_type
+def sits_get_data(*args, **kwargs):
+    """Retrieve time series data from a data cube.
 
-    def _plot(self, *args, **kwargs):
-        """Plot time-series data."""
-        return r_plot(self._instance, *args, **kwargs)
+    Retrieve a set of time series from a data cube or from a time series service.
+    """
+    data = r_sits.sits_get_data(*args, **kwargs)
+
+    return SITSTimeSeriesModel(data, **kwargs)

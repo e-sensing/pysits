@@ -15,4 +15,13 @@
 # along with this program; if not, see <https://www.gnu.org/licenses/>.
 #
 
-"""sitsflow backend module (based in R and sits)."""
+"""ml methods models."""
+
+from pysits.models.base import SITSModel
+
+
+#
+# Base class
+#
+class SITSMachineLearningMethod(SITSModel):
+    """ML Method base class."""

@@ -20,7 +20,7 @@ from datetime import date, timedelta
 
 import rpy2.robjects as ro
 
-from sitsflow.models.base import SITSModel
+from pysits.models.base import SITSModel
 
 #
 # Type mapping dictionary

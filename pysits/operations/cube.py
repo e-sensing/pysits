@@ -17,9 +17,9 @@
 
 """cube operations."""
 
-from sitsflow import types as type_utils
-from sitsflow.backend.sits import r_sits
-from sitsflow.models import SITSCubeModel
+from pysits import types as type_utils
+from pysits.backend.sits import r_sits
+from pysits.models import SITSCubeModel
 
 
 #

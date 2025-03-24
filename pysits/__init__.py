@@ -15,22 +15,7 @@
 # along with this program; if not, see <https://www.gnu.org/licenses/>.
 #
 
-"""time series operations."""
+"""pysits module."""
 
-from sitsflow.backend.sits import r_sits
-from sitsflow.models import SITSTimeSeriesModel
-from sitsflow.types import rpy2_fix_type
-
-
-#
-# High-level operation
-#
-@rpy2_fix_type
-def sits_get_data(*args, **kwargs):
-    """Retrieve time series data from a data cube.
-
-    Retrieve a set of time series from a data cube or from a time series service.
-    """
-    data = r_sits.sits_get_data(*args, **kwargs)
-
-    return SITSTimeSeriesModel(data, **kwargs)
+from .operations import *  # noqa
+from .plot import *  # noqa

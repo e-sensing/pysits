@@ -17,10 +17,10 @@
 
 """machine-learning operations."""
 
-from sitsflow.backend.sits import r_sits
-from sitsflow.factory import factory_function
-from sitsflow.models import SITSMachineLearningMethod
-from sitsflow.types import rpy2_fix_type
+from pysits.backend.sits import r_sits
+from pysits.factory import factory_function
+from pysits.models import SITSMachineLearningMethod
+from pysits.types import rpy2_fix_type
 
 #
 # Random Forest

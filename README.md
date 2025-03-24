@@ -1,4 +1,4 @@
-## sitsflow
+## pysits
 
 Build classification workflows in Python powered by the sits R package.
 
@@ -7,21 +7,21 @@ Build classification workflows in Python powered by the sits R package.
 To install the package you can use:
 
 ```shell
-pip install sitsflow
+pip install pysits
 ```
 
 ### Development
 
-To start developing the `sitsflow`, clone the repository from [GitHub](https://github.com/e-sensing/sitsflow):
+To start developing the `pysits`, clone the repository from [GitHub](https://github.com/e-sensing/pysits):
 
 ```shell
-git clone https://github.com/e-sensing/sitsflow
+git clone https://github.com/e-sensing/pysits
 ```
 
 Next, access the directory:
 
 ```shell
-cd sitsflow
+cd pysits
 ```
 
 Then, install it using [poetry](https://python-poetry.org/):
@@ -30,11 +30,11 @@ Then, install it using [poetry](https://python-poetry.org/):
 poetry install --with dev
 ```
 
-Done! Now you can start developing the `sitsflow`.
+Done! Now you can start developing the `pysits`.
 
 ## Learn more
 
-Please, if you would like to learn more about `sitsflow`, we recommend checking the [examples](./examples) directory.
+Please, if you would like to learn more about `pysits`, we recommend checking the [examples](./examples) directory.
 There, you will find various usage examples.
 
 ## Contributing
@@ -43,4 +43,4 @@ We welcome contributions! If you have suggestions for improvements or bug fixes,
 
 ## License
 
-`sitsflow` is distributed under the GPL 2 license. See LICENSE for more details.
+`pysits` is distributed under the GPL 2 license. See LICENSE for more details.
