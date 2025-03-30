@@ -1,7 +1,7 @@
 [project]
 name = "pysits"
 version = "0.0.1"
-description = "Build classification workflows in Python powered by the sits R package"
+description = "Python wrapper for the sits R package"
 authors = [
     {name = "Gilberto Camara",email = "gilberto.camara.inpe@gmail.com"},
     {name = "Felipe Carlos",email = "efelipecarlos@gmail.com"},
@@ -11,10 +11,10 @@ authors = [
 ]
 readme = "README.md"
 packages = [{include = "pysits"}]
-requires-python = ">=3.10"
+requires-python = ">=3.10,<4"
 
 [tool.poetry.dependencies]
-python = ">=3.10"
+python = ">=3.10,<4"
 
 rpy2 = ">=3.5.17,<4.0.0"
 
@@ -22,9 +22,29 @@ pillow = "^11.1.0"
 matplotlib = "^3.10.1"
 
 #
+# xarray-related dependencies
+#
+[tool.poetry.group.xarray]
+optional = true
+
+[tool.poetry.group.xarray.dependencies]
+xarray = "^2025.3.0"
+dask = "^2025.3.0"
+rioxarray = "^0.18.2"
+affine = "^2.4.0"
+
+#
+# polars-related dependencies
+#
+[tool.poetry.group.polars]
+optional = true
+
+[tool.poetry.group.polars.dependencies]
+polars = "^1.26.0"
+
+#
 # Development-related dependencies
 #
-
 [tool.poetry.group.dev]
 optional = true
 
