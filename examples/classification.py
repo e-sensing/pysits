@@ -89,6 +89,7 @@ probs_cube = sits_classify(
     output_dir=output_dir,
 )
 
+
 #
 # 8. Smooth classification
 #

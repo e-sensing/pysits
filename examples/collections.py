@@ -15,12 +15,9 @@
 # along with this program; if not, see <https://www.gnu.org/licenses/>.
 #
 
-"""classification example."""
-
-import os
+"""collections example."""
 
 from pysits import *
-
 
 #
 # 1. List all collections available in ``pysits``
