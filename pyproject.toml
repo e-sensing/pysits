@@ -17,6 +17,7 @@ requires-python = ">=3.10,<4"
 python = ">=3.10,<4"
 
 rpy2 = ">=3.5.17,<4.0.0"
+pandas = "^2.2.3"
 
 pillow = "^11.1.0"
 matplotlib = "^3.10.1"
