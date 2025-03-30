@@ -15,22 +15,27 @@
 # along with this program; if not, see <https://www.gnu.org/licenses/>.
 #
 
-"""time series operations."""
+"""visualization functions."""
 
-from pysits.backend.sits import r_sits
-from pysits.models import SITSTimeSeriesModel
-from pysits.types import rpy2_fix_type
+from functools import singledispatch
+
+from pysits.backend.utils import r_plot
+from pysits.models import SITSCubeModel, SITSTimeSeriesModel
+from pysits.toolbox.visualization import plot_tmap
 
 
-#
-# High-level operation
-#
-@rpy2_fix_type
-def sits_get_data(*args, **kwargs):
-    """Retrieve time series data from a data cube.
+@singledispatch
+def sits_plot(data: object):
+    """sits plot as dispatch."""
 
-    Retrieve a set of time series from a data cube or from a time series service.
-    """
-    data = r_sits.sits_get_data(*args, **kwargs)
 
-    return SITSTimeSeriesModel(data, **kwargs)
+@sits_plot.register
+def _(data: SITSCubeModel, **kwargs):
+    """Plot cube."""
+    return plot_tmap(data._instance, **kwargs)
+
+
+@sits_plot.register
+def _(data: SITSTimeSeriesModel, **kwargs):
+    """Plot time-series."""
+    return r_plot(data._instance, **kwargs)

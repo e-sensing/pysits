@@ -19,7 +19,7 @@
 
 from pysits.backend.sits import r_sits
 from pysits.models import SITSCubeModel
-from pysits.types import rpy2_fix_type
+from pysits.toolbox.conversions.base import rpy2_fix_type
 
 
 @rpy2_fix_type

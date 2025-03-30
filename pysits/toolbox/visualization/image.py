@@ -15,8 +15,34 @@
 # along with this program; if not, see <https://www.gnu.org/licenses/>.
 #
 
-"""plot module."""
+"""plot toolbox."""
 
-from .base import plot
+import matplotlib.pyplot as plt
+from PIL import Image
 
-__all__ = ("plot",)
+
+def show_local_image(image_path):
+    """Displays a local image using matplotlib.
+
+    Args:
+        image_path (str): The file path to the image to be displayed.
+
+    Returns:
+        matplotlib.image: Matplotlib image object.
+    """
+    # load and crop image
+    img = Image.open(image_path)
+    img = img.crop(img.getbbox())
+
+    # define figure object
+    plt.figure(figsize=(7, 5), dpi=300)
+
+    # show image in the figure canvas
+    plt.imshow(img)
+
+    # configure layout
+    plt.axis("off")
+    plt.tight_layout()
+
+    # show image!
+    plt.show()

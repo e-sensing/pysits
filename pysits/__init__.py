@@ -17,5 +17,61 @@
 
 """pysits module."""
 
-from .operations import *  # noqa
-from .plot import *  # noqa
+from .sits.apply import sits_apply
+from .sits.classification import sits_classify, sits_label_classification, sits_smooth
+from .sits.cube import sits_cube, sits_cube_copy, sits_regularize
+from .sits.data import sits_bands, sits_labels, sits_list_collections, sits_timeline
+from .sits.exporters import sits_as_xarray
+from .sits.ml import (
+    sits_lighttae,
+    sits_mlp,
+    sits_rfor,
+    sits_svm,
+    sits_tae,
+    sits_tempcnn,
+    sits_train,
+    sits_xgboost,
+)
+from .sits.segment import sits_segment, sits_slic
+from .sits.ts import sits_get_data, sits_predictors
+from .sits.utils import read_sits_rds
+from .sits.visualization import sits_plot as plot
+
+__all__ = (
+    # Classification
+    "sits_classify",
+    "sits_smooth",
+    "sits_label_classification",
+    # Cube
+    "sits_cube",
+    "sits_regularize",
+    "sits_cube_copy",
+    # Data management
+    "sits_bands",
+    "sits_timeline",
+    "sits_labels",
+    "sits_list_collections",
+    # Machine Learning methods
+    "sits_train",
+    "sits_mlp",
+    "sits_rfor",
+    "sits_tempcnn",
+    "sits_lighttae",
+    "sits_svm",
+    "sits_xgboost",
+    "sits_tae",
+    # Time series
+    "sits_get_data",
+    "sits_predictors",
+    # Segments
+    "sits_segment",
+    "sits_slic",
+    # Apply
+    "sits_apply",
+    # Exporters
+    "sits_as_xarray",
+    # Visualization
+    "plot",
+    # Utils
+    "read_sits_rds",
+)

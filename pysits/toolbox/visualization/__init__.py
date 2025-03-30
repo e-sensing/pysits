@@ -15,28 +15,8 @@
 # along with this program; if not, see <https://www.gnu.org/licenses/>.
 #
 
-"""segment operations."""
+"""plot module."""
 
-from pysits import types as type_utils
-from pysits.backend.sits import r_sits
-from pysits.factory import factory_function
-from pysits.models import SITSCubeModel
+from .tmap import plot_tmap
 
-#
-# Segmentation functions
-#
-sits_slic = factory_function("sits_slic")
-
-
-#
-# Segmentation operation
-#
-@type_utils.rpy2_fix_type
-def sits_segment(*args, **kwargs):
-    """Segment an image.
-
-    Apply a spatial-temporal segmentation on a data cube based on a
-    user defined segmentation function.
-    """
-    cube = r_sits.sits_segment(*args, **kwargs)
-    return SITSCubeModel(cube)
+__all__ = ("plot_tmap",)

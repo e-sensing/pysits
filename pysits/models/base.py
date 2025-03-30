@@ -19,6 +19,8 @@
 
 import abc
 
+from pandas import DataFrame
+
 
 class SITSModel(abc.ABC):
     """Base class for SITS models."""
@@ -27,19 +29,32 @@ class SITSModel(abc.ABC):
     """R Object instance."""
 
     #
-    # Base
+    # Dunder methods (magic methods)
     #
     def __init__(self, instance, **kwargs):
         """Initializer."""
         self._instance = instance
 
-    #
-    # Visualization
-    #
-    def _plot(self, *args, **kwargs):
-        """Plot object."""
-        raise NotImplementedError()
 
-    def _view(self, *args, **kwargs):
-        """View object in a interactive map."""
-        raise NotImplementedError()
+class SITSData(DataFrame, SITSModel):
+    """Base class for SITS Data."""
+
+    #
+    # Dunder methods
+    #
+    def __init__(self, instance, **kwargs):
+        """Initializer."""
+        self._instance = instance
+
+        # Proxy instance
+        instance_py = self._convert_from_r(instance)
+
+        # Initialize super class
+        super().__init__(data=instance_py, **kwargs)
+
+    #
+    # Convertions
+    #
+    def _convert_from_r(self, instance):
+        """Convert data from R to Python."""
+        return None

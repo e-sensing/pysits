@@ -15,4 +15,4 @@
 # along with this program; if not, see <https://www.gnu.org/licenses/>.
 #
 
-"""pysits backend module (based in R and sits)."""
+"""backend module (based in R and sits)."""

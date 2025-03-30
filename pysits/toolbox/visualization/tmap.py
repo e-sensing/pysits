@@ -23,7 +23,7 @@ import tempfile
 from rpy2.robjects import r as ro
 
 from pysits.backend.utils import r_plot
-from pysits.plot.toolbox import show_local_image
+from pysits.toolbox.visualization.image import show_local_image
 
 
 #

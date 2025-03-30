@@ -1,0 +1,225 @@
+#
+# Copyright (C) 2025 sits developers.
+#
+# This program is free software; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, see <https://www.gnu.org/licenses/>.
+#
+
+"""tibble conversions."""
+
+from collections.abc import Callable
+
+from pandas import DataFrame as PandasDataFrame
+from pandas import to_datetime as pandas_to_datetime
+from rpy2.robjects import StrVector, pandas2ri
+from rpy2.robjects.vectors import DataFrame as RDataFrame
+
+from pysits.backend.utils import r_base, r_class
+from pysits.models.frame import SITSFrameArray
+
+
+#
+# Auxiliary functions
+#
+def _column_to_datetime(data: PandasDataFrame, colname: str) -> PandasDataFrame:
+    """Transform a columns from R to a valid datetime column in Python.
+
+    Args:
+        data (pandas.DataFrame): Pandas Data Frame from an R tibble/data.frame.
+
+        colname (str): Column to be converted datetime (from R format to Python format).
+
+    Returns:
+        pandas.DataFrame: Pandas data frame with ``colname`` as datetime.
+    """
+    # Convert if column is available
+    if colname in data.columns:
+        data[colname] = pandas_to_datetime(data[colname], origin="1970-01-01", unit="D")
+
+    # Return!
+    return data
+
+
+#
+# Base conversion function
+#
+def tibble_to_pandas(
+    data: RDataFrame,
+    nested_columns: list | None = None,
+    table_processor: Callable[[PandasDataFrame], PandasDataFrame] | None = None,
+    nested_processor: Callable[[PandasDataFrame], PandasDataFrame] | None = None,
+) -> PandasDataFrame:
+    """Transform tibble to pandas."""
+    # Convert columns definitions
+    nested_columns = nested_columns if nested_columns else []
+
+    # Extract columns from the data
+    data_columns = r_base.colnames(data)
+
+    # Remove invalid columns
+    data_columns_valid = []
+
+    for data_column in data_columns:
+        col = data.rx2(data_column)
+
+        # Remove invalid columns
+        if r_class(col[0])[0] not in ["function", "NULL"]:
+            data_columns_valid.append(data_column)
+
+    # Replace old data columns with the filtered one
+    data_columns = data_columns_valid
+
+    # If user define nested columns, verify if they are available.
+    if nested_columns:
+        # Filter available nested columns
+        nested_columns = [v for v in nested_columns if v in data_columns]
+
+        # If selected columns are available, remove them from the data columns
+        # This allows us to handle them individually.
+        if nested_columns:
+            data_columns = list(set(data_columns).difference(nested_columns))
+
+    # Select regular columns (using ``[]``) and convert to Pandas
+    rdf_data = data.rx(StrVector(data_columns))
+    rdf_data = pandas2ri.rpy2py(rdf_data)
+
+    # Handle nested columns if available
+    for nested_column in nested_columns:
+        # Select nested column (using ``[[]]``)
+        nested_column_data = data.rx2(nested_column)
+
+        # As it is a nested column, handle it as a list of ``tibble/data.frame``
+        nested_column_processed = []
+
+        for nested_row in nested_column_data:
+            # Convert to pandas
+            nested_row_df = pandas2ri.rpy2py(nested_row)
+
+            # If a processor function is available, apply data to use
+            if nested_processor and isinstance(nested_row_df, PandasDataFrame):
+                nested_row_df = nested_processor(nested_row_df)
+
+            # Save
+            nested_column_processed.append(nested_row_df)
+
+        # Convert column to SITS Array and save to the main data frame
+        rdf_data[nested_column] = SITSFrameArray(nested_column_processed)
+
+    # If a processor function is available to the main table, use it
+    if table_processor:
+        rdf_data = table_processor(rdf_data)
+
+    # Return!
+    return rdf_data
+
+
+#
+# SITS conversions function
+#
+def tibble_sits_to_pandas(data: RDataFrame) -> PandasDataFrame:
+    """Convert sits tibble to Pandas Data Frame.
+
+    Args:
+        data (rpy2.robjects.vectors.DataFrame): R (tibble/data.frame) Data frame.
+
+    Returns:
+        pandas.DataFrame: R Data Frame as Pandas.
+    """
+    # Define column order (from R)
+    column_order = [
+        "longitude",
+        "latitude",
+        "start_date",
+        "end_date",
+        "label",
+        "cube",
+        "time_series",
+    ]
+
+    # Define nested columns
+    nested_columns = ["time_series"]
+
+    # Define table processor
+    def _table_processor(x):
+        """Table processor."""
+        # Update date columns
+        x = _column_to_datetime(x, "start_date")
+        x = _column_to_datetime(x, "end_date")
+
+        return x[column_order]
+
+    # Define nested processor
+    def _nested_processor(x):
+        """Nested processor."""
+        return _column_to_datetime(x, "Index")
+
+    # Convert and return
+    return tibble_to_pandas(
+        data=data,
+        nested_columns=nested_columns,
+        table_processor=_table_processor,
+        nested_processor=_nested_processor,
+    )
+
+
+#
+# SITS conversions function
+#
+def tibble_cube_to_pandas(data: RDataFrame) -> PandasDataFrame:
+    """Convert sits tibble to Pandas Data Frame.
+
+    Args:
+        data (rpy2.robjects.vectors.DataFrame): R (tibble/data.frame) Data frame.
+
+    Returns:
+        pandas.DataFrame: R Data Frame as Pandas.
+    """
+    # Define column order (from R)
+    column_order = [
+        "source",
+        "collection",
+        "satellite",
+        "sensor",
+        "tile",
+        "xmin",
+        "xmax",
+        "ymin",
+        "ymax",
+        "crs",
+        "labels",
+        "file_info",
+        "vector_info",
+    ]
+
+    # Define nested columns
+    nested_columns = ["labels", "file_info", "vector_info"]
+
+    # Define table processor
+    def _table_processor(x):
+        """Table processor."""
+        columns_available = [v for v in column_order if v in x.columns]
+
+        return x[columns_available]
+
+    # Define nested processor
+    def _nested_processor(x):
+        """Nested processor."""
+        return _column_to_datetime(x, "date")
+
+    # Convert and return
+    return tibble_to_pandas(
+        data=data,
+        nested_columns=nested_columns,
+        table_processor=_table_processor,
+        nested_processor=_nested_processor,
+    )

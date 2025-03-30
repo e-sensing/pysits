@@ -18,7 +18,7 @@
 """data management operations."""
 
 from pysits.backend.sits import r_sits
-from pysits.types import r_to_python, rpy2_fix_type
+from pysits.toolbox.conversions.base import r_to_python, rpy2_fix_type
 
 
 @rpy2_fix_type

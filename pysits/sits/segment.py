@@ -15,34 +15,28 @@
 # along with this program; if not, see <https://www.gnu.org/licenses/>.
 #
 
-"""plot toolbox."""
+"""segment operations."""
 
-from PIL import Image
-import matplotlib.pyplot as plt
+from pysits.backend.sits import r_sits
+from pysits.models import SITSCubeModel
+from pysits.toolbox.conversions.base import rpy2_fix_type
+from pysits.toolbox.factory import factory_function
+
+#
+# Segmentation functions
+#
+sits_slic = factory_function("sits_slic")
 
 
-def show_local_image(image_path):
-    """Displays a local image using matplotlib.
+#
+# Segmentation operation
+#
+@rpy2_fix_type
+def sits_segment(*args, **kwargs):
+    """Segment an image.
 
-    Args:
-        image_path (str): The file path to the image to be displayed.
-
-    Returns:
-        matplotlib.image: Matplotlib image object.
+    Apply a spatial-temporal segmentation on a data cube based on a
+    user defined segmentation function.
     """
-    # load and crop image
-    img = Image.open(image_path)
-    img = img.crop(img.getbbox())
-
-    # define figure object
-    plt.figure(figsize=(7, 5), dpi=300)
-
-    # show image in the figure canvas
-    plt.imshow(img)
-
-    # configure layout
-    plt.axis("off")
-    plt.tight_layout()
-
-    # show image!
-    plt.show()
+    cube = r_sits.sits_segment(*args, **kwargs)
+    return SITSCubeModel(cube)

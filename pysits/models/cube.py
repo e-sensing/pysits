@@ -17,16 +17,30 @@
 
 """cube models."""
 
-from pysits.models.base import SITSModel
-from pysits.plot.tmap import plot_tmap
+from pandas import DataFrame as PandasDataFrame
+from rpy2.robjects.vectors import DataFrame as RDataFrame
+
+from pysits.models.base import SITSData
+from pysits.toolbox.conversions.tibble import tibble_cube_to_pandas
 
 
 #
 # Base class
 #
-class SITSCubeModel(SITSModel):
-    """Base class for pysits cubes."""
+class SITSCubeModel(SITSData):
+    """SITS Data Cube data."""
 
-    def _plot(self, **kwargs):
-        """Plot cube using tmap."""
-        return plot_tmap(self._instance, **kwargs)
+    def __init__(self, *args, **kwargs):
+        """Initializer."""
+        super().__init__(*args, **kwargs)
+
+    #
+    # Convertions
+    #
+    def _convert_from_r(self, instance: RDataFrame) -> PandasDataFrame:
+        """Convert data from R to Python.
+
+        Args:
+            instance (rpy2.robjects.vectors.DataFrame): Data instance.
+        """
+        return tibble_cube_to_pandas(instance)

@@ -17,16 +17,52 @@
 
 """time-series models."""
 
-from pysits.backend.utils import r_plot
-from pysits.models.base import SITSModel
+from pandas import DataFrame as PandasDataFrame
+from rpy2.robjects.vectors import DataFrame as RDataFrame
+
+from pysits.models.base import SITSData
+from pysits.toolbox.conversions.tibble import tibble_sits_to_pandas, tibble_to_pandas
 
 
 #
-# Base class
+# Time-series data class
 #
-class SITSTimeSeriesModel(SITSModel):
+class SITSTimeSeriesModel(SITSData):
     """Time-series base class."""
 
-    def _plot(self, *args, **kwargs):
-        """Plot time-series data."""
-        return r_plot(self._instance, *args, **kwargs)
+    def __init__(self, *args, **kwargs):
+        """Initializer."""
+        super().__init__(*args, **kwargs)
+
+    #
+    # Convertions
+    #
+    def _convert_from_r(self, instance: RDataFrame) -> PandasDataFrame:
+        """Convert data from R to Python.
+
+        Args:
+            instance (rpy2.robjects.vectors.DataFrame): Data instance.
+        """
+        return tibble_sits_to_pandas(instance)
+
+
+#
+# Predictors
+#
+class SITSPredictors(SITSData):
+    """Time-series predictors."""
+
+    def __init__(self, *args, **kwargs):
+        """Initializer."""
+        super().__init__(*args, **kwargs)
+
+    #
+    # Convertions
+    #
+    def _convert_from_r(self, instance: RDataFrame) -> PandasDataFrame:
+        """Convert data from R to Python.
+
+        Args:
+            instance (rpy2.robjects.vectors.DataFrame): Data instance.
+        """
+        return tibble_to_pandas(instance)

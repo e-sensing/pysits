@@ -18,9 +18,9 @@
 """machine-learning operations."""
 
 from pysits.backend.sits import r_sits
-from pysits.factory import factory_function
 from pysits.models import SITSMachineLearningMethod
-from pysits.types import rpy2_fix_type
+from pysits.toolbox.conversions.base import rpy2_fix_type
+from pysits.toolbox.factory import factory_function
 
 #
 # Random Forest

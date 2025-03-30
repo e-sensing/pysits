@@ -17,15 +17,15 @@
 
 """cube operations."""
 
-from pysits import types as type_utils
 from pysits.backend.sits import r_sits
 from pysits.models import SITSCubeModel
+from pysits.toolbox.conversions.base import rpy2_fix_type
 
 
 #
 # High-level operations
 #
-@type_utils.rpy2_fix_type
+@rpy2_fix_type
 def sits_cube(*args, **kwargs):
     """Create cubes.
 
@@ -180,7 +180,7 @@ def sits_cube(*args, **kwargs):
     return SITSCubeModel(cube)
 
 
-@type_utils.rpy2_fix_type
+@rpy2_fix_type
 def sits_regularize(*args, **kwargs):
     """Build a regular data cube from an irregular one.
 
@@ -196,7 +196,7 @@ def sits_regularize(*args, **kwargs):
     return SITSCubeModel(cube)
 
 
-@type_utils.rpy2_fix_type
+@rpy2_fix_type
 def sits_cube_copy(*args, **kwargs):
     """Copy cubes.
 

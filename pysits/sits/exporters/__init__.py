@@ -15,26 +15,8 @@
 # along with this program; if not, see <https://www.gnu.org/licenses/>.
 #
 
-"""backend utility functions."""
+"""exporters module."""
 
-from rpy2.robjects.packages import importr
+from .xarray import sits_as_xarray
 
-#
-# Base
-#
-r_base = importr("base")
-
-#
-# Base - Plot
-#
-r_plot = r_base.plot
-
-#
-# Base - readRDS
-#
-r_read_rds = r_base.readRDS
-
-#
-# Base - Class
-#
-r_class = getattr(r_base, "class")
+__all__ = ("sits_as_xarray",)

@@ -19,9 +19,9 @@
 
 import rpy2.robjects as ro
 
-from pysits import types as type_utils
 from pysits.backend.utils import r_class
 from pysits.models import SITSCubeModel, SITSTimeSeriesModel
+from pysits.toolbox.conversions.base import rpy2_fix_type
 
 
 #
@@ -47,7 +47,7 @@ def _class_selector(data):
 #
 # Apply operation
 #
-@type_utils.rpy2_fix_type
+@rpy2_fix_type
 def sits_apply(data, **kwargs):
     """Apply a function on a set of time series.
 
