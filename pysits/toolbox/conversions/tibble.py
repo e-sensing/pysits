@@ -214,7 +214,11 @@ def tibble_cube_to_pandas(data: RDataFrame) -> PandasDataFrame:
     # Define nested processor
     def _nested_processor(x):
         """Nested processor."""
-        return _column_to_datetime(x, "date")
+        x = _column_to_datetime(x, "date")
+        x = _column_to_datetime(x, "start_date")
+        x = _column_to_datetime(x, "end_date")
+
+        return x
 
     # Convert and return
     return tibble_to_pandas(
