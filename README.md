@@ -1,6 +1,6 @@
 ## pysits
 
-Build classification workflows in Python powered by the sits R package.
+Python wrapper for the [sits](https://github.com/e-sensing/sits) R package
 
 ## Installation
 
