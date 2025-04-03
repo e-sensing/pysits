@@ -33,7 +33,7 @@ from .sits.ml import (
     sits_xgboost,
 )
 from .sits.segment import sits_segment, sits_slic
-from .sits.ts import sits_get_data, sits_predictors
+from .sits.ts import sits_get_data, sits_predictors, sits_som_map
 from .sits.utils import read_sits_rds
 from .sits.visualization import sits_plot as plot
 
@@ -63,6 +63,7 @@ __all__ = (
     # Time series
     "sits_get_data",
     "sits_predictors",
+    "sits_som_map",
     # Segments
     "sits_segment",
     "sits_slic",

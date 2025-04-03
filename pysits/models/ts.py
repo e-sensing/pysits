@@ -66,3 +66,21 @@ class SITSPredictors(SITSData):
             instance (rpy2.robjects.vectors.DataFrame): Data instance.
         """
         return tibble_to_pandas(instance)
+
+
+#
+# Self-organized maps
+#
+class SITSOMData(SITSData):
+    """Self-organized maps (SOM) data."""
+
+    def __init__(self, *args, **kwargs):
+        """Initializer."""
+        super().__init__(*args, **kwargs)
+
+    #
+    # Convertions
+    #
+    def _convert_from_r(self, instance):
+        """Convert object from R to Python."""
+        return instance

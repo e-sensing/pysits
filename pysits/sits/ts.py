@@ -18,7 +18,7 @@
 """time series operations."""
 
 from pysits.backend.sits import r_sits
-from pysits.models import SITSPredictors, SITSTimeSeriesModel
+from pysits.models import SITSPredictors, SITSTimeSeriesModel, SITSOMData
 from pysits.toolbox.conversions.base import rpy2_fix_type
 
 
@@ -42,3 +42,14 @@ def sits_predictors(*args, **kwargs):
     data = r_sits.sits_predictors(*args, **kwargs)
 
     return SITSPredictors(data)
+
+
+#
+# SOM
+#
+@rpy2_fix_type
+def sits_som_map(*args, **kwargs):
+    """Build a SOM for quality analysis of time series samples."""
+    result = r_sits.sits_som_map(*args, **kwargs)
+
+    return SITSOMData(result)
