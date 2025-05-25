@@ -19,6 +19,7 @@
 
 import functools
 from datetime import date, timedelta
+from pathlib import Path, PosixPath
 
 import rpy2.robjects as ro
 
@@ -38,6 +39,8 @@ TYPE_CONVERSIONS = {
     int: lambda obj: ro.IntVector([obj]),
     float: lambda obj: ro.FloatVector([obj]),
     str: lambda obj: ro.StrVector([obj]),
+    Path: lambda obj: ro.StrVector([obj.as_posix()]),
+    PosixPath: lambda obj: ro.StrVector([obj.as_posix()]),
 }
 
 

@@ -20,7 +20,7 @@
 from .base import SITSData, SITSModel
 from .cube import SITSCubeModel
 from .ml import SITSMachineLearningMethod
-from .ts import SITSPredictors, SITSTimeSeriesModel, SITSOMData
+from .ts import SITSOMData, SITSPredictors, SITSTimeSeriesModel
 
 __all__ = (
     # Base

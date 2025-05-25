@@ -18,7 +18,7 @@
 """time series operations."""
 
 from pysits.backend.sits import r_sits
-from pysits.models import SITSPredictors, SITSTimeSeriesModel, SITSOMData
+from pysits.models import SITSOMData, SITSPredictors, SITSTimeSeriesModel
 from pysits.toolbox.conversions.base import rpy2_fix_type
 
 

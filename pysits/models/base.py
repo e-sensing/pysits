@@ -20,6 +20,7 @@
 import abc
 
 from pandas import DataFrame
+from rpy2.robjects.vectors import DataFrame as RDataFrame
 
 
 class SITSModel(abc.ABC):
@@ -47,10 +48,32 @@ class SITSData(DataFrame, SITSModel):
         self._instance = instance
 
         # Proxy instance
-        instance_py = self._convert_from_r(instance)
+        if isinstance(instance, RDataFrame):
+            instance = self._convert_from_r(instance)
 
         # Initialize super class
-        super().__init__(data=instance_py, **kwargs)
+        super().__init__(data=instance, **kwargs)
+
+    def __finalize__(self, other, method=None, **kwargs):
+        """Propagate metadata from another object to the current one.
+
+        This method is called by pandas during internal operations that return a new
+        object derived from an existing one, such as slicing, copying, arithmetic,
+        joins, merges, and others. It ensures that any custom metadata defined in the
+        ``_metadata`` attribute is preserved in the result.
+        """
+        if isinstance(other, SITSData):
+            for name in self._metadata:
+                setattr(self, name, getattr(other, name, None))
+        return self
+
+    #
+    # Properties (Internal)
+    #
+    @property
+    def _constructor(self):
+        # Always return the current subclass
+        return self.__class__
 
     #
     # Convertions

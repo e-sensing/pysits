@@ -19,7 +19,7 @@
 
 from pathlib import Path
 
-from pysits.backend.utils import r_class, r_read_rds
+from pysits.backend.utils import r_class, r_read_rds, r_system_file
 from pysits.models import SITSCubeModel, SITSData, SITSTimeSeriesModel
 
 
@@ -63,3 +63,25 @@ def read_sits_rds(file: str | Path) -> SITSData:
         )
 
     return content_class(rds_content)
+
+
+def get_package_dir(content_dir: str, package: str) -> Path | None:
+    """Get data dir from an existing R package.
+
+    This function gets the directory available in an R package. It uses `system.file` behind
+    the scenes.
+
+    Args:
+        content_dir (str): Directory in the package.
+
+        package (str): R Package name.
+
+    Returns:
+        Path | None: If available, returns ``pathlib.Path``. Otherwise, returns None.
+    """
+    dir_path = r_system_file(content_dir, package=package)
+    dir_path = dir_path[0]
+
+    dir_path = Path(dir_path)
+
+    return None if not dir_path.exists() else dir_path

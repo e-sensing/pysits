@@ -35,6 +35,11 @@ r_plot = r_base.plot
 r_read_rds = r_base.readRDS
 
 #
+# Base - system.file
+#
+r_system_file = r_base.system_file
+
+#
 # Base - Class
 #
 r_class = getattr(r_base, "class")

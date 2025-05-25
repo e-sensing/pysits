@@ -34,7 +34,7 @@ from .sits.ml import (
 )
 from .sits.segment import sits_segment, sits_slic
 from .sits.ts import sits_get_data, sits_predictors, sits_som_map
-from .sits.utils import read_sits_rds
+from .sits.utils import get_package_dir, read_sits_rds
 from .sits.visualization import sits_plot as plot
 
 __all__ = (
@@ -75,4 +75,5 @@ __all__ = (
     "plot",
     # Utils
     "read_sits_rds",
+    "get_package_dir",
 )

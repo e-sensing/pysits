@@ -26,7 +26,6 @@ from pandas.api.extensions import (
     ExtensionDtype,
     register_extension_dtype,
 )
-from pandas.api.extensions import take as pandas_take
 
 
 @register_extension_dtype
@@ -47,7 +46,7 @@ class SITSFrameDtype(ExtensionDtype):
 
     kind = "O"
     """A character code (one of `biufcmMOSUV`) identifying the general kind of data.
-    
+
     To learn more, please check: https://numpy.org/doc/stable/reference/generated/numpy.dtype.kind.html
     """
 
@@ -70,7 +69,7 @@ class SITSFrameArray(ExtensionArray):
 
     def __init__(self, frames):
         """Initializer."""
-        self._data = list(frames)
+        self._data = frames
 
     #
     # Properties
@@ -137,14 +136,7 @@ class SITSFrameArray(ExtensionArray):
             warnings.simplefilter("ignore")
 
             # Take and return!
-            return SITSFrameArray(
-                pandas_take(
-                    self._data,
-                    indices=indices,
-                    allow_fill=allow_fill,
-                    fill_value=fill_value,
-                )
-            )
+            return SITSFrameArray([self._data[idx] for idx in indices])
 
     def isna(self):
         """A 1-D array indicating if each value is missing."""
