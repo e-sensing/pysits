@@ -35,15 +35,6 @@ rioxarray = "^0.18.2"
 affine = "^2.4.0"
 
 #
-# polars-related dependencies
-#
-[tool.poetry.group.polars]
-optional = true
-
-[tool.poetry.group.polars.dependencies]
-polars = "^1.26.0"
-
-#
 # Development-related dependencies
 #
 [tool.poetry.group.dev]
