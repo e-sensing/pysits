@@ -22,7 +22,10 @@ from datetime import date, timedelta
 from pathlib import Path, PosixPath
 
 import rpy2.robjects as ro
+from pandas import DataFrame as PandasDataFrame
+from rpy2.robjects import pandas2ri
 
+from pysits.backend.tibble import r_as_tibble
 from pysits.models.base import SITSModel
 
 #
@@ -41,6 +44,7 @@ TYPE_CONVERSIONS = {
     str: lambda obj: ro.StrVector([obj]),
     Path: lambda obj: ro.StrVector([obj.as_posix()]),
     PosixPath: lambda obj: ro.StrVector([obj.as_posix()]),
+    PandasDataFrame: lambda obj: r_as_tibble(pandas2ri.py2rpy(obj)),
 }
 
 

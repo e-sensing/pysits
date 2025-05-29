@@ -56,6 +56,9 @@ def read_sits_rds(file: str | Path) -> SITSData:
         case class_ if "raster_cube" in class_:
             content_class = SITSCubeModel
 
+        case class_ if "tbl_df" in class_:
+            content_class = SITSData
+
     # Raise an error if no class was selected
     if not content_class:
         raise ValueError(
