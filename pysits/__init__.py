@@ -32,6 +32,7 @@ from .sits.data import (
     sits_labels,
     sits_list_collections,
     sits_merge,
+    sits_mixture_model,
     sits_select,
     sits_timeline,
 )
@@ -79,6 +80,7 @@ __all__ = (
     "sits_bbox",
     "sits_select",
     "sits_merge",
+    "sits_mixture_model",
     "summary",
     # Machine Learning methods
     "sits_train",

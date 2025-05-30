@@ -25,9 +25,9 @@ from typing import Any, ParamSpec, TypeVar
 
 import rpy2.robjects as ro
 from pandas import DataFrame as PandasDataFrame
-from rpy2.robjects import pandas2ri
 
 from pysits.backend.pkgs import r_pkg_tibble
+from pysits.conversions.pandasr import pandas_to_r
 
 #
 # Generics
@@ -52,7 +52,7 @@ TYPE_CONVERSIONS = {
     str: lambda obj: ro.StrVector([obj]),
     Path: lambda obj: ro.StrVector([obj.as_posix()]),
     PosixPath: lambda obj: ro.StrVector([obj.as_posix()]),
-    PandasDataFrame: lambda obj: r_pkg_tibble.as_tibble(pandas2ri.py2rpy(obj)),
+    PandasDataFrame: lambda obj: r_pkg_tibble.as_tibble(pandas_to_r(obj)),
 }
 
 

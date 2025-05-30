@@ -69,6 +69,13 @@ def sits_merge(*args, **kwargs) -> SITSFrame:
     ...
 
 
+@function_call(r_pkg_sits.sits_mixture_model, resolve_and_invoke_data_class)
+@attach_doc("sits_mixture_model")
+def sits_mixture_model(*args, **kwargs) -> SITSFrame:
+    """Multiple endmember spectral mixture analysis."""
+    ...
+
+
 @function_call(r_pkg_sits.sits_list_collections, lambda x: None)
 @attach_doc("sits_list_collections")
 def sits_list_collections(*args, **kwargs) -> None:
