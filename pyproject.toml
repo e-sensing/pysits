@@ -2,55 +2,47 @@
 name = "pysits"
 version = "0.0.1"
 description = "Python wrapper for the sits R package"
-authors = [
-    {name = "Gilberto Camara",email = "gilberto.camara.inpe@gmail.com"},
-    {name = "Felipe Carlos",email = "efelipecarlos@gmail.com"},
-    {name = "Felipe Carvalho",email = "lipecaso@gmail.com"},
-    {name = "Pedro Brito",email = "pedro_brito1997@hotmail.com"},
-    {name = "Rolf Simoes",email = "rolfsimoes@gmail.com"},
-]
 readme = "README.md"
-packages = [{include = "pysits"}]
 requires-python = ">=3.10,<4"
+license = {text = "GPL-2.0-only"}
 
-[tool.poetry.dependencies]
-python = ">=3.10,<4"
+authors = [
+    {name = "Gilberto Camara", email = "gilberto.camara.inpe@gmail.com"},
+    {name = "Felipe Carlos", email = "efelipecarlos@gmail.com"},
+    {name = "Felipe Carvalho", email = "lipecaso@gmail.com"},
+    {name = "Pedro Brito", email = "pedro_brito1997@hotmail.com"},
+    {name = "Rolf Simoes", email = "rolfsimoes@gmail.com"}
+]
 
-rpy2 = ">=3.5.17,<4.0.0"
-pandas = "^2.2.3"
+dependencies = [
+    "rpy2>=3.5.17,<4.0.0",
+    "pandas>=2.2.3",
+    "pillow>=11.1.0",
+    "matplotlib>=3.10.1"
+]
 
-pillow = "^11.1.0"
-matplotlib = "^3.10.1"
+[project.urls]
+"Homepage" = "https://github.com/e-sensing/pysits"
+"Issue Tracker" = "https://github.com/e-sensing/pysits/issues"
 
-#
-# xarray-related dependencies
-#
-[tool.poetry.group.xarray]
-optional = true
+[project.optional-dependencies]
+xarray = [
+    "xarray>=2025.3.0",
+    "dask>=2025.3.0",
+    "rioxarray>=0.18.2",
+    "affine>=2.4.0"
+]
 
-[tool.poetry.group.xarray.dependencies]
-xarray = "^2025.3.0"
-dask = "^2025.3.0"
-rioxarray = "^0.18.2"
-affine = "^2.4.0"
+dev = [
+    "ruff>=0.1.13",
+    "pre-commit>=3.6.0",
+    "pytest>=7.4.4"
+]
 
-#
-# Development-related dependencies
-#
-[tool.poetry.group.dev]
-optional = true
-
-[tool.poetry.group.dev.dependencies]
-ruff = "^0.1.13"
-pre-commit = "^3.6.0"
-pytest = "^7.4.4"
-
-#
-# Configurations
-#
-
-# Ruff
 [tool.ruff]
+exclude = ["examples", "_resources"]
+
+[tool.ruff.lint]
 select = [
     "E",   # pycodestyle
     "F",   # pyflakes
@@ -63,7 +55,18 @@ select = [
 [tool.ruff.lint.pylint]
 max-args = 10
 
-# Build
+[tool.hatch.metadata]
+# tell hatch to include the pysits package
+packages = ["pysits"]
+
+[tool.hatch.build.targets.wheel]
+include = [
+  "pysits/**.py",
+  "pysits/docs/**.md",
+  "README.md",
+  "LICENSE"
+]
+
 [build-system]
-requires = ["poetry-core>=2.0.0,<3.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
