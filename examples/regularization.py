@@ -17,7 +17,6 @@
 
 """regularization example."""
 
-
 import os
 
 from pysits import *
