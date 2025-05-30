@@ -21,6 +21,7 @@ from pandas import DataFrame
 from rpy2.robjects.vectors import DataFrame as RDataFrame
 
 from pysits.conversions.tibble import tibble_to_pandas
+from pysits.conversions.vector import vector_to_pandas
 from pysits.models.base import SITSBase
 
 
@@ -99,3 +100,27 @@ class SITSFrame(DataFrame, SITSData):
     def _convert_from_r(self, instance):
         """Convert data from R to Python."""
         return tibble_to_pandas(instance)
+
+
+class SITSNamedVector(SITSFrame):
+    """Base class for sits named vector results."""
+
+    #
+    # Dunder methods
+    #
+    def __init__(self, instance, **kwargs):
+        """Initializer."""
+        self._instance = instance
+
+        # Convert vector to pandas dataframe
+        instance = self._convert_from_r(instance)
+
+        # Initialize super class
+        DataFrame.__init__(self, data=instance, **kwargs)
+
+    #
+    # Convertions
+    #
+    def _convert_from_r(self, instance):
+        """Convert data from R to Python."""
+        return vector_to_pandas(instance)

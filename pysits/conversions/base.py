@@ -28,7 +28,6 @@ from pandas import DataFrame as PandasDataFrame
 from rpy2.robjects import pandas2ri
 
 from pysits.backend.pkgs import r_pkg_tibble
-from pysits.models.base import SITSBase
 
 #
 # Generics
@@ -112,7 +111,7 @@ def _convert_to_r(obj):
     obj_type = type(obj)
 
     # Handle ``SITSBase`` objects
-    if isinstance(obj, SITSBase):
+    if getattr(obj, "_instance", None):
         return obj._instance
 
     # Handle ``closure`` objects

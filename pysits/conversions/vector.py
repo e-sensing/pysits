@@ -15,25 +15,22 @@
 # along with this program; if not, see <https://www.gnu.org/licenses/>.
 #
 
-"""pysits models."""
+"""Vector conversions."""
 
-from .base import SITSBase
-from .cube import SITSCubeModel
-from .data import SITSData, SITSFrame, SITSNamedVector, SITStructureData
-from .ml import SITSMachineLearningMethod
-from .ts import SITSTimeSeriesModel
+from pandas import DataFrame as PandasDataFrame
+from rpy2.robjects.vectors import Vector
 
-__all__ = (
-    # Base
-    "SITSBase",
-    "SITSData",
-    "SITSFrame",
-    "SITStructureData",
-    "SITSNamedVector",
-    # Data Cube
-    "SITSCubeModel",
-    # Time-series
-    "SITSTimeSeriesModel",
-    # Machine-learning
-    "SITSMachineLearningMethod",
-)
+from pysits.backend.pkgs import r_pkg_base
+from pysits.conversions.base import r_to_python
+
+
+def vector_to_pandas(vector: Vector) -> PandasDataFrame:
+    """Convert a vector to a pandas dataframe."""
+    # Get column names
+    colnames = r_pkg_base.names(vector)
+    colnames = r_to_python(colnames, as_type="str")
+
+    # Get values
+    values = r_to_python(vector, as_type="float")
+
+    return PandasDataFrame({k: [v] for k, v in zip(colnames, values)})

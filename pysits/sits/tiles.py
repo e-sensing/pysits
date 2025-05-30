@@ -15,25 +15,23 @@
 # along with this program; if not, see <https://www.gnu.org/licenses/>.
 #
 
-"""pysits models."""
+"""Tile-related operations."""
 
-from .base import SITSBase
-from .cube import SITSCubeModel
-from .data import SITSData, SITSFrame, SITSNamedVector, SITStructureData
-from .ml import SITSMachineLearningMethod
-from .ts import SITSTimeSeriesModel
+from pysits.backend.pkgs import r_pkg_sits
+from pysits.conversions.base import function_call
+from pysits.docs import attach_doc
+from pysits.models import SITSNamedVector
 
-__all__ = (
-    # Base
-    "SITSBase",
-    "SITSData",
-    "SITSFrame",
-    "SITStructureData",
-    "SITSNamedVector",
-    # Data Cube
-    "SITSCubeModel",
-    # Time-series
-    "SITSTimeSeriesModel",
-    # Machine-learning
-    "SITSMachineLearningMethod",
-)
+
+@function_call(r_pkg_sits.sits_mgrs_to_roi, SITSNamedVector)
+@attach_doc("sits_mgrs_to_roi")
+def sits_mgrs_to_roi(*args, **kwargs) -> SITSNamedVector:
+    """Convert MGRS to ROI."""
+    ...
+
+
+@function_call(r_pkg_sits.sits_tiles_to_roi, SITSNamedVector)
+@attach_doc("sits_tiles_to_roi")
+def sits_tiles_to_roi(*args, **kwargs) -> SITSNamedVector:
+    """Convert tiles to ROI."""
+    ...
