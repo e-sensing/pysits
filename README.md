@@ -1,46 +1,83 @@
-## pysits
+# pysits
 
-Python wrapper for the [sits](https://github.com/e-sensing/sits) R package
+Python wrapper for the [sits](https://github.com/e-sensing/sits) R package.
 
-## Installation
+## 📦 Installation
 
-To install the package you can use:
+To install `pysits` with pip:
 
-```shell
+```bash
 pip install pysits
 ```
 
-### Development
+or the development version:
 
-To start developing the `pysits`, clone the repository from [GitHub](https://github.com/e-sensing/pysits):
-
-```shell
-git clone https://github.com/e-sensing/pysits
+```bash
+pip install git+https://github.com/e-sensing/pysits.git
 ```
 
-Next, access the directory:
+## 🛠 Development setup (for contributors)
 
-```shell
+To set up a local development environment:
+
+**1.** Clone the repo and access it:
+
+```bash
+git clone https://github.com/e-sensing/pysits.git
 cd pysits
 ```
 
-Then, install it using [poetry](https://python-poetry.org/):
+**2.** Create a virtual environment using [uv](https://github.com/astral-sh/uv)
 
-```shell
-poetry install --with dev
+```bash
+uv venv
+source .venv/bin/activate  # or .venv\Scripts\activate on Windows
 ```
 
-Done! Now you can start developing the `pysits`.
+**3.** Install the project in editable mode with development tools:
 
-## Learn more
+```bash
+uv pip install -e ".[dev]"
+```
 
-Please, if you would like to learn more about `pysits`, we recommend checking the [examples](./examples) directory.
-There, you will find various usage examples.
+### 🔍 Run tests
 
-## Contributing
+We use `pytest` for testing:
 
-We welcome contributions! If you have suggestions for improvements or bug fixes, please feel free to fork the repository and submit a pull request.
+```bash
+pytest
+```
 
-## License
+### 🧹 Code formatting
 
-`pysits` is distributed under the GPL 2 license. See LICENSE for more details.
+To keep the codebase clean and consistent we use [ruff](https://github.com/astral-sh/ruff):
+
+```bash
+ruff format .
+```
+
+### 🧪 Linting
+
+We use [ruff](https://github.com/astral-sh/ruff) for static analysis:
+
+```bash
+ruff check .
+```
+
+> The `examples/` directory is excluded from linting.
+
+## 📚 Learn More
+
+Explore the [examples](./examples) directory for usage demos and tutorials.
+
+## 🤝 Contributing
+
+We welcome contributions! Please:
+
+- Fork the repository
+- Create a feature branch
+- Submit a pull request with a clear description
+
+## 📄 License
+
+`pysits` is distributed under the GPL-2.0 license. See [LICENSE](./LICENSE) for more details.
