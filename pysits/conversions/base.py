@@ -18,15 +18,24 @@
 """Base type conversions."""
 
 import functools
+from collections.abc import Callable
 from datetime import date, timedelta
 from pathlib import Path, PosixPath
+from typing import Any, ParamSpec, TypeVar
 
 import rpy2.robjects as ro
 from pandas import DataFrame as PandasDataFrame
 from rpy2.robjects import pandas2ri
 
-from pysits.backend.tibble import r_as_tibble
-from pysits.models.base import SITSModel
+from pysits.backend.pkgs import r_pkg_tibble
+from pysits.models.base import SITSBase
+
+#
+# Generics
+#
+T = TypeVar("T")
+P = ParamSpec("P")
+R = TypeVar("R")
 
 #
 # Type mapping dictionary
@@ -44,7 +53,7 @@ TYPE_CONVERSIONS = {
     str: lambda obj: ro.StrVector([obj]),
     Path: lambda obj: ro.StrVector([obj.as_posix()]),
     PosixPath: lambda obj: ro.StrVector([obj.as_posix()]),
-    PandasDataFrame: lambda obj: r_as_tibble(pandas2ri.py2rpy(obj)),
+    PandasDataFrame: lambda obj: r_pkg_tibble.as_tibble(pandas2ri.py2rpy(obj)),
 }
 
 
@@ -102,8 +111,8 @@ def _convert_to_r(obj):
 
     obj_type = type(obj)
 
-    # Handle ``SITSModel`` objects
-    if isinstance(obj, SITSModel):
+    # Handle ``SITSBase`` objects
+    if isinstance(obj, SITSBase):
         return obj._instance
 
     # Handle ``closure`` objects
@@ -185,20 +194,56 @@ def r_to_python(obj, as_type="str"):
 #
 # Decorator
 #
-def rpy2_fix_type(func):
-    """Decorator that automatically converts function arguments to R-compatible objects.
+def rpy2_fix_type(func: Callable[P, R]) -> Callable[P, R]:
+    """Decorator function to convert arguments to R-compatible objects.
 
     Args:
-        func: The function whose arguments should be converted.
+        func (Callable): The function whose arguments should be converted.
 
     Returns:
-        A wrapped function that receives converted arguments.
+        Callable: A wrapped function that receives converted arguments.
     """
 
     @functools.wraps(func)
-    def wrapper(*args, **kwargs):
+    def wrapper(*args: Any, **kwargs: Any) -> Any:
         converted_args = [_convert_to_r(arg) for arg in args]
         converted_kwargs = {k: _convert_to_r(v) for k, v in kwargs.items()}
         return func(*converted_args, **converted_kwargs)
 
     return wrapper
+
+
+def function_call(r_function: Callable[P, R], output_wrapper: Callable[[R], T]):
+    """Decorator function to call an R function and post-process the result.
+
+    This decorator is used to wrap Python stub functions that serve as documentation
+    and type hint shells. The resulting function performs the following steps:
+
+    1. Converts all arguments to R-compatible types using `@rpy2_fix_type`.
+    2. Calls the provided R function (`r_function`) with converted arguments.
+    3. Wraps the result in a specified output Python class (`output_wrapper`).
+
+    This enables consistent logic while preserving per-function docstrings and
+    type hints for IDE support, autocompletion, and documentation generation.
+
+    Args:
+        r_function (Callable): The R function to be called via rpy2.
+
+        output_wrapper (Callable): A callable (usually a class) that wraps the
+                                   result returned by the R function.
+
+    Returns:
+        Callable: A decorator that wraps a Python function stub, providing the
+                    R execution logic.
+    """
+
+    def decorator(func: Callable[P, T]) -> Callable[P, T]:
+        @rpy2_fix_type
+        @functools.wraps(func)
+        def wrapped(*args: P.args, **kwargs: P.kwargs) -> T:
+            result = r_function(*args, **kwargs)
+            return output_wrapper(result)
+
+        return wrapped
+
+    return decorator

@@ -15,13 +15,35 @@
 # along with this program; if not, see <https://www.gnu.org/licenses/>.
 #
 
-"""tibble utility functions."""
+"""Global objects from sits."""
 
-from rpy2.robjects.packages import importr
+from pysits.backend.data import load_global_data
+from pysits.models.ts import SITSTimeSeriesModel
 
 
-def r_as_tibble(r_obj: object) -> object:
-    """Convert an R object to tibble (in the R instance)."""
-    _tibble_package = importr("tibble")
+#
+# Auxiliary function
+#
+def _load_samples_dataset(name: str) -> SITSTimeSeriesModel:
+    """Load samples dataset from r environment.
 
-    return _tibble_package.as_tibble(r_obj)
+    Args:
+        name (str): Dataset name.
+
+    Returns:
+        SITSTimeSeriesModel: Dataset model.
+    """
+    return SITSTimeSeriesModel(load_global_data(name))
+
+
+#
+# Samples objects
+#
+samples_modis_ndvi = _load_samples_dataset("samples_modis_ndvi")
+samples_l8_rondonia_2bands = _load_samples_dataset("samples_l8_rondonia_2bands")
+
+
+#
+# Points objects
+#
+point_mt_6bands = _load_samples_dataset("point_mt_6bands")

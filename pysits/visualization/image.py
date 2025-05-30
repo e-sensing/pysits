@@ -15,31 +15,34 @@
 # along with this program; if not, see <https://www.gnu.org/licenses/>.
 #
 
-"""backend utility functions."""
+"""Image utilities."""
 
-from rpy2.robjects.packages import importr
+import matplotlib.pyplot as plt
+from PIL import Image
 
-#
-# Base
-#
-r_base = importr("base")
 
-#
-# Base - Plot
-#
-r_plot = r_base.plot
+def show_local_image(image_path: str) -> None:
+    """Displays a local image using matplotlib.
 
-#
-# Base - readRDS
-#
-r_read_rds = r_base.readRDS
+    Args:
+        image_path (str): The file path to the image to be displayed.
 
-#
-# Base - system.file
-#
-r_system_file = r_base.system_file
+    Returns:
+        None: Nothing.
+    """
+    # load and crop image
+    img = Image.open(image_path)
+    img = img.crop(img.getbbox())
 
-#
-# Base - Class
-#
-r_class = getattr(r_base, "class")
+    # define figure object
+    plt.figure(figsize=(7, 5), dpi=300)
+
+    # show image in the figure canvas
+    plt.imshow(img)
+
+    # configure layout
+    plt.axis("off")
+    plt.tight_layout()
+
+    # show image!
+    plt.show()

@@ -20,7 +20,15 @@
 from .sits.apply import sits_apply
 from .sits.classification import sits_classify, sits_label_classification, sits_smooth
 from .sits.cube import sits_cube, sits_cube_copy, sits_regularize
-from .sits.data import sits_bands, sits_labels, sits_list_collections, sits_timeline
+from .sits.data import (
+    sits_bands,
+    sits_bbox,
+    sits_labels,
+    sits_list_collections,
+    sits_merge,
+    sits_select,
+    sits_timeline,
+)
 from .sits.exporters import sits_as_xarray
 from .sits.ml import (
     sits_lighttae,
@@ -33,7 +41,16 @@ from .sits.ml import (
     sits_xgboost,
 )
 from .sits.segment import sits_segment, sits_slic
-from .sits.ts import sits_get_data, sits_predictors, sits_som_map
+from .sits.ts import (
+    sits_get_data,
+    sits_patterns,
+    sits_predictors,
+    sits_sgolay,
+    sits_som_clean_samples,
+    sits_som_evaluate_cluster,
+    sits_som_map,
+    sits_whittaker,
+)
 from .sits.utils import get_package_dir, read_sits_rds
 from .sits.visualization import sits_plot as plot
 
@@ -51,6 +68,9 @@ __all__ = (
     "sits_timeline",
     "sits_labels",
     "sits_list_collections",
+    "sits_bbox",
+    "sits_select",
+    "sits_merge",
     # Machine Learning methods
     "sits_train",
     "sits_mlp",
@@ -60,10 +80,15 @@ __all__ = (
     "sits_svm",
     "sits_xgboost",
     "sits_tae",
-    # Time series
+    # Time-series
+    "sits_sgolay",
+    "sits_whittaker",
     "sits_get_data",
     "sits_predictors",
     "sits_som_map",
+    "sits_som_evaluate_cluster",
+    "sits_som_clean_samples",
+    "sits_patterns",
     # Segments
     "sits_segment",
     "sits_slic",

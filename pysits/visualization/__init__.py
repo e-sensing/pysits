@@ -15,9 +15,9 @@
 # along with this program; if not, see <https://www.gnu.org/licenses/>.
 #
 
-"""plot models."""
+"""Plot module."""
 
+from .base import plot_base
+from .tmap import plot_tmap
 
-def plot(obj, *args, **kwargs):
-    """Plot pysits models."""
-    return obj._plot(*args, **kwargs)
+__all__ = ("plot_tmap", "plot_base")

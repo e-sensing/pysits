@@ -17,11 +17,11 @@
 
 """ml methods models."""
 
-from pysits.models.base import SITSModel
+from pysits.models.base import SITSBase
 
 
 #
 # Base class
 #
-class SITSMachineLearningMethod(SITSModel):
+class SITSMachineLearningMethod(SITSBase):
     """ML Method base class."""

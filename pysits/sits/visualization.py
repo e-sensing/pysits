@@ -15,27 +15,46 @@
 # along with this program; if not, see <https://www.gnu.org/licenses/>.
 #
 
-"""visualization functions."""
+"""Visualization functions."""
 
 from functools import singledispatch
 
-from pysits.backend.utils import r_plot
-from pysits.models import SITSCubeModel, SITSTimeSeriesModel
-from pysits.toolbox.visualization import plot_tmap
+from pysits.models import (
+    SITSCubeModel,
+    SITSFrame,
+    SITSTimeSeriesModel,
+    SITStructureData,
+)
+from pysits.visualization import plot_base, plot_tmap
 
 
+#
+# Dispatch chain for plot
+#
 @singledispatch
-def sits_plot(data: object):
+def sits_plot(data: object) -> str:
     """sits plot as dispatch."""
 
 
 @sits_plot.register
-def _(data: SITSCubeModel, **kwargs):
+def _(data: SITSFrame, **kwargs) -> str:
+    """Plot Frame data."""
+    return plot_base(data._instance, **kwargs)
+
+
+@sits_plot.register
+def _(data: SITStructureData, **kwargs) -> str:
+    """Plot Structure data."""
+    return plot_base(data._instance, **kwargs)
+
+
+@sits_plot.register
+def _(data: SITSCubeModel, **kwargs) -> str:
     """Plot cube."""
     return plot_tmap(data._instance, **kwargs)
 
 
 @sits_plot.register
-def _(data: SITSTimeSeriesModel, **kwargs):
+def _(data: SITSTimeSeriesModel, **kwargs) -> str:
     """Plot time-series."""
-    return r_plot(data._instance, **kwargs)
+    return plot_base(data._instance, **kwargs)

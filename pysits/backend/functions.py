@@ -15,22 +15,26 @@
 # along with this program; if not, see <https://www.gnu.org/licenses/>.
 #
 
-"""factory utilities."""
+"""backend utility functions."""
 
-from pysits.backend.sits import r_sits
+from pysits.backend.pkgs import r_pkg_base
 
+#
+# Base - Plot
+#
+r_fnc_plot = r_pkg_base.plot
 
-def factory_function(name):
-    """Factory to create sits-based functions.
+#
+# Base - readRDS
+#
+r_fnc_read_rds = r_pkg_base.readRDS
 
-    Args:
-        name (str): name of the sits-based function.
-    """
-    if not hasattr(r_sits, name):
-        raise ValueError(f"Invalid function: {name}")
+#
+# Base - system.file
+#
+r_fnc_system_file = r_pkg_base.system_file
 
-    # define method closure
-    def _fnc(*args, **kwargs):
-        return getattr(r_sits, name)(*args, **kwargs)
-
-    return _fnc
+#
+# Base - Class
+#
+r_fnc_class = getattr(r_pkg_base, "class")

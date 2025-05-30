@@ -15,11 +15,11 @@
 # along with this program; if not, see <https://www.gnu.org/licenses/>.
 #
 
-"""backend sits functions."""
+"""backend module (based in R and sits)."""
 
-from rpy2.robjects.packages import importr
+from rpy2.robjects import r
 
-#
-# sits R package
-#
-r_sits = importr("sits")
+
+def load_global_data(name: str) -> object:
+    """Load global data from R environment."""
+    return r[name]

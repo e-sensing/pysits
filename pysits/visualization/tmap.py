@@ -15,21 +15,21 @@
 # along with this program; if not, see <https://www.gnu.org/licenses/>.
 #
 
-"""tmap plot module."""
+"""Tmap plot module."""
 
 import os
 import tempfile
 
 from rpy2.robjects import r as ro
 
-from pysits.backend.utils import r_plot
-from pysits.toolbox.visualization.image import show_local_image
+from pysits.backend.functions import r_fnc_plot
+from pysits.visualization.image import show_local_image
 
 
 #
 # Utility function
 #
-def _save_tmap_plot(r_tmap_plot, **kwargs):
+def _save_tmap_plot(r_tmap_plot, image_args=None, **kwargs) -> None:
     """Saves an R tmap plot to a temporary directory and displays it.
 
     Args:
@@ -38,23 +38,35 @@ def _save_tmap_plot(r_tmap_plot, **kwargs):
         **kwargs (dict): Additional keyword arguments passed to ``tmap::tmap_save``.
 
     Returns:
-        str: Path to the saved image.
+        None: Nothing.
     """
     # Create a temporary directory
     temp_dir = tempfile.mkdtemp()
     file_path = os.path.join(temp_dir, "tmap_plot.png")
 
+    # Process image args
+    image_args = image_args if image_args else {}
+
+    # Define image properties
+    image_res = image_args.get("res", 300)
+    image_width = int(image_args.get("width", 10) * image_res)
+    image_height = int(image_args.get("height", 6) * image_res)
+
+    kwargs.setdefault("dpi", image_res)
+    kwargs.setdefault("width", image_width)
+    kwargs.setdefault("height", image_height)
+
     # Save the tmap plot using R
     ro("tmap::tmap_save")(r_tmap_plot, filename=file_path, **kwargs)
 
     # Display the saved image
-    return show_local_image(file_path)
+    show_local_image(file_path)
 
 
 #
 # High-level operation
 #
-def plot_tmap(instance, **kwargs):
+def plot_tmap(instance, **kwargs) -> None:
     """Generates and saves a tmap plot, then displays it.
 
     Args:
@@ -63,10 +75,10 @@ def plot_tmap(instance, **kwargs):
         **kwargs (dict): Additional keyword arguments passed to ``tmap::tmap_save``.
 
     Returns:
-        str: Path to the saved image.
+        None: Nothing.
     """
     # Generate the R plot
-    tmap_plot = r_plot(instance, **kwargs)
+    tmap_plot = r_fnc_plot(instance, **kwargs)
 
     # Save and display the plot
     return _save_tmap_plot(tmap_plot)

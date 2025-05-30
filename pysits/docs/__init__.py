@@ -15,8 +15,8 @@
 # along with this program; if not, see <https://www.gnu.org/licenses/>.
 #
 
-"""backend leaflet functions."""
+"""Docs module."""
 
-from rpy2.robjects.packages import importr
+from .decorators import attach_doc
 
-r_leaflet = importr("leaflet")
+__all__ = ("attach_doc",)

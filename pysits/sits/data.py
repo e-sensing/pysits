@@ -15,48 +15,61 @@
 # along with this program; if not, see <https://www.gnu.org/licenses/>.
 #
 
-"""data management operations."""
+"""Data management operations."""
 
-from pysits.backend.sits import r_sits
-from pysits.toolbox.conversions.base import r_to_python, rpy2_fix_type
+from datetime import date
 
-
-@rpy2_fix_type
-def sits_bands(*args, **kwargs):
-    """Get datacube bands.
-
-    Finds the names of the bands of a set of time series or of a data cube.
-    """
-    data = r_sits.sits_bands(*args, **kwargs)
-    return r_to_python(data, as_type="str")
+from pysits.backend.pkgs import r_pkg_sits
+from pysits.conversions.base import function_call, r_to_python
+from pysits.docs import attach_doc
+from pysits.models import SITSFrame
+from pysits.models.builder import data_class_selector
 
 
-@rpy2_fix_type
-def sits_timeline(*args, **kwargs):
-    """Get datacube timeline.
-
-    This function returns the timeline for a given data set, either a set of
-    time series, a data cube, or a trained model.
-    """
-    data = r_sits.sits_timeline(*args, **kwargs)
-    return r_to_python(data, as_type="date")
+@function_call(r_pkg_sits.sits_bands, lambda x: r_to_python(x, as_type="str"))
+@attach_doc("sits_bands")
+def sits_bands(*args, **kwargs) -> list[str]:
+    """Get datacube bands."""
+    ...
 
 
-@rpy2_fix_type
-def sits_labels(*args, **kwargs):
+@function_call(r_pkg_sits.sits_timeline, lambda x: r_to_python(x, as_type="date"))
+@attach_doc("sits_timeline")
+def sits_timeline(*args, **kwargs) -> list[date]:
+    """Get datacube timeline."""
+    ...
+
+
+@function_call(r_pkg_sits.sits_labels, lambda x: r_to_python(x, as_type="str"))
+@attach_doc("sits_labels")
+def sits_labels(*args, **kwargs) -> list[str]:
     """Finds labels in a sits tibble or data cube."""
-    data = r_sits.sits_labels(*args, **kwargs)
-
-    return r_to_python(data, as_type="str")
+    ...
 
 
-@rpy2_fix_type
-def sits_list_collections(*args, **kwargs):
-    """List collections available.
+@function_call(r_pkg_sits.sits_bbox, SITSFrame)
+@attach_doc("sits_bbox")
+def sits_bbox(*args, **kwargs) -> SITSFrame:
+    """Get bbox of sits tibble or data cube."""
+    ...
 
-    Prints the collections available in each cloud
-    service supported by sits. Users can select to get
-    information only for a single service by using the
-    source parameter.
-    """
-    r_sits.sits_list_collections(*args, **kwargs)
+
+@function_call(r_pkg_sits.sits_select, lambda x: data_class_selector(x)(x))
+@attach_doc("sits_select")
+def sits_select(*args, **kwargs) -> SITSFrame:
+    """Select bands from a sits tibble or data cube."""
+    ...
+
+
+@function_call(r_pkg_sits.sits_merge, lambda x: data_class_selector(x)(x))
+@attach_doc("sits_merge")
+def sits_merge(*args, **kwargs) -> SITSFrame:
+    """Merge two sits tibbles or data cubes."""
+    ...
+
+
+@function_call(r_pkg_sits.sits_list_collections, lambda x: None)
+@attach_doc("sits_list_collections")
+def sits_list_collections(*args, **kwargs) -> None:
+    """List collections available."""
+    ...

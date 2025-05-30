@@ -15,41 +15,81 @@
 # along with this program; if not, see <https://www.gnu.org/licenses/>.
 #
 
-"""time series operations."""
+"""Time-series operations."""
 
-from pysits.backend.sits import r_sits
-from pysits.models import SITSOMData, SITSPredictors, SITSTimeSeriesModel
-from pysits.toolbox.conversions.base import rpy2_fix_type
+from pysits.backend.pkgs import r_pkg_sits
+from pysits.conversions.base import function_call
+from pysits.docs import attach_doc
+from pysits.models import (
+    SITSFrame,
+    SITSTimeSeriesModel,
+    SITStructureData,
+)
 
 
 #
 # High-level operation
 #
-@rpy2_fix_type
-def sits_get_data(*args, **kwargs):
-    """Retrieve time series data from a data cube.
-
-    Retrieve a set of time series from a data cube or from a time series service.
-    """
-    data = r_sits.sits_get_data(*args, **kwargs)
-
-    return SITSTimeSeriesModel(instance=data)
+@function_call(r_pkg_sits.sits_get_data, SITSTimeSeriesModel)
+@attach_doc("sits_get_data")
+def sits_get_data(*args, **kwargs) -> SITSTimeSeriesModel:
+    """Retrieve time series data from a data cube."""
+    ...
 
 
-@rpy2_fix_type
-def sits_predictors(*args, **kwargs):
+@function_call(r_pkg_sits.sits_predictors, SITSFrame)
+@attach_doc("sits_predictors")
+def sits_predictors(*args, **kwargs) -> SITSFrame:
     """Obtain predictors for time series samples."""
-    data = r_sits.sits_predictors(*args, **kwargs)
-
-    return SITSPredictors(data)
+    ...
 
 
 #
 # SOM
 #
-@rpy2_fix_type
-def sits_som_map(*args, **kwargs):
+@function_call(r_pkg_sits.sits_som_map, SITStructureData)
+@attach_doc("sits_som_map")
+def sits_som_map(*args, **kwargs) -> SITStructureData:
     """Build a SOM for quality analysis of time series samples."""
-    result = r_sits.sits_som_map(*args, **kwargs)
+    ...
 
-    return SITSOMData(result)
+
+@function_call(r_pkg_sits.sits_som_evaluate_cluster, SITSFrame)
+@attach_doc("sits_som_evaluate_cluster")
+def sits_som_evaluate_cluster(*args, **kwargs) -> SITSFrame:
+    """Evaluate cluster quality."""
+    ...
+
+
+@function_call(r_pkg_sits.sits_som_clean_samples, SITSTimeSeriesModel)
+@attach_doc("sits_som_clean_samples")
+def sits_som_clean_samples(*args, **kwargs) -> SITSTimeSeriesModel:
+    """Cleans the samples based on SOM map information."""
+    ...
+
+
+#
+# Patterns
+#
+@function_call(r_pkg_sits.sits_patterns, SITSTimeSeriesModel)
+@attach_doc("sits_patterns")
+def sits_patterns(*args, **kwargs) -> SITSTimeSeriesModel:
+    """Find temporal patterns associated to a set of time series."""
+    ...
+
+
+#
+# Filtering
+#
+@function_call(r_pkg_sits.sits_sgolay, SITSTimeSeriesModel)
+@attach_doc("sits_sgolay")
+def sits_sgolay(*args, **kwargs) -> SITSTimeSeriesModel:
+    """Apply Savitzky-Golay filter to time series."""
+    ...
+
+
+@function_call(r_pkg_sits.sits_whittaker, SITSTimeSeriesModel)
+@attach_doc("sits_whittaker")
+def sits_whittaker(*args, **kwargs) -> SITSTimeSeriesModel:
+    """Apply Whittaker filter to time series."""
+    ...

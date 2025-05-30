@@ -15,60 +15,31 @@
 # along with this program; if not, see <https://www.gnu.org/licenses/>.
 #
 
-"""machine-learning operations."""
+"""Machine-learning operations."""
 
-from pysits.backend.sits import r_sits
+from pysits.backend.pkgs import r_pkg_sits
+from pysits.conversions.base import function_call
+from pysits.conversions.clojure import closure_factory
+from pysits.docs import attach_doc
 from pysits.models import SITSMachineLearningMethod
-from pysits.toolbox.conversions.base import rpy2_fix_type
-from pysits.toolbox.factory import factory_function
 
 #
-# Random Forest
+# ML Methods
 #
-sits_rfor = factory_function("sits_rfor")
-
-
-#
-# TAE
-#
-sits_tae = factory_function("sits_tae")
-
-
-#
-# TempCNN
-#
-sits_tempcnn = factory_function("sits_tempcnn")
-
-
-#
-# Light TAE
-#
-sits_lighttae = factory_function("sits_lighttae")
-
-
-#
-# Multi-layer perceptron
-#
-sits_mlp = factory_function("sits_mlp")
-
-
-#
-# SVM
-#
-sits_svm = factory_function("sits_svm")
-
-
-#
-# XGBoost
-#
-sits_xgboost = factory_function("sits_xgboost")
+sits_rfor = closure_factory("sits_rfor")
+sits_tae = closure_factory("sits_tae")
+sits_tempcnn = closure_factory("sits_tempcnn")
+sits_lighttae = closure_factory("sits_lighttae")
+sits_mlp = closure_factory("sits_mlp")
+sits_svm = closure_factory("sits_svm")
+sits_xgboost = closure_factory("sits_xgboost")
 
 
 #
 # High-level utility operation
 #
-@rpy2_fix_type
-def sits_train(*args, **kwargs):
-    instance = r_sits.sits_train(*args, **kwargs)
-
-    return SITSMachineLearningMethod(instance)
+@function_call(r_pkg_sits.sits_train, SITSMachineLearningMethod)
+@attach_doc("sits_train")
+def sits_train(*args, **kwargs) -> SITSMachineLearningMethod:
+    """Train a machine learning model."""
+    ...

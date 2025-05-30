@@ -15,8 +15,18 @@
 # along with this program; if not, see <https://www.gnu.org/licenses/>.
 #
 
-"""plot module."""
+"""Files exporter."""
 
-from .tmap import plot_tmap
+from pandas import DataFrame as PandasDataFrame
 
-__all__ = ("plot_tmap",)
+from pysits.backend.pkgs import r_pkg_sits
+from pysits.conversions.base import rpy2_fix_type
+from pysits.models import SITSData
+
+
+@rpy2_fix_type
+def sits_as_csv(*args, **kwargs) -> PandasDataFrame:
+    """Export sits data as csv."""
+    data = r_pkg_sits.sits_to_csv(*args, **kwargs)
+
+    return SITSData(data)

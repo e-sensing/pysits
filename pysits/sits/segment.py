@@ -15,28 +15,25 @@
 # along with this program; if not, see <https://www.gnu.org/licenses/>.
 #
 
-"""segment operations."""
+"""Segmentation operations."""
 
-from pysits.backend.sits import r_sits
+from pysits.backend.pkgs import r_pkg_sits
+from pysits.conversions.base import function_call
+from pysits.conversions.clojure import closure_factory
+from pysits.docs import attach_doc
 from pysits.models import SITSCubeModel
-from pysits.toolbox.conversions.base import rpy2_fix_type
-from pysits.toolbox.factory import factory_function
 
 #
 # Segmentation functions
 #
-sits_slic = factory_function("sits_slic")
+sits_slic = closure_factory("sits_slic")
 
 
 #
 # Segmentation operation
 #
-@rpy2_fix_type
-def sits_segment(*args, **kwargs):
-    """Segment an image.
-
-    Apply a spatial-temporal segmentation on a data cube based on a
-    user defined segmentation function.
-    """
-    cube = r_sits.sits_segment(*args, **kwargs)
-    return SITSCubeModel(cube)
+@function_call(r_pkg_sits.sits_segment, SITSCubeModel)
+@attach_doc("sits_segment")
+def sits_segment(*args, **kwargs) -> SITSCubeModel:
+    """Segment an image."""
+    ...

@@ -15,15 +15,15 @@
 # along with this program; if not, see <https://www.gnu.org/licenses/>.
 #
 
-"""xarray exporter."""
+"""Xarray exporter."""
 
 from functools import singledispatch
 
-from pysits.models import SITSCubeModel, SITSData, SITSTimeSeriesModel
+from pysits.models import SITSCubeModel, SITSFrame, SITSTimeSeriesModel
 
 
 @singledispatch
-def _sits_as_xarray(data: SITSData):
+def _sits_as_xarray(data: SITSFrame):
     """sits as xarray dispatch."""
     raise NotImplementedError(
         f"There is no `sits_as_xarray` available for {type(data)}"
@@ -33,7 +33,7 @@ def _sits_as_xarray(data: SITSData):
 @_sits_as_xarray.register
 def _(data: SITSTimeSeriesModel):
     """Convert sits to xarray."""
-    from pysits.toolbox.conversions.xarray import pandas_sits_as_xarray
+    from pysits.conversions.xarray import pandas_sits_as_xarray
 
     return pandas_sits_as_xarray(data)
 
@@ -41,15 +41,15 @@ def _(data: SITSTimeSeriesModel):
 @_sits_as_xarray.register
 def _(data: SITSCubeModel):
     """Convert cube to xarray."""
-    from pysits.toolbox.conversions.xarray import pandas_cube_as_xarray
+    from pysits.conversions.xarray import pandas_cube_as_xarray
 
     return pandas_cube_as_xarray(data)
 
 
-def sits_as_xarray(data: SITSData):
+def sits_as_xarray(data: SITSFrame):
     """Convert data to xarray."""
     try:
-        from pysits.toolbox.conversions.xarray import (
+        from pysits.conversions.xarray import (
             pandas_cube_as_xarray,  # noqa
             pandas_sits_as_xarray,  # noqa
         )

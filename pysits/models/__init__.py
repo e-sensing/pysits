@@ -17,21 +17,22 @@
 
 """pysits models."""
 
-from .base import SITSData, SITSModel
+from .base import SITSBase
 from .cube import SITSCubeModel
+from .data import SITSData, SITSFrame, SITStructureData
 from .ml import SITSMachineLearningMethod
-from .ts import SITSOMData, SITSPredictors, SITSTimeSeriesModel
+from .ts import SITSTimeSeriesModel
 
 __all__ = (
     # Base
-    "SITSModel",
+    "SITSBase",
     "SITSData",
+    "SITSFrame",
+    "SITStructureData",
     # Data Cube
     "SITSCubeModel",
     # Time-series
     "SITSTimeSeriesModel",
-    "SITSPredictors",
-    "SITSOMData",
     # Machine-learning
     "SITSMachineLearningMethod",
 )

@@ -15,30 +15,31 @@
 # along with this program; if not, see <https://www.gnu.org/licenses/>.
 #
 
-"""segment operations."""
+"""Apply operations."""
 
 import rpy2.robjects as ro
 
-from pysits.backend.utils import r_class
-from pysits.models import SITSCubeModel, SITSTimeSeriesModel
-from pysits.toolbox.conversions.base import rpy2_fix_type
+from pysits.backend.functions import r_fnc_class
+from pysits.conversions.base import rpy2_fix_type
+from pysits.docs import attach_doc
+from pysits.models import SITSCubeModel, SITSFrame, SITSTimeSeriesModel
 
 
 #
 # Utilities
 #
-def _class_selector(data):
+def _class_selector(data) -> type[SITSFrame]:
     """Selects the appropriate class for the given data.
 
     Args:
         data (r object): the data to select the class for.
 
     Returns:
-        SITSModel: Specialized SITS model.
+        type[SITSFrame]: Specialized SITS model.
     """
     cls = SITSTimeSeriesModel
 
-    if "raster_cube" in r_class(data):
+    if "raster_cube" in r_fnc_class(data):
         cls = SITSCubeModel
 
     return cls
@@ -48,13 +49,9 @@ def _class_selector(data):
 # Apply operation
 #
 @rpy2_fix_type
-def sits_apply(data, **kwargs):
-    """Apply a function on a set of time series.
-
-    Apply a named expression to a sits cube or a sits tibble to be
-    evaluated and generate new bands (indices). In the case of sits cubes,
-    it materializes a new band in output_dir using gdalcubes.
-    """
+@attach_doc("sits_apply")
+def sits_apply(data, **kwargs) -> SITSFrame:
+    """Apply a function on a set of time series."""
     params = []
 
     # Process parameters manually

@@ -20,14 +20,14 @@
 from pandas import DataFrame as PandasDataFrame
 from rpy2.robjects.vectors import DataFrame as RDataFrame
 
-from pysits.models.base import SITSData
-from pysits.toolbox.conversions.tibble import tibble_cube_to_pandas
+from pysits.conversions.tibble import tibble_cube_to_pandas
+from pysits.models.data import SITSFrame
 
 
 #
 # Base class
 #
-class SITSCubeModel(SITSData):
+class SITSCubeModel(SITSFrame):
     """SITS Data Cube data."""
 
     def __init__(self, *args, **kwargs):

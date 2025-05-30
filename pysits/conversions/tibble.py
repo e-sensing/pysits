@@ -24,7 +24,8 @@ from pandas import to_datetime as pandas_to_datetime
 from rpy2.robjects import StrVector, pandas2ri
 from rpy2.robjects.vectors import DataFrame as RDataFrame
 
-from pysits.backend.utils import r_base, r_class
+from pysits.backend.functions import r_fnc_class
+from pysits.backend.pkgs import r_pkg_base
 from pysits.models.frame import SITSFrameArray
 
 
@@ -53,7 +54,7 @@ def _column_to_datetime(data: PandasDataFrame, colname: str) -> PandasDataFrame:
 #
 # Base conversion function
 #
-def tibble_to_pandas(
+def _tibble_to_pandas(
     data: RDataFrame,
     nested_columns: list | None = None,
     table_processor: Callable[[PandasDataFrame], PandasDataFrame] | None = None,
@@ -64,7 +65,7 @@ def tibble_to_pandas(
     nested_columns = nested_columns if nested_columns else []
 
     # Extract columns from the data
-    data_columns = r_base.colnames(data)
+    data_columns = r_pkg_base.colnames(data)
 
     # Remove invalid columns
     data_columns_valid = []
@@ -73,7 +74,7 @@ def tibble_to_pandas(
         col = data.rx2(data_column)
 
         # Remove invalid columns
-        if r_class(col[0])[0] not in ["function", "NULL"]:
+        if r_fnc_class(col[0])[0] not in ["function", "NULL"]:
             data_columns_valid.append(data_column)
 
     # Replace old data columns with the filtered one
@@ -124,6 +125,35 @@ def tibble_to_pandas(
 
 
 #
+# General function
+#
+def tibble_to_pandas(data: RDataFrame) -> PandasDataFrame:
+    """Convert any tibble to Pandas DataFrame.
+
+    Args:
+        data (rpy2.robjects.vectors.DataFrame): R (tibble/data.frame) Data frame.
+
+    Returns:
+        pandas.DataFrame: R Data Frame as Pandas.
+    """
+
+    # Define table processor
+    def _table_processor(x):
+        """Table processor."""
+        # Update date columns
+        x = _column_to_datetime(x, "start_date")
+        x = _column_to_datetime(x, "end_date")
+
+        return x
+
+    # Convert and return
+    return _tibble_to_pandas(
+        data=data,
+        table_processor=_table_processor,
+    )
+
+
+#
 # SITS conversions function
 #
 def tibble_sits_to_pandas(data: RDataFrame) -> PandasDataFrame:
@@ -156,7 +186,10 @@ def tibble_sits_to_pandas(data: RDataFrame) -> PandasDataFrame:
         x = _column_to_datetime(x, "start_date")
         x = _column_to_datetime(x, "end_date")
 
-        return x[column_order]
+        x_columns = list(filter(lambda y: y in x.columns, column_order))
+        x_columns = x_columns + list(set(x.columns).difference(x_columns))
+
+        return x[x_columns]
 
     # Define nested processor
     def _nested_processor(x):
@@ -164,7 +197,7 @@ def tibble_sits_to_pandas(data: RDataFrame) -> PandasDataFrame:
         return _column_to_datetime(x, "Index")
 
     # Convert and return
-    return tibble_to_pandas(
+    return _tibble_to_pandas(
         data=data,
         nested_columns=nested_columns,
         table_processor=_table_processor,
@@ -221,7 +254,7 @@ def tibble_cube_to_pandas(data: RDataFrame) -> PandasDataFrame:
         return x
 
     # Convert and return
-    return tibble_to_pandas(
+    return _tibble_to_pandas(
         data=data,
         nested_columns=nested_columns,
         table_processor=_table_processor,
