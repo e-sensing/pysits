@@ -21,7 +21,7 @@ from pysits.backend.pkgs import r_pkg_sits
 from pysits.conversions.base import function_call
 from pysits.conversions.clojure import closure_factory
 from pysits.docs import attach_doc
-from pysits.models import SITSMachineLearningMethod
+from pysits.models import SITSMachineLearningMethod, SITStructureData
 
 #
 # ML Methods
@@ -41,5 +41,12 @@ sits_xgboost = closure_factory("sits_xgboost")
 @function_call(r_pkg_sits.sits_train, SITSMachineLearningMethod)
 @attach_doc("sits_train")
 def sits_train(*args, **kwargs) -> SITSMachineLearningMethod:
+    """Train a machine learning model."""
+    ...
+
+
+@function_call(r_pkg_sits.sits_kfold_validate, SITStructureData)
+@attach_doc("sits_kfold_validate")
+def sits_kfold_validate(*args, **kwargs) -> SITStructureData:
     """Train a machine learning model."""
     ...
