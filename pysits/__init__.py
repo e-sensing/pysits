@@ -37,8 +37,9 @@ from .sits.data import (
     sits_timeline,
 )
 from .sits.data import sits_summary as summary
-from .sits.exporters import sits_as_xarray
+from .sits.exporters import sits_as_xarray, sits_to_csv, sits_to_xlsx
 from .sits.ml import (
+    sits_kfold_validate,
     sits_lighttae,
     sits_mlp,
     sits_rfor,
@@ -91,6 +92,7 @@ __all__ = (
     "sits_svm",
     "sits_xgboost",
     "sits_tae",
+    "sits_kfold_validate",
     # Time-series
     "sits_sgolay",
     "sits_whittaker",
@@ -109,7 +111,9 @@ __all__ = (
     # Apply
     "sits_apply",
     # Exporters
+    "sits_to_csv",
     "sits_as_xarray",
+    "sits_to_xlsx",
     # Visualization
     "plot",
     # Context data
