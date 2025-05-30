@@ -46,7 +46,7 @@ def attach_doc(name: str) -> Callable[[Callable[P, R]], Callable[P, R]]:
     def decorator(func: Callable[P, R]) -> Callable[P, R]:
         try:
             with (
-                importlib.resources.files("pysits.docs")
+                importlib.resources.files("pysits.docs.content")
                 .joinpath(f"{name}.md")
                 .open("r", encoding="utf-8") as f
             ):
