@@ -19,11 +19,19 @@
 
 import warnings
 
+import rpy2.rinterface_lib.callbacks
+
 #
 # Warning management
 #
 # Suppress rpy2 warnings
 warnings.filterwarnings("ignore", module=r"rpy2.*")
+
+# Suppress regular R output
+rpy2.rinterface_lib.callbacks.consolewrite_print = lambda x: None
+
+# Suppress R warnings and errors
+rpy2.rinterface_lib.callbacks.consolewrite_warnerror = lambda x: None
 
 #
 # Package version
