@@ -18,7 +18,7 @@
 """Unit tests for tile-related operations."""
 
 from pysits import sits_cube, sits_mgrs_to_roi, sits_tiles_to_roi
-from pysits.models import SITSNamedVector, SITSCubeModel
+from pysits.models import SITSCubeModel, SITSNamedVector
 
 
 def test_tiles_to_roi():
@@ -29,7 +29,7 @@ def test_tiles_to_roi():
     assert roi.shape == (1, 4)
     assert isinstance(roi, SITSNamedVector)
     assert all(x in roi.columns for x in ["xmin", "xmax", "ymin", "ymax"])
-    
+
     # Test deprecated version
     roi2 = sits_mgrs_to_roi("20LMM")
 
@@ -43,12 +43,12 @@ def test_tiles_to_load_cube():
     # Test new version
     roi = sits_tiles_to_roi("22KGA")
     cube = sits_cube(
-        source = "BDC",
-        collection = "MOD13Q1-6.1",
-        roi = roi,
-        start_date = "2020-01-01",
-        end_date = "2020-02-01",
-        progress = False,
+        source="BDC",
+        collection="MOD13Q1-6.1",
+        roi=roi,
+        start_date="2020-01-01",
+        end_date="2020-02-01",
+        progress=False,
     )
 
     assert isinstance(cube, SITSCubeModel)
