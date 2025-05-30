@@ -21,9 +21,12 @@ from pathlib import Path
 
 from pysits.backend.functions import r_fnc_read_rds, r_fnc_system_file
 from pysits.models import SITSFrame
-from pysits.models.builder import data_class_selector
+from pysits.models.builder import resolve_and_invoke_data_class
 
 
+#
+# File management
+#
 def read_sits_rds(file: str | Path) -> SITSFrame:
     """Read sits data stored as RDS file.
 
@@ -42,11 +45,8 @@ def read_sits_rds(file: str | Path) -> SITSFrame:
     # Read RDS
     rds_content = r_fnc_read_rds(file.as_posix())
 
-    # Get content class
-    content_class = data_class_selector(rds_content)
-
-    # Return data
-    return content_class(rds_content)
+    # Resolve and invoke data class
+    return resolve_and_invoke_data_class(rds_content)
 
 
 def get_package_dir(content_dir: str, package: str) -> Path | None:

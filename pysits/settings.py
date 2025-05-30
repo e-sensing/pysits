@@ -15,31 +15,19 @@
 # along with this program; if not, see <https://www.gnu.org/licenses/>.
 #
 
-"""backend utility functions."""
+"""Settings module."""
 
-from pysits.backend.pkgs import r_pkg_base
-
-#
-# Base - Plot
-#
-r_fnc_plot = r_pkg_base.plot
+import warnings
 
 #
-# Base - summary
+# Warning management
 #
-r_fnc_summary = r_pkg_base.summary
+# Suppress rpy2 warnings
+warnings.filterwarnings("ignore", module=r"rpy2.*")
 
 #
-# Base - readRDS
+# Package version
 #
-r_fnc_read_rds = r_pkg_base.readRDS
+__version__ = "0.0.1"
 
-#
-# Base - system.file
-#
-r_fnc_system_file = r_pkg_base.system_file
-
-#
-# Base - Class
-#
-r_fnc_class = getattr(r_pkg_base, "class")
+__all__ = ("__version__",)

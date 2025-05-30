@@ -17,8 +17,14 @@
 
 """pysits module."""
 
+from .settings import __version__
 from .sits.apply import sits_apply
 from .sits.classification import sits_classify, sits_label_classification, sits_smooth
+from .sits.context import (
+    point_mt_6bands,
+    samples_l8_rondonia_2bands,
+    samples_modis_ndvi,
+)
 from .sits.cube import sits_cube, sits_cube_copy, sits_regularize
 from .sits.data import (
     sits_bands,
@@ -29,6 +35,7 @@ from .sits.data import (
     sits_select,
     sits_timeline,
 )
+from .sits.data import sits_summary as summary
 from .sits.exporters import sits_as_xarray
 from .sits.ml import (
     sits_lighttae,
@@ -71,6 +78,7 @@ __all__ = (
     "sits_bbox",
     "sits_select",
     "sits_merge",
+    "summary",
     # Machine Learning methods
     "sits_train",
     "sits_mlp",
@@ -98,7 +106,13 @@ __all__ = (
     "sits_as_xarray",
     # Visualization
     "plot",
+    # Context data
+    "samples_l8_rondonia_2bands",
+    "samples_modis_ndvi",
+    "point_mt_6bands",
     # Utils
     "read_sits_rds",
     "get_package_dir",
+    # Package settings
+    "__version__",
 )

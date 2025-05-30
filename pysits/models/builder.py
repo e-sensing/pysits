@@ -43,3 +43,8 @@ def data_class_selector(data: RDataFrame) -> type[SITSFrame]:
         )
 
     return content_class
+
+
+def resolve_and_invoke_data_class(x: RDataFrame) -> SITSFrame:
+    """Resolve data class and invoke it."""
+    return data_class_selector(x)(x)

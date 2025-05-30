@@ -19,11 +19,12 @@
 
 from datetime import date
 
+from pysits.backend.functions import r_fnc_summary
 from pysits.backend.pkgs import r_pkg_sits
 from pysits.conversions.base import function_call, r_to_python
 from pysits.docs import attach_doc
 from pysits.models import SITSFrame
-from pysits.models.builder import data_class_selector
+from pysits.models.builder import resolve_and_invoke_data_class
 
 
 @function_call(r_pkg_sits.sits_bands, lambda x: r_to_python(x, as_type="str"))
@@ -54,14 +55,14 @@ def sits_bbox(*args, **kwargs) -> SITSFrame:
     ...
 
 
-@function_call(r_pkg_sits.sits_select, lambda x: data_class_selector(x)(x))
+@function_call(r_pkg_sits.sits_select, resolve_and_invoke_data_class)
 @attach_doc("sits_select")
 def sits_select(*args, **kwargs) -> SITSFrame:
     """Select bands from a sits tibble or data cube."""
     ...
 
 
-@function_call(r_pkg_sits.sits_merge, lambda x: data_class_selector(x)(x))
+@function_call(r_pkg_sits.sits_merge, resolve_and_invoke_data_class)
 @attach_doc("sits_merge")
 def sits_merge(*args, **kwargs) -> SITSFrame:
     """Merge two sits tibbles or data cubes."""
@@ -72,4 +73,11 @@ def sits_merge(*args, **kwargs) -> SITSFrame:
 @attach_doc("sits_list_collections")
 def sits_list_collections(*args, **kwargs) -> None:
     """List collections available."""
+    ...
+
+
+@function_call(r_fnc_summary, resolve_and_invoke_data_class)
+@attach_doc("summary")
+def sits_summary(*args, **kwargs) -> str:
+    """Summary of a sits data object."""
     ...
