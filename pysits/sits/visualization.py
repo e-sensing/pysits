@@ -32,29 +32,29 @@ from pysits.visualization import plot_base, plot_tmap
 # Dispatch chain for plot
 #
 @singledispatch
-def sits_plot(data: object) -> str:
+def sits_plot(data: object) -> None:
     """sits plot as dispatch."""
 
 
 @sits_plot.register
-def _(data: SITSFrame, **kwargs) -> str:
+def _(data: SITSFrame, **kwargs) -> None:
     """Plot Frame data."""
     return plot_base(data._instance, **kwargs)
 
 
 @sits_plot.register
-def _(data: SITStructureData, **kwargs) -> str:
+def _(data: SITStructureData, **kwargs) -> None:
     """Plot Structure data."""
     return plot_base(data._instance, **kwargs)
 
 
 @sits_plot.register
-def _(data: SITSCubeModel, **kwargs) -> str:
+def _(data: SITSCubeModel, **kwargs) -> None:
     """Plot cube."""
     return plot_tmap(data._instance, **kwargs)
 
 
 @sits_plot.register
-def _(data: SITSTimeSeriesModel, **kwargs) -> str:
+def _(data: SITSTimeSeriesModel, **kwargs) -> None:
     """Plot time-series."""
     return plot_base(data._instance, **kwargs)

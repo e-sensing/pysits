@@ -17,16 +17,21 @@
 
 """Files exporter."""
 
-from pandas import DataFrame as PandasDataFrame
-
 from pysits.backend.pkgs import r_pkg_sits
-from pysits.conversions.base import rpy2_fix_type
-from pysits.models import SITSData
+from pysits.conversions.base import function_call
+from pysits.docs import attach_doc
+from pysits.models import SITSFrame
 
 
-@rpy2_fix_type
-def sits_as_csv(*args, **kwargs) -> PandasDataFrame:
+@function_call(r_pkg_sits.sits_to_csv, SITSFrame)
+@attach_doc("sits_to_csv")
+def sits_to_csv(*args, **kwargs) -> SITSFrame:
     """Export sits data as csv."""
-    data = r_pkg_sits.sits_to_csv(*args, **kwargs)
+    ...
 
-    return SITSData(data)
+
+@function_call(r_pkg_sits.sits_to_xlsx, lambda x: None)
+@attach_doc("sits_to_xlsx")
+def sits_to_xlsx(*args, **kwargs) -> None:
+    """Save accuracy assessments as Excel files."""
+    ...

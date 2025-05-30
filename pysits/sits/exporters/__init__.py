@@ -17,6 +17,11 @@
 
 """Exporters module."""
 
+from .files import sits_to_csv, sits_to_xlsx
 from .xarray import sits_as_xarray
 
-__all__ = ("sits_as_xarray",)
+__all__ = (
+    "sits_as_xarray",
+    "sits_to_csv",
+    "sits_to_xlsx",
+)
