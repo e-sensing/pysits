@@ -81,4 +81,4 @@ def plot_tmap(instance, **kwargs) -> None:
     tmap_plot = r_fnc_plot(instance, **kwargs)
 
     # Save and display the plot
-    return _save_tmap_plot(tmap_plot)
+    _save_tmap_plot(tmap_plot)

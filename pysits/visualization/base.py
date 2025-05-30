@@ -45,7 +45,9 @@ def _base_plot(data: Any, image_args: ImageArgs | None = None, **kwargs: Any) ->
 
         image_args: Dictionary containing image configuration parameters:
             - res (int): Resolution in DPI (default: 300)
+
             - width (float): Width in inches (default: 10)
+
             - height (float): Height in inches (default: 6)
 
         **kwargs: Additional keyword arguments passed to R's base::plot function.
@@ -88,7 +90,9 @@ def _base_plot(data: Any, image_args: ImageArgs | None = None, **kwargs: Any) ->
 #
 # High-level operation
 #
-def plot_base(instance: Any, image_args: ImageArgs | None = None, **kwargs: Any) -> str:
+def plot_base(
+    instance: Any, image_args: ImageArgs | None = None, **kwargs: Any
+) -> None:
     """Generate and display a base R plot.
 
     This is a high-level function that wraps ``_base_plot`` to create and display
@@ -100,17 +104,19 @@ def plot_base(instance: Any, image_args: ImageArgs | None = None, **kwargs: Any)
 
         image_args: Dictionary containing image configuration parameters:
             - res (int): Resolution in DPI (default: 300)
+
             - width (float): Width in inches (default: 10)
+
             - height (float): Height in inches (default: 6)
 
         **kwargs: Additional keyword arguments passed to R's base::plot function.
 
     Returns:
-        str: Absolute path to the saved temporary PNG image file.
+        None: Nothing.
 
     Note:
         The function creates a temporary directory and file that should be cleaned up
         after use. The image is displayed using the ``show_local_image`` function.
     """
     # Save and display the plot
-    return _base_plot(instance, image_args=image_args, **kwargs)
+    _base_plot(instance, image_args=image_args, **kwargs)
