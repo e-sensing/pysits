@@ -36,6 +36,7 @@ from .sits.context import (
 from .sits.cube import (
     sits_clean,
     sits_colors_qgis,
+    sits_combine_predictions,
     sits_cube,
     sits_cube_copy,
     sits_regularize,
@@ -47,6 +48,7 @@ from .sits.data import (
     sits_bands,
     sits_bbox,
     sits_labels,
+    sits_labels_summary,
     sits_list_collections,
     sits_merge,
     sits_mixture_model,
@@ -55,6 +57,7 @@ from .sits.data import (
 )
 from .sits.data import sits_summary as summary
 from .sits.exporters import sits_as_xarray, sits_to_csv, sits_to_xlsx
+from .sits.impute import impute_linear, sits_impute
 from .sits.ml import (
     sits_kfold_validate,
     sits_lighttae,
@@ -69,6 +72,7 @@ from .sits.ml import (
 from .sits.segment import sits_segment, sits_slic
 from .sits.tiles import sits_mgrs_to_roi, sits_tiles_to_roi
 from .sits.ts import (
+    sits_cluster_dendro,
     sits_get_data,
     sits_patterns,
     sits_pred_features,
@@ -76,6 +80,7 @@ from .sits.ts import (
     sits_pred_references,
     sits_pred_sample,
     sits_predictors,
+    sits_reduce_imbalance,
     sits_sample,
     sits_sgolay,
     sits_som_clean_samples,
@@ -95,6 +100,7 @@ __all__ = (
     # Cube
     "sits_cube",
     "sits_clean",
+    "sits_combine_predictions",
     "sits_regularize",
     "sits_cube_copy",
     "sits_colors_qgis",
@@ -120,6 +126,8 @@ __all__ = (
     "sits_merge",
     "sits_mixture_model",
     "summary",
+    "sits_labels_summary",
+    "sits_cluster_dendro",
     # Machine Learning methods
     "sits_train",
     "sits_mlp",
@@ -130,6 +138,9 @@ __all__ = (
     "sits_xgboost",
     "sits_tae",
     "sits_kfold_validate",
+    # Impute
+    "sits_impute",
+    "impute_linear",
     # Time-series
     "sits_sgolay",
     "sits_whittaker",
@@ -145,6 +156,7 @@ __all__ = (
     "sits_som_clean_samples",
     "sits_patterns",
     "sits_sample",
+    "sits_reduce_imbalance",
     # Tiles
     "sits_mgrs_to_roi",
     "sits_tiles_to_roi",

@@ -90,6 +90,13 @@ def sits_sample(*args, **kwargs) -> SITSTimeSeriesModel:
     ...
 
 
+@function_call(r_pkg_sits.sits_reduce_imbalance, SITSTimeSeriesModel)
+@attach_doc("sits_reduce_imbalance")
+def sits_reduce_imbalance(*args, **kwargs) -> SITSTimeSeriesModel:
+    """Reduce imbalance in a set of samples."""
+    ...
+
+
 #
 # SOM
 #
@@ -111,6 +118,16 @@ def sits_som_evaluate_cluster(*args, **kwargs) -> SITSFrame:
 @attach_doc("sits_som_clean_samples")
 def sits_som_clean_samples(*args, **kwargs) -> SITSTimeSeriesModel:
     """Cleans the samples based on SOM map information."""
+    ...
+
+
+#
+# Dendrogram
+#
+@function_call(r_pkg_sits.sits_cluster_dendro, SITSTimeSeriesModel)
+@attach_doc("sits_cluster_dendro")
+def sits_cluster_dendro(*args, **kwargs) -> SITSTimeSeriesModel:
+    """Find clusters in time series samples."""
     ...
 
 

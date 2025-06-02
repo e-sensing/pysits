@@ -36,7 +36,7 @@ sits_xgboost = closure_factory("sits_xgboost")
 
 
 #
-# High-level utility operation
+# High-level utility operations
 #
 @function_call(r_pkg_sits.sits_train, SITSMachineLearningMethod)
 @attach_doc("sits_train")
