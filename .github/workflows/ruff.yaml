@@ -1,4 +1,4 @@
-name: Code linting
+name: Code check
 
 on:
   push:
@@ -20,7 +20,7 @@ on:
 
 jobs:
   lint:
-    name: Run linting (ruff)
+    name: Run ruff
     runs-on: ubuntu-latest
 
     steps:
@@ -30,7 +30,7 @@ jobs:
       - name: Set up R
         uses: r-lib/actions/setup-r@v2
 
-      - name: Set up Python (Dev Version)
+      - name: Set up Python (Dev version)
         uses: actions/setup-python@v4
         with:
           python-version: '3.11-dev'
@@ -38,5 +38,5 @@ jobs:
       - name: Install dependencies
         run: pip install .[dev]
 
-      - name: Run Ruff
+      - name: Check
         run: ruff check .
