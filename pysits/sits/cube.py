@@ -68,6 +68,13 @@ def sits_clean(*args, **kwargs) -> SITSCubeModel:
     ...
 
 
+@function_call(r_pkg_sits.sits_combine_predictions, SITSCubeModel)
+@attach_doc("sits_combine_predictions")
+def sits_combine_predictions(*args, **kwargs) -> SITSCubeModel:
+    """Estimate ensemble prediction based on list of probs cubes."""
+    ...
+
+
 @function_call(r_pkg_sits.sits_uncertainty_sampling, SITSFrame)
 @attach_doc("sits_uncertainty_sampling")
 def sits_uncertainty_sampling(*args, **kwargs) -> SITSCubeModel:
