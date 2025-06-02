@@ -7,11 +7,11 @@ requires-python = ">=3.10,<4"
 license = {text = "GPL-2.0-only"}
 
 authors = [
-    {name = "Gilberto Camara", email = "gilberto.camara.inpe@gmail.com"},
     {name = "Felipe Carlos", email = "efelipecarlos@gmail.com"},
     {name = "Felipe Carvalho", email = "lipecaso@gmail.com"},
     {name = "Pedro Brito", email = "pedro_brito1997@hotmail.com"},
-    {name = "Rolf Simoes", email = "rolfsimoes@gmail.com"}
+    {name = "Rolf Simoes", email = "rolfsimoes@gmail.com"},
+    {name = "Gilberto Camara", email = "gilberto.camara.inpe@gmail.com"}
 ]
 
 dependencies = [
@@ -34,7 +34,7 @@ xarray = [
 ]
 
 dev = [
-    "ruff>=0.1.13",
+    "ruff>=0.11.12",
     "pre-commit>=3.6.0",
     "pytest>=7.4.4"
 ]
