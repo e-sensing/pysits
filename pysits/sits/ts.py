@@ -18,7 +18,7 @@
 """Time-series operations."""
 
 from pysits.backend.pkgs import r_pkg_sits
-from pysits.conversions.base import function_call
+from pysits.conversions.base import function_call, r_to_python
 from pysits.docs import attach_doc
 from pysits.models import (
     SITSFrame,
@@ -37,10 +37,56 @@ def sits_get_data(*args, **kwargs) -> SITSTimeSeriesModel:
     ...
 
 
+@function_call(r_pkg_sits.sits_stats, SITStructureData)
+@attach_doc("sits_stats")
+def sits_stats(*args, **kwargs) -> SITStructureData:
+    """Obtain statistics for all sample bands.
+
+    ToDo:
+        - Enhance result type to a Dict-like object.
+    """
+    ...
+
+
 @function_call(r_pkg_sits.sits_predictors, SITSFrame)
 @attach_doc("sits_predictors")
 def sits_predictors(*args, **kwargs) -> SITSFrame:
     """Obtain predictors for time series samples."""
+    ...
+
+
+@function_call(r_pkg_sits.sits_pred_features, SITSFrame)
+@attach_doc("sits_pred_features")
+def sits_pred_features(*args, **kwargs) -> SITSFrame:
+    """Obtain numerical values of predictors for time series samples."""
+    ...
+
+
+@function_call(r_pkg_sits.sits_pred_normalize, SITSFrame)
+@attach_doc("sits_pred_normalize")
+def sits_pred_normalize(*args, **kwargs) -> SITSFrame:
+    """Normalize predictor values."""
+    ...
+
+
+@function_call(r_pkg_sits.sits_pred_references, lambda x: r_to_python(x, as_type="str"))
+@attach_doc("sits_pred_references")
+def sits_pred_references(*args, **kwargs) -> list[str]:
+    """Obtain categorical id and predictor labels for time series samples."""
+    ...
+
+
+@function_call(r_pkg_sits.sits_pred_sample, SITSFrame)
+@attach_doc("sits_pred_sample")
+def sits_pred_sample(*args, **kwargs) -> SITSFrame:
+    """Obtain a fraction of the predictors data frame."""
+    ...
+
+
+@function_call(r_pkg_sits.sits_sample, SITSTimeSeriesModel)
+@attach_doc("sits_sample")
+def sits_sample(*args, **kwargs) -> SITSTimeSeriesModel:
+    """Sample a percentage of a time series."""
     ...
 
 
