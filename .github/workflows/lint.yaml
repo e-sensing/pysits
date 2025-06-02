@@ -1,0 +1,42 @@
+name: Code linting
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+  # Run every Saturday at 3:00 AM
+  schedule:
+    # * is a special character in YAML so you have to quote this string
+    - cron:  '0 3 * * 6'
+
+  workflow_dispatch:
+    inputs:
+      reason:
+        required: false
+        description: 'Reason'
+        default: 'Manual trigger'
+
+jobs:
+  lint:
+    name: Run linting (ruff)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up R
+        uses: r-lib/actions/setup-r@v2
+
+      - name: Set up Python (Dev Version)
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11-dev'
+
+      - name: Install dependencies
+        run: pip install .[dev]
+
+      - name: Run Ruff
+        run: ruff check .
