@@ -32,8 +32,10 @@ from pysits.visualization import plot_base, plot_tmap
 # Dispatch chain for plot
 #
 @singledispatch
-def sits_plot(data: object) -> None:
+def sits_plot(data: object, **kwargs) -> None:
     """sits plot as dispatch."""
+    # Assuming data is a "raw rpy2" object
+    return plot_base(data, **kwargs)
 
 
 @sits_plot.register
