@@ -20,12 +20,29 @@
 from .settings import __version__
 from .sits.apply import sits_apply
 from .sits.classification import sits_classify, sits_label_classification, sits_smooth
+from .sits.colors import (
+    sits_colors,
+    sits_colors_reset,
+    sits_colors_set,
+    sits_colors_show,
+)
+from .sits.config import sits_config, sits_config_show, sits_config_user_file
 from .sits.context import (
+    cerrado_2classes,
     point_mt_6bands,
     samples_l8_rondonia_2bands,
     samples_modis_ndvi,
 )
-from .sits.cube import sits_cube, sits_cube_copy, sits_regularize
+from .sits.cube import (
+    sits_clean,
+    sits_colors_qgis,
+    sits_cube,
+    sits_cube_copy,
+    sits_regularize,
+    sits_uncertainty,
+    sits_uncertainty_sampling,
+    sits_variance,
+)
 from .sits.data import (
     sits_bands,
     sits_bbox,
@@ -54,11 +71,17 @@ from .sits.tiles import sits_mgrs_to_roi, sits_tiles_to_roi
 from .sits.ts import (
     sits_get_data,
     sits_patterns,
+    sits_pred_features,
+    sits_pred_normalize,
+    sits_pred_references,
+    sits_pred_sample,
     sits_predictors,
+    sits_sample,
     sits_sgolay,
     sits_som_clean_samples,
     sits_som_evaluate_cluster,
     sits_som_map,
+    sits_stats,
     sits_whittaker,
 )
 from .sits.utils import get_package_dir, read_sits_rds
@@ -71,8 +94,22 @@ __all__ = (
     "sits_label_classification",
     # Cube
     "sits_cube",
+    "sits_clean",
     "sits_regularize",
     "sits_cube_copy",
+    "sits_colors_qgis",
+    "sits_uncertainty",
+    "sits_uncertainty_sampling",
+    "sits_variance",
+    # Colors
+    "sits_colors",
+    "sits_colors_reset",
+    "sits_colors_set",
+    "sits_colors_show",
+    # Configuration
+    "sits_config",
+    "sits_config_show",
+    "sits_config_user_file",
     # Data management
     "sits_bands",
     "sits_timeline",
@@ -97,11 +134,17 @@ __all__ = (
     "sits_sgolay",
     "sits_whittaker",
     "sits_get_data",
+    "sits_stats",
     "sits_predictors",
+    "sits_pred_features",
+    "sits_pred_normalize",
+    "sits_pred_references",
+    "sits_pred_sample",
     "sits_som_map",
     "sits_som_evaluate_cluster",
     "sits_som_clean_samples",
     "sits_patterns",
+    "sits_sample",
     # Tiles
     "sits_mgrs_to_roi",
     "sits_tiles_to_roi",
@@ -120,6 +163,7 @@ __all__ = (
     "samples_l8_rondonia_2bands",
     "samples_modis_ndvi",
     "point_mt_6bands",
+    "cerrado_2classes",
     # Utils
     "read_sits_rds",
     "get_package_dir",

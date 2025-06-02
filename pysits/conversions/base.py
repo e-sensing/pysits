@@ -43,9 +43,7 @@ TYPE_CONVERSIONS = {
     list: lambda obj: _convert_list_like(obj),
     tuple: lambda obj: _convert_list_like(obj),
     set: lambda obj: _convert_list_like(list(obj)),
-    dict: lambda obj: ro.vectors.ListVector(
-        {str(k): _convert_to_r(v) for k, v in obj.items()}
-    ),
+    dict: lambda obj: _convert_dict_like(obj),
     bool: lambda obj: ro.BoolVector([obj]),
     int: lambda obj: ro.IntVector([obj]),
     float: lambda obj: ro.FloatVector([obj]),
@@ -91,6 +89,36 @@ def _convert_list_like(obj):
         return ro.vectors.ListVector(
             {str(i): _convert_to_r(v) for i, v in enumerate(obj)}
         )
+
+
+def _convert_dict_like(obj: dict) -> ro.vectors.Vector:
+    """Convert a Python dictionary to an appropriate R vector type.
+
+    This function converts a Python dictionary to either an R StrVector or ListVector,
+    depending on the types of values in the dictionary:
+    - If all values are strings, returns an R StrVector with named elements
+    - Otherwise, returns an R ListVector with converted values
+
+    Args:
+        obj (dict): A Python dictionary to convert to an R vector.
+
+    Returns:
+        ro.vectors.Vector: Either an R StrVector (if all values are strings) or
+            an R ListVector (for mixed value types). The resulting vector will
+            preserve the dictionary's keys as names in the R vector.
+    """
+    vec = None
+
+    # Assuming str vector for when all values are strings (e.g. label vector)
+    if all(isinstance(v, str) for v in obj.values()):
+        vec = ro.vectors.StrVector(list(obj.values()))
+        vec.names = list(obj.keys())
+
+    # Otherwise, use a list vector
+    else:
+        vec = ro.vectors.ListVector({str(k): _convert_to_r(v) for k, v in obj.items()})
+
+    return vec
 
 
 def _convert_to_r(obj):
