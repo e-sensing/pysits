@@ -39,6 +39,8 @@ def _load_samples_dataset(name: str) -> SITSTimeSeriesModel:
 #
 # Samples objects
 #
+cerrado_2classes = _load_samples_dataset("cerrado_2classes")
+
 samples_modis_ndvi = _load_samples_dataset("samples_modis_ndvi")
 samples_l8_rondonia_2bands = _load_samples_dataset("samples_l8_rondonia_2bands")
 
