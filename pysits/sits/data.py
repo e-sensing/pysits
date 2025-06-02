@@ -88,3 +88,14 @@ def sits_list_collections(*args, **kwargs) -> None:
 def sits_summary(*args, **kwargs) -> str:
     """Summary of a sits data object."""
     ...
+
+
+@function_call(r_pkg_sits.sits_labels_summary, resolve_and_invoke_data_class)
+@attach_doc("sits_labels_summary")
+def sits_labels_summary(*args, **kwargs) -> SITSFrame:
+    """Inform label distribution of a set of time series.
+
+    Notes:
+        - Deprecated function. Use `summary` instead.
+    """
+    ...
