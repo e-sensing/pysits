@@ -24,11 +24,33 @@ requires-python = ">=3.10,<4"
 license = {text = "GPL-2.0-only"}
 
 authors = [
+    {name = "Gilberto Camara", email = "gilberto.camara.inpe@gmail.com"},
     {name = "Felipe Carlos", email = "efelipecarlos@gmail.com"},
     {name = "Felipe Carvalho", email = "lipecaso@gmail.com"},
     {name = "Pedro Brito", email = "pedro_brito1997@hotmail.com"},
-    {name = "Rolf Simoes", email = "rolfsimoes@gmail.com"},
-    {name = "Gilberto Camara", email = "gilberto.camara.inpe@gmail.com"}
+    {name = "Rolf Simoes", email = "rolfsimoes@gmail.com"}
+]
+
+maintainers = [
+    {name = "Felipe Carlos", email = "efelipecarlos@gmail.com"},
+    {name = "Felipe Carvalho", email = "lipecaso@gmail.com"}
+]
+
+keywords = [
+    "remote sensing",
+    "time series",
+    "satellite",
+    "earth observation",
+    "R wrapper"
+]
+
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Environment :: GPU :: NVIDIA CUDA",
+    "Operating System :: OS Independent",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: GIS",
+    "License :: OSI Approved :: GNU General Public License v2 (GPLv2)"
 ]
 
 dependencies = [
@@ -77,8 +99,8 @@ packages = ["pysits"]
 
 [tool.hatch.build.targets.wheel]
 include = [
-  "pysits/**.py",
-  "pysits/docs/**.md",
+  "pysits/**/*.py",
+  "pysits/docs/**/*.md",
   "README.md",
   "LICENSE"
 ]
