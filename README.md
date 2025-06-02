@@ -66,7 +66,7 @@ ruff check .
 
 > The `examples/` directory is excluded from linting.
 
-## 📚 Learn More
+## 📚 Learn more
 
 Explore the [examples](./examples) directory for usage demos and tutorials.
 
