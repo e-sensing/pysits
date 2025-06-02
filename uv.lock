@@ -925,7 +925,7 @@ requires-dist = [
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=7.4.4" },
     { name = "rioxarray", marker = "extra == 'xarray'", specifier = ">=0.18.2" },
     { name = "rpy2", specifier = ">=3.5.17,<4.0.0" },
-    { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.1.13" },
+    { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.11.12" },
     { name = "xarray", marker = "extra == 'xarray'", specifier = ">=2025.3.0" },
 ]
 provides-extras = ["xarray", "dev"]
