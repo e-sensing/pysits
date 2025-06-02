@@ -20,7 +20,7 @@
 from pysits.backend.pkgs import r_pkg_sits
 from pysits.conversions.base import function_call
 from pysits.docs import attach_doc
-from pysits.models import SITSCubeModel
+from pysits.models import SITSCubeModel, SITSFrame
 
 
 #
@@ -40,8 +40,43 @@ def sits_regularize(*args, **kwargs) -> SITSCubeModel:
     ...
 
 
+@function_call(r_pkg_sits.sits_variance, SITSCubeModel)
+@attach_doc("sits_variance")
+def sits_variance(*args, **kwargs) -> SITSCubeModel:
+    """Calculate the variance of a probability cube."""
+    ...
+
+
 @function_call(r_pkg_sits.sits_cube_copy, SITSCubeModel)
 @attach_doc("sits_cube_copy")
 def sits_cube_copy(*args, **kwargs) -> SITSCubeModel:
     """Copy cubes."""
+    ...
+
+
+@function_call(r_pkg_sits.sits_uncertainty, SITSCubeModel)
+@attach_doc("sits_uncertainty")
+def sits_uncertainty(*args, **kwargs) -> SITSCubeModel:
+    """Estimate classification uncertainty based on probs cube."""
+    ...
+
+
+@function_call(r_pkg_sits.sits_clean, SITSCubeModel)
+@attach_doc("sits_clean")
+def sits_clean(*args, **kwargs) -> SITSCubeModel:
+    """Cleans a classified map using a local window."""
+    ...
+
+
+@function_call(r_pkg_sits.sits_uncertainty_sampling, SITSFrame)
+@attach_doc("sits_uncertainty_sampling")
+def sits_uncertainty_sampling(*args, **kwargs) -> SITSCubeModel:
+    """Suggest samples for enhancing classification accuracy."""
+    ...
+
+
+@function_call(r_pkg_sits.sits_colors_qgis, lambda x: None)
+@attach_doc("sits_colors_qgis")
+def sits_colors_qgis(*args, **kwargs) -> None:
+    """Function to save color table as QML style for data cube."""
     ...
