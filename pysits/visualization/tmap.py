@@ -42,7 +42,7 @@ def _save_tmap_plot(r_tmap_plot, image_args=None, **kwargs) -> None:
     """
     # Create a temporary directory
     temp_dir = tempfile.mkdtemp()
-    file_path = os.path.join(temp_dir, "tmap_plot.png")
+    file_path = os.path.join(temp_dir, "tmap_plot.jpeg")
 
     # Process image args
     image_args = image_args if image_args else {}

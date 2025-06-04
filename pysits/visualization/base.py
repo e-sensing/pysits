@@ -61,7 +61,7 @@ def _base_plot(data: Any, image_args: ImageArgs | None = None, **kwargs: Any) ->
     """
     # Create a temporary directory
     temp_dir = tempfile.mkdtemp()
-    file_path = os.path.join(temp_dir, "base_plot.png")
+    file_path = os.path.join(temp_dir, "base_plot.jpeg")
 
     # Process image args
     image_args = image_args if image_args else {}
@@ -72,7 +72,7 @@ def _base_plot(data: Any, image_args: ImageArgs | None = None, **kwargs: Any) ->
     image_height = int(image_args.get("height", 6) * image_res)
 
     # Enable image device
-    r_pkg_grdevices.png(
+    r_pkg_grdevices.jpeg(
         file=file_path, width=image_width, height=image_height, res=image_res
     )
 
