@@ -17,6 +17,7 @@
 
 """Settings module."""
 
+import os
 import warnings
 
 import rpy2.rinterface_lib.callbacks
@@ -29,6 +30,11 @@ warnings.filterwarnings("ignore", module=r"rpy2.*")
 
 # Suppress R warnings and errors
 rpy2.rinterface_lib.callbacks.consolewrite_warnerror = lambda x: None
+
+#
+# Environment variables
+#
+os.environ["TORCH_INSTALL"] = "0"
 
 #
 # Package version

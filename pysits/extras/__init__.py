@@ -26,6 +26,7 @@ from collections.abc import Callable
 #
 EXTRAS_MODULES: list[str] = [
     "earthdatalogin",
+    "torch",
 ]
 
 

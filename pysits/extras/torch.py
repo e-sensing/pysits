@@ -15,7 +15,7 @@
 # along with this program; if not, see <https://www.gnu.org/licenses/>.
 #
 
-"""Earthdatalogin module."""
+"""Torch module."""
 
 from rpy2.robjects.packages import importr
 
@@ -25,20 +25,20 @@ from pysits.docs import attach_doc
 #
 # Package
 #
-r_pkg_earthdatalogin = importr("earthdatalogin")
+r_pkg_torch = importr("torch", on_conflict="warn")
 
 
 #
 # Functions
 #
-@function_call(r_pkg_earthdatalogin.edl_netrc, bool)
-@attach_doc("earthdatalogin_edl_netrc")
-def earthdatalogin_edl_netrc(*args, **kwargs) -> bool:
-    """Set up Earthdata Login (EDL) credentials using a .netrc file."""
+@function_call(r_pkg_torch.install_torch, bool)
+@attach_doc("torch_install_torch")
+def torch_install_torch(*args, **kwargs) -> bool:
+    """Install Torch."""
     ...
 
 
 #
 # List of functions to export
 #
-__all__ = ("earthdatalogin_edl_netrc",)
+__all__ = ("torch_install_torch",)
