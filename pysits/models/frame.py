@@ -125,6 +125,15 @@ class SITSFrameArray(ExtensionArray):
         """Object representation."""
         return f"NestedDataFrame(size = {len(self._data)})"
 
+    def __eq__(self, other):
+        """Compare two SITSFrameArray objects."""
+        if isinstance(other, SITSFrameArray):
+            return np.array(
+                [x.equals(y) for x, y in zip(self._data, other._data)], dtype=bool
+            )
+
+        return NotImplemented
+
     #
     # Operations
     #

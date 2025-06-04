@@ -22,6 +22,7 @@ from functools import singledispatch
 from pysits.models import (
     SITSCubeModel,
     SITSFrame,
+    SITSMachineLearningMethod,
     SITSTimeSeriesModel,
     SITStructureData,
 )
@@ -59,4 +60,10 @@ def _(data: SITSCubeModel, **kwargs) -> None:
 @sits_plot.register
 def _(data: SITSTimeSeriesModel, **kwargs) -> None:
     """Plot time-series."""
+    return plot_base(data._instance, multiple=True, **kwargs)
+
+
+@sits_plot.register
+def _(data: SITSMachineLearningMethod, **kwargs) -> None:
+    """Plot machine learning method."""
     return plot_base(data._instance, **kwargs)

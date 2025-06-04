@@ -22,8 +22,6 @@ import shutil
 import tempfile
 from typing import Any, TypeAlias
 
-from rpy2.robjects import ListVector
-
 from pysits.backend.functions import r_fnc_plot
 from pysits.backend.pkgs import r_pkg_grdevices
 from pysits.visualization.image import show_local_image
@@ -37,7 +35,12 @@ ImageArgs: TypeAlias = dict[str, int | float]
 #
 # Utility function
 #
-def _base_plot(data: Any, image_args: ImageArgs | None = None, **kwargs: Any) -> None:
+def _base_plot(
+    data: Any,
+    image_args: ImageArgs | None = None,
+    multiple: bool = False,
+    **kwargs: Any,
+) -> None:
     """Save and show images created using base plot.
 
     This function creates temporary PNG files from R plot objects and displays them.
@@ -53,6 +56,8 @@ def _base_plot(data: Any, image_args: ImageArgs | None = None, **kwargs: Any) ->
             - width (float): Width in inches (default: 10)
 
             - height (float): Height in inches (default: 6)
+
+        multiple: Whether to plot multiple plots.
 
         **kwargs: Additional keyword arguments passed to R's base::plot function.
 
@@ -74,7 +79,7 @@ def _base_plot(data: Any, image_args: ImageArgs | None = None, **kwargs: Any) ->
     plots = r_fnc_plot(data, **kwargs)
 
     # Handle plots
-    if isinstance(plots, ListVector):
+    if multiple:
         for i, plot in enumerate(plots):
             file_path = os.path.join(temp_dir, f"base_plot_{i}.jpeg")
 
@@ -115,7 +120,10 @@ def _base_plot(data: Any, image_args: ImageArgs | None = None, **kwargs: Any) ->
 # High-level operation
 #
 def plot_base(
-    instance: Any, image_args: ImageArgs | None = None, **kwargs: Any
+    instance: Any,
+    image_args: ImageArgs | None = None,
+    multiple: bool = False,
+    **kwargs: Any,
 ) -> None:
     """Generate and display base R plots.
 
@@ -133,10 +141,12 @@ def plot_base(
 
             - height (float): Height in inches (default: 6)
 
+        multiple: Whether to plot multiple plots.
+
         **kwargs: Additional keyword arguments passed to R's base::plot function.
 
     Returns:
         None: Nothing.
     """
     # Save and display plot
-    _base_plot(instance, image_args=image_args, **kwargs)
+    _base_plot(instance, image_args=image_args, multiple=multiple, **kwargs)
