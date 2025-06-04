@@ -15,17 +15,30 @@
 # along with this program; if not, see <https://www.gnu.org/licenses/>.
 #
 
-"""backend packages."""
+"""Earthdatalogin module."""
 
 from rpy2.robjects.packages import importr
 
-# system pakage
-r_pkg_base = importr("base")
-r_pkg_grdevices = importr("grDevices")
+from pysits.conversions.base import function_call
+from pysits.docs import attach_doc
 
-# sits package
-r_pkg_sits = importr("sits")
+#
+# Package
+#
+r_pkg_earthdatalogin = importr("earthdatalogin")
 
-# sits-dependencies packages
-r_pkg_tibble = importr("tibble")
-r_pkg_leaflet = importr("leaflet")
+
+#
+# Functions
+#
+@function_call(r_pkg_earthdatalogin.edl_netrc, bool)
+@attach_doc("edl_netrc")
+def earthdatalogin_edl_netrc(*args, **kwargs) -> bool:
+    """Set up Earthdata Login (EDL) credentials using a .netrc file."""
+    ...
+
+
+#
+# List of functions to export
+#
+__all__ = ("earthdatalogin_edl_netrc",)
