@@ -25,6 +25,7 @@ from typing import Any, ParamSpec, TypeVar
 
 import rpy2.robjects as ro
 from pandas import DataFrame as PandasDataFrame
+from rpy2.robjects.robject import RObjectMixin
 
 from pysits.backend.pkgs import r_pkg_tibble
 from pysits.conversions.pandasr import pandas_to_r
@@ -142,11 +143,8 @@ def _convert_to_r(obj):
     if getattr(obj, "_instance", None):
         return obj._instance
 
-    # Handle ``closure`` objects
-    if isinstance(
-        obj,
-        (ro.functions.SignatureTranslatedFunction | ro.functions.DocumentedSTFunction),
-    ):
+    # Handle ``raw R`` objects
+    if isinstance(obj, RObjectMixin):
         return obj
 
     # Check if the object type exists in the conversion dictionary

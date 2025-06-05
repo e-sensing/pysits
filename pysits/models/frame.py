@@ -129,7 +129,11 @@ class SITSFrameArray(ExtensionArray):
         """Compare two SITSFrameArray objects."""
         if isinstance(other, SITSFrameArray):
             return np.array(
-                [x.equals(y) for x, y in zip(self._data, other._data)], dtype=bool
+                [
+                    x.equals(y) if hasattr(x, "equals") else np.array_equal(x, y)
+                    for x, y in zip(self._data, other._data)
+                ],
+                dtype=bool,
             )
 
         return NotImplemented

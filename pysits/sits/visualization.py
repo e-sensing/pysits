@@ -19,6 +19,7 @@
 
 from functools import singledispatch
 
+from pysits.conversions.base import rpy2_fix_type
 from pysits.models import (
     SITSCubeModel,
     SITSFrame,
@@ -33,6 +34,7 @@ from pysits.visualization import plot_base, plot_tmap
 # Dispatch chain for plot
 #
 @singledispatch
+@rpy2_fix_type
 def sits_plot(data: object, **kwargs) -> None:
     """sits plot as dispatch."""
     # Assuming data is a "raw rpy2" object
@@ -40,30 +42,35 @@ def sits_plot(data: object, **kwargs) -> None:
 
 
 @sits_plot.register
+@rpy2_fix_type
 def _(data: SITSFrame, **kwargs) -> None:
     """Plot Frame data."""
-    return plot_base(data._instance, **kwargs)
+    return plot_base(data, **kwargs)
 
 
 @sits_plot.register
+@rpy2_fix_type
 def _(data: SITStructureData, **kwargs) -> None:
     """Plot Structure data."""
-    return plot_base(data._instance, **kwargs)
+    return plot_base(data, **kwargs)
 
 
 @sits_plot.register
+@rpy2_fix_type
 def _(data: SITSCubeModel, **kwargs) -> None:
     """Plot cube."""
-    return plot_tmap(data._instance, **kwargs)
+    return plot_tmap(data, **kwargs)
 
 
 @sits_plot.register
+@rpy2_fix_type
 def _(data: SITSTimeSeriesModel, **kwargs) -> None:
     """Plot time-series."""
-    return plot_base(data._instance, multiple=True, **kwargs)
+    return plot_base(data, multiple=True, **kwargs)
 
 
 @sits_plot.register
+@rpy2_fix_type
 def _(data: SITSMachineLearningMethod, **kwargs) -> None:
     """Plot machine learning method."""
-    return plot_base(data._instance, **kwargs)
+    return plot_base(data, **kwargs)
