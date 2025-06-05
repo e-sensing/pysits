@@ -17,8 +17,10 @@
 
 """base models."""
 
-from pandas import DataFrame
+import numpy as np
+from pandas import DataFrame as PandasDataFrame
 from rpy2.robjects.vectors import DataFrame as RDataFrame
+from rpy2.robjects.vectors import IntVector
 
 from pysits.conversions.tibble import tibble_to_pandas
 from pysits.conversions.vector import vector_to_pandas
@@ -56,7 +58,7 @@ class SITStructureData(SITSData):
         return instance
 
 
-class SITSFrame(DataFrame, SITSData):
+class SITSFrame(PandasDataFrame, SITSData):
     """Base class for SITS Data."""
 
     #
@@ -95,6 +97,25 @@ class SITSFrame(DataFrame, SITSData):
         return self.__class__
 
     #
+    # Operations
+    #
+    def take(self, indices, axis=0, *args, **kwargs):
+        """Take elements from the R data.frame along the specified axis."""
+        indices = np.atleast_1d(indices)
+        r_indices = IntVector((indices + 1).tolist())
+
+        if axis == 0:
+            # Take rows: [r_indices, ]
+            result = self._instance.rx(r_indices, True)
+        elif axis == 1:
+            # Take columns: [, r_indices]
+            result = self._instance.rx(True, r_indices)
+        else:
+            raise ValueError("Axis must be 0 (rows) or 1 (columns)")
+
+        return self._constructor(result)
+
+    #
     # Convertions
     #
     def _convert_from_r(self, instance):
@@ -116,7 +137,7 @@ class SITSNamedVector(SITSFrame):
         instance = self._convert_from_r(instance)
 
         # Initialize super class
-        DataFrame.__init__(self, data=instance, **kwargs)
+        PandasDataFrame.__init__(self, data=instance, **kwargs)
 
     #
     # Convertions
