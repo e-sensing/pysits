@@ -17,6 +17,8 @@
 
 """Unit tests for cube operations."""
 
+from pandas import DataFrame as PandasDataFrame
+
 from pysits.models import SITSCubeModel, SITSFrame
 from pysits.sits.cube import sits_cube
 from pysits.sits.data import sits_bands, sits_bbox, sits_timeline
@@ -110,3 +112,25 @@ def test_sits_cube_bbox():
     assert round(bbox_4326["ymin"], 4) == -20.0  # noqa: PLR2004
     assert round(bbox_4326["ymax"], 4) == -10.0  # noqa: PLR2004
     assert bbox_4326["crs"] == "EPSG:4326"
+
+
+def test_sits_cube_filter():
+    """Test filtering of sits cube."""
+    cube = sits_cube(
+        source="AWS",
+        collection="SENTINEL-2-L2A",
+        tiles=("20LLP", "20LKP"),
+        bands=("B02", "B8A", "B11", "CLOUD"),
+        start_date="2018-06-30",
+        end_date="2018-08-31",
+    )
+
+    cube_tile1 = cube.query('tile == "20LLP"')
+    assert isinstance(cube_tile1, SITSCubeModel)
+    assert cube_tile1.tile.iloc[0] == "20LLP"
+    assert not isinstance(cube_tile1._instance, PandasDataFrame)
+
+    cube_tile2 = cube.query('tile == "20LKP"')
+    assert isinstance(cube_tile2, SITSCubeModel)
+    assert cube_tile2.tile.iloc[0] == "20LKP"
+    assert not isinstance(cube_tile2._instance, PandasDataFrame)

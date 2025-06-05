@@ -20,9 +20,11 @@
 from pathlib import Path
 
 from pysits.models import SITSCubeModel, SITSTimeSeriesModel
+from pysits.sits.apply import sits_apply
 from pysits.sits.context import samples_l8_rondonia_2bands
 from pysits.sits.cube import sits_cube, sits_regularize
 from pysits.sits.data import sits_bands, sits_merge, sits_select, sits_timeline
+from pysits.sits.utils import get_package_dir
 
 
 def test_cube_select():
@@ -135,3 +137,26 @@ def test_merge_cubes(tmp_path: Path):
     assert len(timeline) > 0  # Should have at least one date
     assert min(timeline) >= "2021-06-01"
     assert max(timeline) <= "2021-09-22"
+
+
+def test_sits_apply():
+    """Test sits apply."""
+    points = sits_select(samples_l8_rondonia_2bands, bands="NDVI")
+    points_norm = sits_apply(
+        points, NDVI_norm="(NDVI - min(NDVI)) / (max(NDVI) - min(NDVI))"
+    )
+
+    assert all(band in sits_bands(points_norm) for band in ["NDVI", "NDVI_norm"])
+
+
+def test_cube_apply(tmp_path: Path):
+    """Test cube apply."""
+    data_dir = get_package_dir("extdata/raster/mod13q1", package="sits")
+    cube = sits_cube(source="BDC", collection="MOD13Q1-6.1", data_dir=data_dir)
+
+    # Generate a texture images with variance in NDVI images
+    cube_texture = sits_apply(
+        data=cube, NDVITEXTURE="w_median(NDVI)", window_size=5, output_dir=tmp_path
+    )
+
+    assert all(band in sits_bands(cube_texture) for band in ["NDVI", "NDVITEXTURE"])
