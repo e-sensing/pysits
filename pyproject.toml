@@ -75,7 +75,9 @@ xarray = [
 dev = [
     "ruff>=0.11.12",
     "pre-commit>=3.6.0",
-    "pytest>=7.4.4"
+    "pytest>=7.4.4",
+    "pytest-cov>=6.1.1",
+    "pytest-randomly>=3.16.0",
 ]
 
 [tool.ruff]
@@ -108,3 +110,8 @@ include = [
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+[tool.pytest.ini_options]
+addopts = "--cov=pysits --cov-report=term-missing --cov-report=xml --cov-report=html"
+testpaths = ["tests"]
+python_files = ["test_*.py"]
