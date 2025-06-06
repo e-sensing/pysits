@@ -46,6 +46,12 @@ def test_convert_list_like():
     assert isinstance(float_result, ro.vectors.FloatVector)
     assert list(float_result) == float_list
 
+    # Test int + float list
+    mixed_list = [1, 2.2, 3, 4.4, 5]
+    mixed_result = _convert_list_like(mixed_list)
+    assert isinstance(mixed_result, ro.vectors.FloatVector)
+    assert list(mixed_result) == mixed_list
+
     # Test string list
     str_list = ["a", "b", "c", "d"]
     str_result = _convert_list_like(str_list)
@@ -80,6 +86,10 @@ def test_convert_dict_like():
     assert list(str_result.names) == ["a", "b", "c"]
     assert list(str_result) == ["apple", "banana", "cherry"]
 
+    # Empty dictionary
+    empty_result = _convert_dict_like({})
+    assert isinstance(empty_result, ro.vectors.ListVector)
+
     # Test dictionary with mixed value types -> ListVector
     mixed_dict = {
         "int": 42,
@@ -87,10 +97,22 @@ def test_convert_dict_like():
         "str": "hello",
         "bool": True,
         "list": [1, 2, 3],
+        "mixed": [1, "text", 3.14, True],
+        "empty": [],
+        "numeric": [1, 2.2, 3, 4.44],
     }
     mixed_result = _convert_dict_like(mixed_dict)
     assert isinstance(mixed_result, ro.vectors.ListVector)
-    assert list(mixed_result.names) == ["int", "float", "str", "bool", "list"]
+    assert list(mixed_result.names) == [
+        "int",
+        "float",
+        "str",
+        "bool",
+        "list",
+        "mixed",
+        "empty",
+        "numeric",
+    ]
 
     # Check individual value types and conversions
     assert isinstance(mixed_result[0], ro.vectors.IntVector)
@@ -107,3 +129,16 @@ def test_convert_dict_like():
 
     assert isinstance(mixed_result[4], ro.vectors.IntVector)
     assert list(mixed_result[4]) == [1, 2, 3]
+
+    assert isinstance(mixed_result[5], ro.vectors.ListVector)
+    assert list(mixed_result[5].names) == ["0", "1", "2", "3"]
+    assert list(mixed_result[5][0]) == [1]
+    assert list(mixed_result[5][1]) == ["text"]
+    assert list(mixed_result[5][2]) == [3.14]
+    assert list(mixed_result[5][3]) == [True]
+
+    assert isinstance(mixed_result[6], ro.vectors.ListVector)
+    assert list(mixed_result[6]) == []
+
+    assert isinstance(mixed_result[7], ro.vectors.FloatVector)
+    assert list(mixed_result[7]) == [1, 2.2, 3, 4.44]
