@@ -21,6 +21,7 @@ from collections.abc import Callable
 from typing import ParamSpec, TypeVar
 
 from pysits.backend.pkgs import r_pkg_sits
+from pysits.conversions.base import rpy2_fix_type
 
 #
 # Generics
@@ -54,6 +55,7 @@ def closure_factory(name: str) -> Callable[P, R]:
         raise ValueError(f"Invalid function: {name}")
 
     # define method closure
+    @rpy2_fix_type
     def _fnc(*args: P.args, **kwargs: P.kwargs) -> R:
         return getattr(r_pkg_sits, name)(*args, **kwargs)
 
