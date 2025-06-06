@@ -17,35 +17,20 @@
 
 """Global objects from sits."""
 
-from pysits.backend.data import load_global_data
-from pysits.models.ts import SITSTimeSeriesModel
-
-
-#
-# Auxiliary function
-#
-def _load_samples_dataset(name: str) -> SITSTimeSeriesModel:
-    """Load samples dataset from r environment.
-
-    Args:
-        name (str): Dataset name.
-
-    Returns:
-        SITSTimeSeriesModel: Dataset model.
-    """
-    return SITSTimeSeriesModel(load_global_data(name))
-
+from pysits.sits.utils import load_samples_dataset
 
 #
 # Samples objects
 #
-cerrado_2classes = _load_samples_dataset("cerrado_2classes")
+cerrado_2classes = load_samples_dataset("cerrado_2classes", package="sits")
 
-samples_modis_ndvi = _load_samples_dataset("samples_modis_ndvi")
-samples_l8_rondonia_2bands = _load_samples_dataset("samples_l8_rondonia_2bands")
+samples_modis_ndvi = load_samples_dataset("samples_modis_ndvi", package="sits")
+samples_l8_rondonia_2bands = load_samples_dataset(
+    "samples_l8_rondonia_2bands", package="sits"
+)
 
 
 #
 # Points objects
 #
-point_mt_6bands = _load_samples_dataset("point_mt_6bands")
+point_mt_6bands = load_samples_dataset("point_mt_6bands", package="sits")

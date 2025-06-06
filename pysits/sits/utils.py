@@ -19,9 +19,23 @@
 
 from pathlib import Path
 
-from pysits.backend.functions import r_fnc_read_rds, r_fnc_system_file
+from pysits.backend.data import load_data_from_global, load_data_from_package
+from pysits.backend.functions import r_fnc_read_rds, r_fnc_set_seed, r_fnc_system_file
 from pysits.models import SITSFrame
 from pysits.models.builder import resolve_and_invoke_data_class
+from pysits.models.ts import SITSTimeSeriesModel
+
+
+#
+# State management
+#
+def r_set_seed(seed: int) -> None:
+    """Set seed for random number generation.
+
+    Args:
+        seed (int): Seed value.
+    """
+    r_fnc_set_seed(seed)
 
 
 #
@@ -69,3 +83,23 @@ def get_package_dir(content_dir: str, package: str) -> Path | None:
     dir_path = Path(dir_path)
 
     return None if not dir_path.exists() else dir_path
+
+
+def load_samples_dataset(name: str, package: str, **kwargs) -> SITSTimeSeriesModel:
+    """Load sits data from package.
+
+    Args:
+        name (str): Dataset name.
+
+        package (str): Package name.
+
+        **kwargs: Additional arguments to pass to the function.
+    """
+    # Load data from package
+    load_data_from_package(name, package, **kwargs)
+
+    # Load data from global environment
+    data = load_data_from_global(name)
+
+    # Return data
+    return SITSTimeSeriesModel(data)
