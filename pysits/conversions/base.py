@@ -64,7 +64,12 @@ EPOCH_START = date(1970, 1, 1)
 #
 # Type mapping utilities
 #
-def _convert_list_like(obj):
+def _is_numeric(x):
+    """Helper function to check if a value is numeric (int or float)."""
+    return isinstance(x, int | float)
+
+
+def _convert_list_like(obj):  # noqa: PLR0911
     """
     Converts a list-like object to the appropriate R vector type.
 
@@ -74,10 +79,17 @@ def _convert_list_like(obj):
     Returns:
         An R-compatible vector.
     """
+    if not obj:
+        return ro.vectors.ListVector({})
+
     if all(isinstance(x, int) for x in obj):
         return ro.vectors.IntVector(obj)
 
     elif all(isinstance(x, float) for x in obj):
+        return ro.vectors.FloatVector(obj)
+
+    # Check if all elements are numeric (int or float)
+    elif all(_is_numeric(x) for x in obj):
         return ro.vectors.FloatVector(obj)
 
     elif all(isinstance(x, str) for x in obj):
@@ -95,31 +107,37 @@ def _convert_list_like(obj):
 def _convert_dict_like(obj: dict) -> ro.vectors.Vector:
     """Convert a Python dictionary to an appropriate R vector type.
 
-    This function converts a Python dictionary to either an R StrVector or ListVector,
+    This function converts a Python dictionary to either a typed R vector or ListVector,
     depending on the types of values in the dictionary:
-    - If all values are strings, returns an R StrVector with named elements
+    - If all values are of the same type (e.g. all strings, all numeric), returns an
+      appropriate typed R vector with named elements
     - Otherwise, returns an R ListVector with converted values
 
     Args:
         obj (dict): A Python dictionary to convert to an R vector.
 
     Returns:
-        ro.vectors.Vector: Either an R StrVector (if all values are strings) or
+        ro.vectors.Vector: Either a typed R vector (if all values are of same type) or
             an R ListVector (for mixed value types). The resulting vector will
             preserve the dictionary's keys as names in the R vector.
     """
-    vec = None
+    values = list(obj.values())
+    if not values:
+        return ro.vectors.ListVector({})
 
-    # Assuming str vector for when all values are strings (e.g. label vector)
-    if all(isinstance(v, str) for v in obj.values()):
-        vec = ro.vectors.StrVector(list(obj.values()))
+    # Get data properties
+    has_unique_type = len(set(type(v) for v in values)) == 1
+    is_numeric = all(_is_numeric(v) for v in values)
+
+    # Handle homogeneous data
+    if has_unique_type or is_numeric:
+        vec = _convert_list_like(values)
         vec.names = list(obj.keys())
 
-    # Otherwise, use a list vector
-    else:
-        vec = ro.vectors.ListVector({str(k): _convert_to_r(v) for k, v in obj.items()})
+        return vec
 
-    return vec
+    # For mixed data, use a list vector
+    return ro.vectors.ListVector({str(k): _convert_to_r(v) for k, v in obj.items()})
 
 
 def _convert_to_r(obj):

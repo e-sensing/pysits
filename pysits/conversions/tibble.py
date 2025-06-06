@@ -177,7 +177,7 @@ def tibble_sits_to_pandas(data: RDataFrame) -> PandasDataFrame:
     ]
 
     # Define nested columns
-    nested_columns = ["time_series"]
+    nested_columns = ["time_series", "predicted"]
 
     # Define table processor
     def _table_processor(x):
