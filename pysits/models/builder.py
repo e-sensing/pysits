@@ -3,7 +3,12 @@
 from rpy2.robjects.vectors import DataFrame as RDataFrame
 
 from pysits.backend.functions import r_fnc_class
-from pysits.models import SITSCubeModel, SITSFrame, SITSTimeSeriesModel
+from pysits.models import (
+    SITSCubeModel,
+    SITSFrame,
+    SITSTimeSeriesClassificationModel,
+    SITSTimeSeriesModel,
+)
 
 
 #
@@ -25,6 +30,10 @@ def data_class_selector(data: RDataFrame) -> type[SITSFrame]:
     content_class = None
 
     match rds_class:
+        # Time-series classification data (``predicted``)
+        case class_ if "predicted" in class_ and "sits" in class_:
+            content_class = SITSTimeSeriesClassificationModel
+
         # Time-series data (``sits``)
         case class_ if "sits" in class_:
             content_class = SITSTimeSeriesModel

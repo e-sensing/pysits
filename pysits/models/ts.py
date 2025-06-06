@@ -52,3 +52,11 @@ class SITSPatternsModel(SITSTimeSeriesModel):
     def __init__(self, *args, **kwargs):
         """Initializer."""
         super().__init__(*args, **kwargs)
+
+
+class SITSTimeSeriesClassificationModel(SITSTimeSeriesModel):
+    """SITS time-series classification model."""
+
+    def __init__(self, *args, **kwargs):
+        """Initializer."""
+        super().__init__(*args, **kwargs)

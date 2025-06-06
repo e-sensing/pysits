@@ -19,12 +19,14 @@
 
 from functools import singledispatch
 
+from pysits.backend.pkgs import r_pkg_sits
 from pysits.conversions.base import rpy2_fix_type
 from pysits.models import (
     SITSCubeModel,
     SITSFrame,
     SITSMachineLearningMethod,
     SITSPatternsModel,
+    SITSTimeSeriesClassificationModel,
     SITSTimeSeriesModel,
     SITStructureData,
 )
@@ -67,7 +69,16 @@ def _(data: SITSCubeModel, **kwargs) -> None:
 @rpy2_fix_type
 def _(data: SITSTimeSeriesModel, **kwargs) -> None:
     """Plot time-series."""
-    return plot_base(data, multiple=True, **kwargs)
+    is_multiple = len(r_pkg_sits.sits_bands(data)) > 1
+    return plot_base(data, multiple=is_multiple, **kwargs)
+
+
+@sits_plot.register
+@rpy2_fix_type
+def _(data: SITSTimeSeriesClassificationModel, **kwargs) -> None:
+    """Plot time-series classification."""
+    is_multiple = data.nrow > 1
+    return plot_base(data, multiple=is_multiple, **kwargs)
 
 
 @sits_plot.register
