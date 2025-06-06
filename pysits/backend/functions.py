@@ -40,6 +40,11 @@ r_fnc_read_rds = r_pkg_base.readRDS
 r_fnc_system_file = r_pkg_base.system_file
 
 #
+# Base - set.seed
+#
+r_fnc_set_seed = r_pkg_base.set_seed
+
+#
 # Base - Class
 #
 r_fnc_class = getattr(r_pkg_base, "class")

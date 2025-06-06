@@ -89,7 +89,7 @@ from .sits.ts import (
     sits_stats,
     sits_whittaker,
 )
-from .sits.utils import get_package_dir, read_sits_rds
+from .sits.utils import get_package_dir, load_samples_dataset, r_set_seed, read_sits_rds
 from .sits.visualization import sits_plot as plot
 
 __all__ = (
@@ -179,6 +179,8 @@ __all__ = (
     # Utils
     "read_sits_rds",
     "get_package_dir",
+    "load_samples_dataset",
+    "r_set_seed",
     # Package settings
     "__version__",
 )

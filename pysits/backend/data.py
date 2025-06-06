@@ -20,6 +20,27 @@
 from rpy2.robjects import r
 
 
-def load_global_data(name: str) -> object:
-    """Load global data from R environment."""
+def load_data_from_package(name: str, package: str, **kwargs) -> object:
+    """Load data from package.
+
+    This function loads data from a package. It uses `data` behind the scenes.
+
+    Args:
+        name (str): Dataset name.
+
+        package (str): Package name.
+
+        **kwargs: Additional arguments to pass to the function.
+    """
+    return r.data(name, package=package, **kwargs)
+
+
+def load_data_from_global(name: str) -> object:
+    """Load data from global environment.
+
+    This function loads data from the global environment.
+
+    Args:
+        name (str): Dataset name.
+    """
     return r[name]
