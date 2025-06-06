@@ -44,3 +44,11 @@ class SITSTimeSeriesModel(SITSFrame):
             instance (rpy2.robjects.vectors.DataFrame): Data instance.
         """
         return tibble_sits_to_pandas(instance)
+
+
+class SITSPatternsModel(SITSTimeSeriesModel):
+    """SITS patterns model."""
+
+    def __init__(self, *args, **kwargs):
+        """Initializer."""
+        super().__init__(*args, **kwargs)

@@ -22,6 +22,7 @@ from pysits.conversions.base import function_call, r_to_python
 from pysits.docs import attach_doc
 from pysits.models import (
     SITSFrame,
+    SITSPatternsModel,
     SITSTimeSeriesModel,
     SITStructureData,
 )
@@ -134,9 +135,9 @@ def sits_cluster_dendro(*args, **kwargs) -> SITSTimeSeriesModel:
 #
 # Patterns
 #
-@function_call(r_pkg_sits.sits_patterns, SITSTimeSeriesModel)
+@function_call(r_pkg_sits.sits_patterns, SITSPatternsModel)
 @attach_doc("sits_patterns")
-def sits_patterns(*args, **kwargs) -> SITSTimeSeriesModel:
+def sits_patterns(*args, **kwargs) -> SITSPatternsModel:
     """Find temporal patterns associated to a set of time series."""
     ...
 

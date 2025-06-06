@@ -24,6 +24,7 @@ from pysits.models import (
     SITSCubeModel,
     SITSFrame,
     SITSMachineLearningMethod,
+    SITSPatternsModel,
     SITSTimeSeriesModel,
     SITStructureData,
 )
@@ -67,6 +68,13 @@ def _(data: SITSCubeModel, **kwargs) -> None:
 def _(data: SITSTimeSeriesModel, **kwargs) -> None:
     """Plot time-series."""
     return plot_base(data, multiple=True, **kwargs)
+
+
+@sits_plot.register
+@rpy2_fix_type
+def _(data: SITSPatternsModel, **kwargs) -> None:
+    """Plot patterns."""
+    return plot_base(data, multiple=False, **kwargs)
 
 
 @sits_plot.register
