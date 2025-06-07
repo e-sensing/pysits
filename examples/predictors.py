@@ -29,7 +29,7 @@ samples_file = "data/samples/samples_deforestation.rds"
 #
 # 1. Read RDS
 #
-samples_ts = read_sits_rds(samples_file)
+samples_ts = read_rds(samples_file)
 
 #
 # 2. Generate predictors
