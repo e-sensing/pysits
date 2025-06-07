@@ -18,9 +18,11 @@
 """frame models."""
 
 import warnings
+from collections.abc import Sequence
 
 import numpy as np
 from pandas import DataFrame as PandasDataFrame
+from pandas._typing import Self
 from pandas.api.extensions import (
     ExtensionArray,
     ExtensionDtype,
@@ -93,6 +95,25 @@ class SITSFrameArray(ExtensionArray):
     def _from_sequence(cls, scalars, dtype=None, copy=False):
         """Construct a new ExtensionArray from a sequence of scalars."""
         return cls(scalars)
+
+    @classmethod
+    def _concat_same_type(cls, to_concat: Sequence[Self]) -> Self:
+        """Concatenate multiple array of this dtype.
+
+        Args:
+            to_concat (Sequence[Self]): The sequence of arrays to concatenate.
+
+        Returns:
+            Self: The concatenated array.
+
+        Examples:
+            >>> arr1 = SITSFrameArray([df1, df2])
+            >>> arr2 = SITSFrameArray([df3, df4])
+            >>> SITSFrameArray._concat_same_type([arr1, arr2])
+            NestedDataFrame(size = 4)
+        """
+        concatenated_data = [df for arr in to_concat for df in arr._data]
+        return cls(concatenated_data)
 
     #
     # Dunder methods (magic methods)
