@@ -20,7 +20,7 @@
 import rpy2.robjects as ro
 
 from pysits.backend.functions import r_fnc_class
-from pysits.conversions.base import rpy2_fix_type
+from pysits.conversions.decorators import rpy2_fix_type
 from pysits.docs import attach_doc
 from pysits.models import SITSCubeModel, SITSFrame, SITSTimeSeriesModel
 

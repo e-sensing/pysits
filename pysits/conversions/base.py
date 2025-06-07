@@ -17,11 +17,8 @@
 
 """Base type conversions."""
 
-import functools
-from collections.abc import Callable
 from datetime import date, timedelta
 from pathlib import Path, PosixPath
-from typing import Any, ParamSpec, TypeVar
 
 import rpy2.robjects as ro
 from pandas import DataFrame as PandasDataFrame
@@ -31,20 +28,13 @@ from pysits.backend.pkgs import r_pkg_tibble
 from pysits.conversions.pandasr import pandas_to_r
 
 #
-# Generics
-#
-T = TypeVar("T")
-P = ParamSpec("P")
-R = TypeVar("R")
-
-#
 # Type mapping dictionary
 #
 TYPE_CONVERSIONS = {
-    list: lambda obj: _convert_list_like(obj),
-    tuple: lambda obj: _convert_list_like(obj),
-    set: lambda obj: _convert_list_like(list(obj)),
-    dict: lambda obj: _convert_dict_like(obj),
+    list: lambda obj: convert_list_like_to_r(obj),
+    tuple: lambda obj: convert_list_like_to_r(obj),
+    set: lambda obj: convert_list_like_to_r(list(obj)),
+    dict: lambda obj: convert_dict_like_to_r(obj),
     bool: lambda obj: ro.BoolVector([obj]),
     int: lambda obj: ro.IntVector([obj]),
     float: lambda obj: ro.FloatVector([obj]),
@@ -62,14 +52,17 @@ EPOCH_START = date(1970, 1, 1)
 
 
 #
-# Type mapping utilities
+# Base utilities
 #
-def _is_numeric(x):
+def _is_numeric(x: int | float) -> bool:
     """Helper function to check if a value is numeric (int or float)."""
     return isinstance(x, int | float)
 
 
-def _convert_list_like(obj):  # noqa: PLR0911
+#
+# Base conversions
+#
+def convert_list_like_to_r(obj: list | tuple | set) -> ro.vectors.Vector:  # noqa: PLR0911
     """
     Converts a list-like object to the appropriate R vector type.
 
@@ -100,12 +93,17 @@ def _convert_list_like(obj):  # noqa: PLR0911
 
     else:
         return ro.vectors.ListVector(
-            {str(i): _convert_to_r(v) for i, v in enumerate(obj)}
+            {str(i): convert_to_r(v) for i, v in enumerate(obj)}
         )
 
 
-def _convert_dict_like(obj: dict) -> ro.vectors.Vector:
-    """Convert a Python dictionary to an appropriate R vector type.
+def convert_dict_like_as_list_to_r(obj: dict) -> ro.vectors.ListVector:
+    """Convert a Python dict to a ListVector."""
+    return ro.vectors.ListVector({str(k): convert_to_r(v) for k, v in obj.items()})
+
+
+def convert_dict_like_to_r(obj: dict) -> ro.vectors.Vector:
+    """Convert a Python dictionary to an R vector.
 
     This function converts a Python dictionary to either a typed R vector or ListVector,
     depending on the types of values in the dictionary:
@@ -131,17 +129,17 @@ def _convert_dict_like(obj: dict) -> ro.vectors.Vector:
 
     # Handle homogeneous data
     if has_unique_type or is_numeric:
-        vec = _convert_list_like(values)
+        vec = convert_list_like_to_r(values)
         vec.names = list(obj.keys())
 
         return vec
 
     # For mixed data, use a list vector
-    return ro.vectors.ListVector({str(k): _convert_to_r(v) for k, v in obj.items()})
+    return convert_dict_like_as_list_to_r(obj)
 
 
-def _convert_to_r(obj):
-    """Converts Python objects to R-compatible objects for use with rpy2.
+def convert_to_r(obj):
+    """Convert Python objects to R-compatible objects for use with rpy2.
 
     Args:
         obj: The Python object to convert.
@@ -172,11 +170,8 @@ def _convert_to_r(obj):
     raise TypeError(f"Cannot convert object of type {obj_type} to R format")
 
 
-#
-# Public utility
-#
-def r_to_python(obj, as_type="str"):
-    """Converts an R object to a Python representation.
+def convert_to_python(obj, as_type="str"):
+    """Convert an R object to a Python representation.
 
     Args:
         obj (ro.Vector): The R object to convert.
@@ -206,7 +201,7 @@ def r_to_python(obj, as_type="str"):
             for k, v in value.items():
                 result.append(
                     {
-                        str(k): r_to_python(v, type_),
+                        str(k): convert_to_python(v, type_),
                     }
                 )
 
@@ -232,61 +227,3 @@ def r_to_python(obj, as_type="str"):
         return result
 
     return _convert(obj, as_type)
-
-
-#
-# Decorator
-#
-def rpy2_fix_type(func: Callable[P, R]) -> Callable[P, R]:
-    """Decorator function to convert arguments to R-compatible objects.
-
-    Args:
-        func (Callable): The function whose arguments should be converted.
-
-    Returns:
-        Callable: A wrapped function that receives converted arguments.
-    """
-
-    @functools.wraps(func)
-    def wrapper(*args: Any, **kwargs: Any) -> Any:
-        converted_args = [_convert_to_r(arg) for arg in args]
-        converted_kwargs = {k: _convert_to_r(v) for k, v in kwargs.items()}
-        return func(*converted_args, **converted_kwargs)
-
-    return wrapper
-
-
-def function_call(r_function: Callable[P, R], output_wrapper: Callable[[R], T]):
-    """Decorator function to call an R function and post-process the result.
-
-    This decorator is used to wrap Python stub functions that serve as documentation
-    and type hint shells. The resulting function performs the following steps:
-
-    1. Converts all arguments to R-compatible types using `@rpy2_fix_type`.
-    2. Calls the provided R function (`r_function`) with converted arguments.
-    3. Wraps the result in a specified output Python class (`output_wrapper`).
-
-    This enables consistent logic while preserving per-function docstrings and
-    type hints for IDE support, autocompletion, and documentation generation.
-
-    Args:
-        r_function (Callable): The R function to be called via rpy2.
-
-        output_wrapper (Callable): A callable (usually a class) that wraps the
-                                   result returned by the R function.
-
-    Returns:
-        Callable: A decorator that wraps a Python function stub, providing the
-                    R execution logic.
-    """
-
-    def decorator(func: Callable[P, T]) -> Callable[P, T]:
-        @rpy2_fix_type
-        @functools.wraps(func)
-        def wrapped(*args: P.args, **kwargs: P.kwargs) -> T:
-            result = r_function(*args, **kwargs)
-            return output_wrapper(result)
-
-        return wrapped
-
-    return decorator

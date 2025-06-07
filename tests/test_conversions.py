@@ -20,7 +20,11 @@
 import pytest
 import rpy2.robjects as ro
 
-from pysits.conversions.base import _convert_dict_like, _convert_list_like
+from pysits.conversions.base import (
+    convert_dict_like_as_list_to_r,
+    convert_dict_like_to_r,
+    convert_list_like_to_r,
+)
 from pysits.conversions.clojure import closure_factory
 
 
@@ -32,41 +36,41 @@ def test_closure_factory_invalid_function():
     assert str(exc_info.value) == "Invalid function: non_existent_function"
 
 
-def test_convert_list_like():
+def test_convert_list_like_to_r():
     """Test conversion of Python list-like objects to R vectors."""
     # Test integer list
     int_list = [1, 2, 3, 4, 5]
-    int_result = _convert_list_like(int_list)
+    int_result = convert_list_like_to_r(int_list)
     assert isinstance(int_result, ro.vectors.IntVector)
     assert list(int_result) == int_list
 
     # Test float list
     float_list = [1.1, 2.2, 3.3, 4.4, 5.5]
-    float_result = _convert_list_like(float_list)
+    float_result = convert_list_like_to_r(float_list)
     assert isinstance(float_result, ro.vectors.FloatVector)
     assert list(float_result) == float_list
 
     # Test int + float list
     mixed_list = [1, 2.2, 3, 4.4, 5]
-    mixed_result = _convert_list_like(mixed_list)
+    mixed_result = convert_list_like_to_r(mixed_list)
     assert isinstance(mixed_result, ro.vectors.FloatVector)
     assert list(mixed_result) == mixed_list
 
     # Test string list
     str_list = ["a", "b", "c", "d"]
-    str_result = _convert_list_like(str_list)
+    str_result = convert_list_like_to_r(str_list)
     assert isinstance(str_result, ro.vectors.StrVector)
     assert list(str_result) == str_list
 
     # Test boolean list
     bool_list = [True, False, True, True]
-    bool_result = _convert_list_like(bool_list)
+    bool_result = convert_list_like_to_r(bool_list)
     assert isinstance(bool_result, ro.vectors.IntVector)
     assert list(bool_result) == bool_list
 
     # Test mixed type list
     mixed_list = [1, "text", 3.14, True]
-    mixed_result = _convert_list_like(mixed_list)
+    mixed_result = convert_list_like_to_r(mixed_list)
     assert isinstance(mixed_result, ro.vectors.ListVector)
     # Check that keys are string indices
     assert list(mixed_result.names) == ["0", "1", "2", "3"]
@@ -77,17 +81,17 @@ def test_convert_list_like():
     assert isinstance(mixed_result[3], ro.vectors.BoolVector)
 
 
-def test_convert_dict_like():
+def test_convert_dict_like_to_r():
     """Test conversion of Python dictionaries to R vectors."""
     # Test dictionary with all string values -> StrVector
     str_dict = {"a": "apple", "b": "banana", "c": "cherry"}
-    str_result = _convert_dict_like(str_dict)
+    str_result = convert_dict_like_to_r(str_dict)
     assert isinstance(str_result, ro.vectors.StrVector)
     assert list(str_result.names) == ["a", "b", "c"]
     assert list(str_result) == ["apple", "banana", "cherry"]
 
     # Empty dictionary
-    empty_result = _convert_dict_like({})
+    empty_result = convert_dict_like_to_r({})
     assert isinstance(empty_result, ro.vectors.ListVector)
 
     # Test dictionary with mixed value types -> ListVector
@@ -101,7 +105,7 @@ def test_convert_dict_like():
         "empty": [],
         "numeric": [1, 2.2, 3, 4.44],
     }
-    mixed_result = _convert_dict_like(mixed_dict)
+    mixed_result = convert_dict_like_to_r(mixed_dict)
     assert isinstance(mixed_result, ro.vectors.ListVector)
     assert list(mixed_result.names) == [
         "int",
@@ -142,3 +146,20 @@ def test_convert_dict_like():
 
     assert isinstance(mixed_result[7], ro.vectors.FloatVector)
     assert list(mixed_result[7]) == [1, 2.2, 3, 4.44]
+
+
+def test_convert_dict_like_as_list_to_r():
+    """Test conversion of Python dictionaries to R vectors."""
+    # Base test case
+    data = {"a": "apple", "b": "banana", "c": "cherry"}
+    result = convert_dict_like_as_list_to_r(data)
+
+    # Check type
+    assert isinstance(result, ro.vectors.ListVector)
+
+    # Check names
+    assert list(result.names) == ["a", "b", "c"]
+
+    # Empty dictionary
+    empty_result = convert_dict_like_as_list_to_r({})
+    assert isinstance(empty_result, ro.vectors.ListVector)

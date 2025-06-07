@@ -18,7 +18,7 @@
 """Classification operations."""
 
 from pysits.backend.pkgs import r_pkg_sits
-from pysits.conversions.base import function_call
+from pysits.conversions.decorators import function_call
 from pysits.docs import attach_doc
 from pysits.models import SITSCubeModel
 from pysits.models.builder import resolve_and_invoke_data_class

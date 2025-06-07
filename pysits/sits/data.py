@@ -21,27 +21,28 @@ from datetime import date
 
 from pysits.backend.functions import r_fnc_summary
 from pysits.backend.pkgs import r_pkg_sits
-from pysits.conversions.base import function_call, r_to_python
+from pysits.conversions.base import convert_to_python
+from pysits.conversions.decorators import function_call
 from pysits.docs import attach_doc
 from pysits.models import SITSFrame
 from pysits.models.builder import resolve_and_invoke_data_class
 
 
-@function_call(r_pkg_sits.sits_bands, lambda x: r_to_python(x, as_type="str"))
+@function_call(r_pkg_sits.sits_bands, lambda x: convert_to_python(x, as_type="str"))
 @attach_doc("sits_bands")
 def sits_bands(*args, **kwargs) -> list[str]:
     """Get datacube bands."""
     ...
 
 
-@function_call(r_pkg_sits.sits_timeline, lambda x: r_to_python(x, as_type="date"))
+@function_call(r_pkg_sits.sits_timeline, lambda x: convert_to_python(x, as_type="date"))
 @attach_doc("sits_timeline")
 def sits_timeline(*args, **kwargs) -> list[date]:
     """Get datacube timeline."""
     ...
 
 
-@function_call(r_pkg_sits.sits_labels, lambda x: r_to_python(x, as_type="str"))
+@function_call(r_pkg_sits.sits_labels, lambda x: convert_to_python(x, as_type="str"))
 @attach_doc("sits_labels")
 def sits_labels(*args, **kwargs) -> list[str]:
     """Finds labels in a sits tibble or data cube."""

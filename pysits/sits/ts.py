@@ -18,12 +18,13 @@
 """Time-series operations."""
 
 from pysits.backend.pkgs import r_pkg_sits
-from pysits.conversions.base import function_call, r_to_python
+from pysits.conversions.base import convert_to_python
+from pysits.conversions.decorators import function_call
 from pysits.docs import attach_doc
 from pysits.models import (
     SITSFrame,
-    SITSPatternsModel,
     SITSTimeSeriesModel,
+    SITSTimeSeriesPatternsModel,
     SITStructureData,
 )
 
@@ -70,7 +71,9 @@ def sits_pred_normalize(*args, **kwargs) -> SITSFrame:
     ...
 
 
-@function_call(r_pkg_sits.sits_pred_references, lambda x: r_to_python(x, as_type="str"))
+@function_call(
+    r_pkg_sits.sits_pred_references, lambda x: convert_to_python(x, as_type="str")
+)
 @attach_doc("sits_pred_references")
 def sits_pred_references(*args, **kwargs) -> list[str]:
     """Obtain categorical id and predictor labels for time series samples."""
@@ -135,9 +138,9 @@ def sits_cluster_dendro(*args, **kwargs) -> SITSTimeSeriesModel:
 #
 # Patterns
 #
-@function_call(r_pkg_sits.sits_patterns, SITSPatternsModel)
+@function_call(r_pkg_sits.sits_patterns, SITSTimeSeriesPatternsModel)
 @attach_doc("sits_patterns")
-def sits_patterns(*args, **kwargs) -> SITSPatternsModel:
+def sits_patterns(*args, **kwargs) -> SITSTimeSeriesPatternsModel:
     """Find temporal patterns associated to a set of time series."""
     ...
 

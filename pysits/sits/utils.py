@@ -19,8 +19,8 @@
 
 from pathlib import Path
 
-from pysits.backend.data import load_data_from_global, load_data_from_package
 from pysits.backend.functions import r_fnc_read_rds, r_fnc_set_seed, r_fnc_system_file
+from pysits.backend.loaders import load_data_from_global, load_data_from_package
 from pysits.models import SITSFrame
 from pysits.models.builder import resolve_and_invoke_data_class
 from pysits.models.ts import SITSTimeSeriesModel

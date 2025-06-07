@@ -18,7 +18,7 @@
 """Files exporter."""
 
 from pysits.backend.pkgs import r_pkg_sits
-from pysits.conversions.base import function_call
+from pysits.conversions.decorators import function_call
 from pysits.docs import attach_doc
 from pysits.models import SITSFrame
 

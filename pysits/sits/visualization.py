@@ -20,14 +20,14 @@
 from functools import singledispatch
 
 from pysits.backend.pkgs import r_pkg_sits
-from pysits.conversions.base import rpy2_fix_type
+from pysits.conversions.decorators import rpy2_fix_type
 from pysits.models import (
     SITSCubeModel,
     SITSFrame,
     SITSMachineLearningMethod,
-    SITSPatternsModel,
     SITSTimeSeriesClassificationModel,
     SITSTimeSeriesModel,
+    SITSTimeSeriesPatternsModel,
     SITStructureData,
 )
 from pysits.visualization import plot_base, plot_tmap
@@ -83,7 +83,7 @@ def _(data: SITSTimeSeriesClassificationModel, **kwargs) -> None:
 
 @sits_plot.register
 @rpy2_fix_type
-def _(data: SITSPatternsModel, **kwargs) -> None:
+def _(data: SITSTimeSeriesPatternsModel, **kwargs) -> None:
     """Plot patterns."""
     return plot_base(data, multiple=False, **kwargs)
 

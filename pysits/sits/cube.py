@@ -18,7 +18,7 @@
 """Cube operations."""
 
 from pysits.backend.pkgs import r_pkg_sits
-from pysits.conversions.base import function_call
+from pysits.conversions.decorators import function_call
 from pysits.docs import attach_doc
 from pysits.models import SITSCubeModel, SITSFrame
 
@@ -87,3 +87,9 @@ def sits_uncertainty_sampling(*args, **kwargs) -> SITSCubeModel:
 def sits_colors_qgis(*args, **kwargs) -> None:
     """Function to save color table as QML style for data cube."""
     ...
+
+
+# @function_call(r_pkg_sits.sits_reclassify, SITSCubeModel)
+@attach_doc("sits_reclassify")
+def sits_reclassify(*args, **kwargs) -> SITSCubeModel:
+    """Reclassify a probability cube."""

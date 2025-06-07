@@ -17,20 +17,57 @@
 
 """Machine-learning operations."""
 
+from typing import Any
+
+from pysits.backend.loaders import load_function_from_package
 from pysits.backend.pkgs import r_pkg_sits
-from pysits.conversions.base import function_call
+from pysits.conversions.base import convert_dict_like_as_list_to_r
 from pysits.conversions.clojure import closure_factory
+from pysits.conversions.decorators import function_call
 from pysits.docs import attach_doc
 from pysits.models import SITSMachineLearningMethod, SITStructureData
+
+
+#
+# DL-specific converters functions
+#
+def convert_optimizer(obj: Any) -> Any:
+    """Convert optimizer."""
+
+    if isinstance(obj, str):
+        return load_function_from_package(obj)
+
+    raise ValueError(
+        "Invalid optimizer format. Expected a string in the format 'package::function'."
+    )
+
+
+def convert_opt_hparams(obj: Any) -> Any:
+    """Convert optimizer hyperparameters."""
+
+    return convert_dict_like_as_list_to_r(obj)
+
+
+#
+# DL-specific converters config
+#
+dl_converters = {
+    "optimizer": convert_optimizer,
+    "opt_hparams": convert_opt_hparams,
+}
+
+#
+# DL Methods
+#
+sits_tae = closure_factory("sits_tae", converters=dl_converters)
+sits_tempcnn = closure_factory("sits_tempcnn", converters=dl_converters)
+sits_lighttae = closure_factory("sits_lighttae", converters=dl_converters)
+sits_mlp = closure_factory("sits_mlp", converters=dl_converters)
 
 #
 # ML Methods
 #
 sits_rfor = closure_factory("sits_rfor")
-sits_tae = closure_factory("sits_tae")
-sits_tempcnn = closure_factory("sits_tempcnn")
-sits_lighttae = closure_factory("sits_lighttae")
-sits_mlp = closure_factory("sits_mlp")
 sits_svm = closure_factory("sits_svm")
 sits_xgboost = closure_factory("sits_xgboost")
 

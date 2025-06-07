@@ -18,7 +18,7 @@
 """Color operations."""
 
 from pysits.backend.pkgs import r_pkg_sits
-from pysits.conversions.base import function_call, rpy2_fix_type
+from pysits.conversions.decorators import function_call, rpy2_fix_type
 from pysits.docs import attach_doc
 from pysits.models import SITSFrame
 from pysits.sits.visualization import sits_plot

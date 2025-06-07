@@ -15,36 +15,24 @@
 # along with this program; if not, see <https://www.gnu.org/licenses/>.
 #
 
-"""backend utility functions."""
+"""backend functions."""
 
-from pysits.backend.pkgs import r_pkg_base
+from pysits.backend.loaders import load_function_from_package
 
-#
-# Base - Plot
-#
-r_fnc_plot = r_pkg_base.plot
+# Base - plot
+r_fnc_plot = load_function_from_package("base::plot")
 
-#
-# Base - summary
-#
-r_fnc_summary = r_pkg_base.summary
+# Base - summary (base)
+r_fnc_summary = load_function_from_package("base::summary")
 
-#
-# Base - readRDS
-#
-r_fnc_read_rds = r_pkg_base.readRDS
+# Base - readRDS (base)
+r_fnc_read_rds = load_function_from_package("base::readRDS")
 
-#
-# Base - system.file
-#
-r_fnc_system_file = r_pkg_base.system_file
+# Base - system.file (base)
+r_fnc_system_file = load_function_from_package("base::system_file")
 
-#
-# Base - set.seed
-#
-r_fnc_set_seed = r_pkg_base.set_seed
+# Base - set.seed (base)
+r_fnc_set_seed = load_function_from_package("base::set_seed")
 
-#
-# Base - Class
-#
-r_fnc_class = getattr(r_pkg_base, "class")
+# Base - class (base)
+r_fnc_class = load_function_from_package("base::class")

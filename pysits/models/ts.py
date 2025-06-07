@@ -46,7 +46,7 @@ class SITSTimeSeriesModel(SITSFrame):
         return tibble_sits_to_pandas(instance)
 
 
-class SITSPatternsModel(SITSTimeSeriesModel):
+class SITSTimeSeriesPatternsModel(SITSTimeSeriesModel):
     """SITS patterns model."""
 
     def __init__(self, *args, **kwargs):
