@@ -25,6 +25,7 @@ from pandas import DataFrame as PandasDataFrame
 from rpy2.robjects.robject import RObjectMixin
 
 from pysits.backend.pkgs import r_pkg_tibble
+from pysits.conversions.dsl import ExpressionList
 from pysits.conversions.pandasr import pandas_to_r
 
 #
@@ -46,7 +47,7 @@ TYPE_CONVERSIONS = {
 
 
 #
-# Epoch reference (useful for date convertion)
+# R epoch reference
 #
 EPOCH_START = date(1970, 1, 1)
 
@@ -159,8 +160,8 @@ def convert_to_r(obj):
     if getattr(obj, "_instance", None):
         return obj._instance
 
-    # Handle ``raw R`` objects
-    if isinstance(obj, RObjectMixin):
+    # Handle ``raw R`` / Expressions objects
+    if isinstance(obj, RObjectMixin | ExpressionList):
         return obj
 
     # Check if the object type exists in the conversion dictionary
@@ -227,3 +228,23 @@ def convert_to_python(obj, as_type="str"):
         return result
 
     return _convert(obj, as_type)
+
+
+#
+# Parameters conversions
+#
+def fix_reserved_words_parameters(**kwargs) -> dict:
+    """Fix reserved words parameters.
+
+    Args:
+        **kwargs: The keyword arguments to fix.
+
+    Returns:
+        dict: The fixed keyword arguments.
+    """
+    for key, _ in kwargs.items():
+        # Assuming all reserved words end with "_"
+        if key.endswith("_"):
+            kwargs[key[:-1]] = kwargs.pop(key)
+
+    return kwargs

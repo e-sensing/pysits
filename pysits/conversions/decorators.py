@@ -22,7 +22,7 @@ import inspect
 from collections.abc import Callable
 from typing import Any, ParamSpec, TypeVar
 
-from pysits.conversions.base import convert_to_r
+from pysits.conversions.base import convert_to_r, fix_reserved_words_parameters
 
 #
 # Generics
@@ -47,6 +47,7 @@ def rpy2_fix_type(func: Callable[P, R]) -> Callable[P, R]:
 
     @functools.wraps(func)
     def wrapper(*args: Any, **kwargs: Any) -> Any:
+        kwargs = fix_reserved_words_parameters(**kwargs)
         converted_args = [convert_to_r(arg) for arg in args]
         converted_kwargs = {k: convert_to_r(v) for k, v in kwargs.items()}
         return func(*converted_args, **converted_kwargs)
