@@ -22,13 +22,13 @@ import xarray as xr
 from pysits.sits.context import samples_l8_rondonia_2bands
 from pysits.sits.cube import sits_cube
 from pysits.sits.exporters.xarray import sits_as_xarray
-from pysits.sits.utils import get_package_dir
+from pysits.sits.utils import r_package_dir
 
 
 def test_xarray_cube_conversion():
     """Test xarray cube conversion."""
     # Create a data cube from local files
-    data_dir = get_package_dir("extdata/raster/mod13q1", package="sits")
+    data_dir = r_package_dir("extdata/raster/mod13q1", package="sits")
     cube = sits_cube(
         source="BDC",
         collection="MOD13Q1-6.1",

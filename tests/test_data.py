@@ -20,11 +20,17 @@
 from pathlib import Path
 
 from pysits.models import SITSCubeModel, SITSTimeSeriesModel
-from pysits.sits.apply import sits_apply
 from pysits.sits.context import samples_l8_rondonia_2bands
 from pysits.sits.cube import sits_cube, sits_regularize
-from pysits.sits.data import sits_bands, sits_merge, sits_select, sits_timeline
-from pysits.sits.utils import get_package_dir
+from pysits.sits.data import (
+    sits_apply,
+    sits_bands,
+    sits_merge,
+    sits_reduce,
+    sits_select,
+    sits_timeline,
+)
+from pysits.sits.utils import r_package_dir
 
 
 def test_cube_select():
@@ -151,8 +157,15 @@ def test_sits_apply():
 
 def test_cube_apply(tmp_path: Path):
     """Test cube apply."""
-    data_dir = get_package_dir("extdata/raster/mod13q1", package="sits")
-    cube = sits_cube(source="BDC", collection="MOD13Q1-6.1", data_dir=data_dir)
+    data_dir = r_package_dir(
+        "extdata/raster/mod13q1",
+        package="sits",
+    )
+    cube = sits_cube(
+        source="BDC",
+        collection="MOD13Q1-6.1",
+        data_dir=data_dir,
+    )
 
     # Generate a texture images with variance in NDVI images
     cube_texture = sits_apply(
@@ -160,3 +173,38 @@ def test_cube_apply(tmp_path: Path):
     )
 
     assert all(band in sits_bands(cube_texture) for band in ["NDVI", "NDVITEXTURE"])
+
+
+def test_sits_reduce():
+    """Test reduce in samples."""
+    points = sits_select(samples_l8_rondonia_2bands, "NDVI")
+    points_reduced = sits_reduce(points, NDVI_MEDIAN="t_median(NDVI)")
+
+    assert "NDVI-MEDIAN" in sits_bands(points_reduced)
+    assert len(sits_timeline(points_reduced)) == 1  # noqa: PLR2004 - one date
+
+
+def test_cube_reduce(tmp_path: Path):
+    """Test reduce in cube."""
+    data_dir = r_package_dir(
+        "extdata/raster/mod13q1",
+        package="sits",
+    )
+    cube = sits_cube(
+        source="BDC",
+        collection="MOD13Q1-6.1",
+        data_dir=data_dir,
+    )
+
+    # Reduce the cube
+    cube_reduced = sits_reduce(
+        cube,
+        NDVIMEAN="t_mean(NDVI)",
+        output_dir=tmp_path,
+        progress=False,
+        multicores=2,
+    )
+
+    # Check cube properties
+    assert "NDVIMEAN" in sits_bands(cube_reduced)
+    assert len(sits_timeline(cube_reduced)) == 1  # noqa: PLR2004 - one date

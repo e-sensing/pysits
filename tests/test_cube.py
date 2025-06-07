@@ -17,11 +17,15 @@
 
 """Unit tests for cube operations."""
 
+from pathlib import Path
+
 from pandas import DataFrame as PandasDataFrame
 
 from pysits.models import SITSCubeModel, SITSFrame
-from pysits.sits.cube import sits_cube
-from pysits.sits.data import sits_bands, sits_bbox, sits_timeline
+from pysits.sits.cube import sits_cube, sits_reclassify
+from pysits.sits.data import sits_bands, sits_bbox, sits_labels, sits_timeline
+from pysits.sits.utils import r_package_dir
+from pysits.variables import Mask
 
 
 def test_sits_cube_data_structure():
@@ -134,3 +138,117 @@ def test_sits_cube_filter():
     assert isinstance(cube_tile2, SITSCubeModel)
     assert cube_tile2.tile.iloc[0] == "20LKP"
     assert not isinstance(cube_tile2._instance, PandasDataFrame)
+
+
+def test_cube_reclassify(tmp_path: Path):
+    """Test reclassify of classified cube."""
+    # Open mask map
+    data_dir = r_package_dir("extdata/raster/prodes", package="sits")
+    prodes2021 = sits_cube(
+        source="USGS",
+        collection="LANDSAT-C2L2-SR",
+        data_dir=data_dir,
+        parse_info=("X1", "X2", "tile", "start_date", "end_date", "band", "version"),
+        bands="class",
+        version="v20220606",
+        labels={
+            "1": "Forest",
+            "2": "Water",
+            "3": "NonForest",
+            "4": "NonForest2",
+            "6": "d2007",
+            "7": "d2008",
+            "8": "d2009",
+            "9": "d2010",
+            "10": "d2011",
+            "11": "d2012",
+            "12": "d2013",
+            "13": "d2014",
+            "14": "d2015",
+            "15": "d2016",
+            "16": "d2017",
+            "17": "d2018",
+            "18": "r2010",
+            "19": "r2011",
+            "20": "r2012",
+            "21": "r2013",
+            "22": "r2014",
+            "23": "r2015",
+            "24": "r2016",
+            "25": "r2017",
+            "26": "r2018",
+            "27": "d2019",
+            "28": "r2019",
+            "29": "d2020",
+            "31": "r2020",
+            "32": "Clouds2021",
+            "33": "d2021",
+            "34": "r2021",
+        },
+        progress=False,
+    )
+
+    # Open classification map
+    data_dir = r_package_dir("extdata/raster/classif", package="sits")
+    ro_class = sits_cube(
+        source="MPC",
+        collection="SENTINEL-2-L2A",
+        data_dir=data_dir,
+        parse_info=("X1", "X2", "tile", "start_date", "end_date", "band", "version"),
+        bands="class",
+        labels={
+            "1": "ClearCut_Fire",
+            "2": "ClearCut_Soil",
+            "3": "ClearCut_Veg",
+            "4": "Forest",
+        },
+        progress=False,
+    )
+
+    # Reclassify
+    ro_mask = sits_reclassify(
+        cube=ro_class,
+        mask=prodes2021,
+        rules=dict(
+            Old_Deforestation=Mask.in_(
+                [
+                    "d2007",
+                    "d2008",
+                    "d2009",
+                    "d2010",
+                    "d2011",
+                    "d2012",
+                    "d2013",
+                    "d2014",
+                    "d2015",
+                    "d2016",
+                    "d2017",
+                    "d2018",
+                    "r2010",
+                    "r2011",
+                    "r2012",
+                    "r2013",
+                    "r2014",
+                    "r2015",
+                    "r2016",
+                    "r2017",
+                    "r2018",
+                    "d2019",
+                    "r2019",
+                    "d2020",
+                    "r2020",
+                    "r2021",
+                ]
+            ),
+            Water_Mask=(Mask == "Water"),
+            NonForest_Mask=Mask.in_(["NonForest", "NonForest2"]),
+        ),
+        memsize=4,
+        multicores=2,
+        output_dir=tmp_path,
+        version="ex_reclassify",
+    )
+
+    assert isinstance(ro_mask, SITSCubeModel)
+    assert ro_mask.shape[0] == 1  # noqa: PLR2004 - number of tiles
+    assert len(sits_labels(ro_mask)) == 5  # noqa: PLR2004 - number of labels

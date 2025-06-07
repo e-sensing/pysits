@@ -17,31 +17,35 @@
 
 """Unit tests for visualization operations."""
 
-import matplotlib
-
-#
-# Set the backend to avoid plot windows
-#
-matplotlib.use("Agg")
-
-#
-# Import after setting the backend
-#
-import matplotlib.pyplot as plt
-import pytest
-
 from pysits.sits.context import samples_l8_rondonia_2bands
 from pysits.sits.cube import sits_cube
-from pysits.sits.utils import get_package_dir
+from pysits.sits.ml import sits_rfor, sits_train
+from pysits.sits.ts import sits_patterns, sits_som_map
+from pysits.sits.utils import r_package_dir
 from pysits.sits.visualization import sits_plot
 
 
-@pytest.fixture
-def no_plot_window(monkeypatch):
-    """Fixture to prevent matplotlib plot windows from showing during tests."""
-    monkeypatch.setattr(plt, "show", lambda: None)
-    yield
-    plt.close("all")
+def test_sits_visualization(no_plot_window):
+    """Test sits visualization."""
+    sits_plot(samples_l8_rondonia_2bands)
+
+
+def test_sits_patterns_visualization(no_plot_window):
+    """Test sits patterns visualization."""
+    patterns = sits_patterns(samples_l8_rondonia_2bands)
+    sits_plot(patterns)
+
+
+def test_machine_learning_visualization(no_plot_window):
+    """Test machine learning visualization."""
+    ml_model = sits_train(samples_l8_rondonia_2bands, sits_rfor())
+    sits_plot(ml_model)
+
+
+def test_som_visualization(no_plot_window):
+    """Test SOM visualization."""
+    som = sits_som_map(data=samples_l8_rondonia_2bands)
+    sits_plot(som)
 
 
 def test_cube_visualization(no_plot_window):
@@ -49,12 +53,37 @@ def test_cube_visualization(no_plot_window):
     cube = sits_cube(
         source="BDC",
         collection="MOD13Q1-6.1",
-        data_dir=get_package_dir("extdata/raster/mod13q1", package="sits"),
+        data_dir=r_package_dir("extdata/raster/mod13q1", package="sits"),
     )
 
     sits_plot(cube)
 
 
-def test_sits_visualization(no_plot_window):
-    """Test sits visualization."""
-    sits_plot(samples_l8_rondonia_2bands)
+def test_classified_cube_visualization(no_plot_window):
+    """Test classified cube visualization."""
+    data_dir = r_package_dir("extdata/raster/classif", package="sits")
+    cube = sits_cube(
+        source="MPC",
+        collection="SENTINEL-2-L2A",
+        data_dir=data_dir,
+        parse_info=(
+            "X1",
+            "X2",
+            "tile",
+            "start_date",
+            "end_date",
+            "band",
+            "version",
+        ),
+        bands="class",
+        labels={
+            "1": "ClearCut_Fire",
+            "2": "ClearCut_Soil",
+            "3": "ClearCut_Veg",
+            "4": "Forest",
+        },
+        progress=False,
+    )
+
+    # Plot the result
+    sits_plot(cube)

@@ -16,3 +16,24 @@
 #
 
 """Pytest configuration file."""
+
+import matplotlib
+
+#
+# Set the backend to avoid plot windows
+#
+matplotlib.use("Agg")
+
+#
+# Import after setting visualization backend
+#
+import matplotlib.pyplot as plt
+import pytest
+
+
+@pytest.fixture
+def no_plot_window(monkeypatch):
+    """Fixture to prevent matplotlib plot windows from showing during tests."""
+    monkeypatch.setattr(plt, "show", lambda: None)
+    yield
+    plt.close("all")
