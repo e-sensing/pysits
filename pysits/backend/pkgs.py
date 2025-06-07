@@ -29,3 +29,4 @@ r_pkg_sits = importr("sits")
 # sits-dependencies packages
 r_pkg_tibble = importr("tibble")
 r_pkg_leaflet = importr("leaflet")
+r_pkg_kohonen = importr("kohonen")
