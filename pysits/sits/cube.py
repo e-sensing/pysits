@@ -17,10 +17,37 @@
 
 """Cube operations."""
 
+import rpy2.robjects as ro
+
 from pysits.backend.pkgs import r_pkg_sits
-from pysits.conversions.decorators import function_call
+from pysits.conversions.decorators import (
+    function_call,
+    rpy2_fix_type,
+    rpy2_fix_type_custom,
+)
+from pysits.conversions.dsl import ExpressionList
 from pysits.docs import attach_doc
 from pysits.models import SITSCubeModel, SITSFrame
+
+
+#
+# Reclassify-specific converters functions
+#
+def convert_reclassify_rules(obj: object) -> ExpressionList:
+    """Convert reclassify rules to a propert ExpressionList."""
+
+    if not isinstance(obj, dict):
+        raise ValueError("Reclassify rules must be a dictionary.")
+
+    return ExpressionList(**obj)
+
+
+#
+# Reclassify-specific converters config
+#
+reclassify_converters = {
+    "rules": convert_reclassify_rules,
+}
 
 
 #
@@ -89,7 +116,40 @@ def sits_colors_qgis(*args, **kwargs) -> None:
     ...
 
 
-# @function_call(r_pkg_sits.sits_reclassify, SITSCubeModel)
+@rpy2_fix_type_custom(converters=reclassify_converters)
+@rpy2_fix_type
 @attach_doc("sits_reclassify")
-def sits_reclassify(*args, **kwargs) -> SITSCubeModel:
-    """Reclassify a probability cube."""
+def sits_reclassify(
+    cube: SITSCubeModel, mask: SITSCubeModel, rules: ExpressionList, *args, **kwargs
+) -> SITSCubeModel:
+    """Reclassify a classified cube."""
+    params = []
+
+    # Process parameters manually
+    for k, v in kwargs.items():
+        current_v = v[0]
+
+        if k in ["output_dir", "version"]:
+            current_v = f"'{current_v}'"
+
+        elif k == "progress":
+            current_v = "FALSE" if current_v else "TRUE"
+
+        params.append(f"{k}={current_v}")
+
+    # Build the ``sits_apply`` command manually to support
+    # high-level expression definition (using string)
+    command = f"""
+        sits_reclassify(
+            cube = {cube.r_repr()},
+            mask = {mask.r_repr()},
+            rules = {rules.r_repr()},
+            {", ".join(params)}
+        )
+    """
+
+    # Run operation
+    result = ro.r(command)
+
+    # Return
+    return SITSCubeModel(result)

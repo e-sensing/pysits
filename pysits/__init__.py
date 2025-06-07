@@ -18,7 +18,6 @@
 """pysits module."""
 
 from .settings import __version__
-from .sits.apply import sits_apply
 from .sits.classification import sits_classify, sits_label_classification, sits_smooth
 from .sits.colors import (
     sits_colors,
@@ -39,12 +38,14 @@ from .sits.cube import (
     sits_combine_predictions,
     sits_cube,
     sits_cube_copy,
+    sits_reclassify,
     sits_regularize,
     sits_uncertainty,
     sits_uncertainty_sampling,
     sits_variance,
 )
 from .sits.data import (
+    sits_apply,
     sits_bands,
     sits_bbox,
     sits_labels,
@@ -52,6 +53,7 @@ from .sits.data import (
     sits_list_collections,
     sits_merge,
     sits_mixture_model,
+    sits_reduce,
     sits_select,
     sits_timeline,
 )
@@ -89,7 +91,12 @@ from .sits.ts import (
     sits_stats,
     sits_whittaker,
 )
-from .sits.utils import get_package_dir, load_samples_dataset, r_set_seed, read_sits_rds
+from .sits.utils import (
+    load_samples_dataset,
+    r_package_dir,
+    r_set_seed,
+    read_rds,
+)
 from .sits.visualization import sits_plot as plot
 
 __all__ = (
@@ -101,6 +108,7 @@ __all__ = (
     "sits_cube",
     "sits_clean",
     "sits_combine_predictions",
+    "sits_reclassify",
     "sits_regularize",
     "sits_cube_copy",
     "sits_colors_qgis",
@@ -128,6 +136,7 @@ __all__ = (
     "summary",
     "sits_labels_summary",
     "sits_cluster_dendro",
+    "sits_reduce",
     # Machine Learning methods
     "sits_train",
     "sits_mlp",
@@ -177,10 +186,10 @@ __all__ = (
     "point_mt_6bands",
     "cerrado_2classes",
     # Utils
-    "read_sits_rds",
-    "get_package_dir",
-    "load_samples_dataset",
+    "read_rds",
+    "r_package_dir",
     "r_set_seed",
+    "load_samples_dataset",
     # Package settings
     "__version__",
 )

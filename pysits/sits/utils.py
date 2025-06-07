@@ -41,8 +41,8 @@ def r_set_seed(seed: int) -> None:
 #
 # File management
 #
-def read_sits_rds(file: str | Path) -> SITSFrame:
-    """Read sits data stored as RDS file.
+def read_rds(file: str | Path) -> SITSFrame:
+    """Read RDS file compatible with SITS.
 
     Args:
         file (str | Path): RDS file.
@@ -63,7 +63,7 @@ def read_sits_rds(file: str | Path) -> SITSFrame:
     return resolve_and_invoke_data_class(rds_content)
 
 
-def get_package_dir(content_dir: str, package: str) -> Path | None:
+def r_package_dir(content_dir: str, package: str) -> Path | None:
     """Get data dir from an existing R package.
 
     This function gets the directory available in an R package. It uses

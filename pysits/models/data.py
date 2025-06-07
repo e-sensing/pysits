@@ -104,12 +104,18 @@ class SITSFrame(PandasDataFrame, SITSData):
         indices = np.atleast_1d(indices)
         r_indices = IntVector((indices + 1).tolist())
 
+        # ToDo: review transformations to R
+        if isinstance(self._instance, PandasDataFrame):
+            return self._instance.take(indices, axis, **kwargs)
+
         if axis == 0:
             # Take rows: [r_indices, ]
             result = self._instance.rx(r_indices, True)
+
         elif axis == 1:
             # Take columns: [, r_indices]
             result = self._instance.rx(True, r_indices)
+
         else:
             raise ValueError("Axis must be 0 (rows) or 1 (columns)")
 
