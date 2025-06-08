@@ -36,7 +36,6 @@ from pysits.models import (
 @attach_doc("sits_get_data")
 def sits_get_data(*args, **kwargs) -> SITSTimeSeriesModel:
     """Retrieve time series data from a data cube."""
-    ...
 
 
 @function_call(r_pkg_sits.sits_stats, SITStructureData)
@@ -47,28 +46,24 @@ def sits_stats(*args, **kwargs) -> SITStructureData:
     ToDo:
         - Enhance result type to a Dict-like object.
     """
-    ...
 
 
 @function_call(r_pkg_sits.sits_predictors, SITSFrame)
 @attach_doc("sits_predictors")
 def sits_predictors(*args, **kwargs) -> SITSFrame:
     """Obtain predictors for time series samples."""
-    ...
 
 
 @function_call(r_pkg_sits.sits_pred_features, SITSFrame)
 @attach_doc("sits_pred_features")
 def sits_pred_features(*args, **kwargs) -> SITSFrame:
     """Obtain numerical values of predictors for time series samples."""
-    ...
 
 
 @function_call(r_pkg_sits.sits_pred_normalize, SITSFrame)
 @attach_doc("sits_pred_normalize")
 def sits_pred_normalize(*args, **kwargs) -> SITSFrame:
     """Normalize predictor values."""
-    ...
 
 
 @function_call(
@@ -77,28 +72,24 @@ def sits_pred_normalize(*args, **kwargs) -> SITSFrame:
 @attach_doc("sits_pred_references")
 def sits_pred_references(*args, **kwargs) -> list[str]:
     """Obtain categorical id and predictor labels for time series samples."""
-    ...
 
 
 @function_call(r_pkg_sits.sits_pred_sample, SITSFrame)
 @attach_doc("sits_pred_sample")
 def sits_pred_sample(*args, **kwargs) -> SITSFrame:
     """Obtain a fraction of the predictors data frame."""
-    ...
 
 
 @function_call(r_pkg_sits.sits_sample, SITSTimeSeriesModel)
 @attach_doc("sits_sample")
 def sits_sample(*args, **kwargs) -> SITSTimeSeriesModel:
     """Sample a percentage of a time series."""
-    ...
 
 
 @function_call(r_pkg_sits.sits_reduce_imbalance, SITSTimeSeriesModel)
 @attach_doc("sits_reduce_imbalance")
 def sits_reduce_imbalance(*args, **kwargs) -> SITSTimeSeriesModel:
     """Reduce imbalance in a set of samples."""
-    ...
 
 
 #
@@ -108,21 +99,18 @@ def sits_reduce_imbalance(*args, **kwargs) -> SITSTimeSeriesModel:
 @attach_doc("sits_som_map")
 def sits_som_map(*args, **kwargs) -> SITStructureData:
     """Build a SOM for quality analysis of time series samples."""
-    ...
 
 
 @function_call(r_pkg_sits.sits_som_evaluate_cluster, SITSFrame)
 @attach_doc("sits_som_evaluate_cluster")
 def sits_som_evaluate_cluster(*args, **kwargs) -> SITSFrame:
     """Evaluate cluster quality."""
-    ...
 
 
 @function_call(r_pkg_sits.sits_som_clean_samples, SITSTimeSeriesModel)
 @attach_doc("sits_som_clean_samples")
 def sits_som_clean_samples(*args, **kwargs) -> SITSTimeSeriesModel:
     """Cleans the samples based on SOM map information."""
-    ...
 
 
 #
@@ -132,7 +120,6 @@ def sits_som_clean_samples(*args, **kwargs) -> SITSTimeSeriesModel:
 @attach_doc("sits_cluster_dendro")
 def sits_cluster_dendro(*args, **kwargs) -> SITSTimeSeriesModel:
     """Find clusters in time series samples."""
-    ...
 
 
 #
@@ -142,7 +129,6 @@ def sits_cluster_dendro(*args, **kwargs) -> SITSTimeSeriesModel:
 @attach_doc("sits_patterns")
 def sits_patterns(*args, **kwargs) -> SITSTimeSeriesPatternsModel:
     """Find temporal patterns associated to a set of time series."""
-    ...
 
 
 #
@@ -152,11 +138,9 @@ def sits_patterns(*args, **kwargs) -> SITSTimeSeriesPatternsModel:
 @attach_doc("sits_sgolay")
 def sits_sgolay(*args, **kwargs) -> SITSTimeSeriesModel:
     """Apply Savitzky-Golay filter to time series."""
-    ...
 
 
 @function_call(r_pkg_sits.sits_whittaker, SITSTimeSeriesModel)
 @attach_doc("sits_whittaker")
 def sits_whittaker(*args, **kwargs) -> SITSTimeSeriesModel:
     """Apply Whittaker filter to time series."""
-    ...

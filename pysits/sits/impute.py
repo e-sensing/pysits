@@ -36,4 +36,3 @@ impute_linear = closure_factory("impute_linear")
 @attach_doc("sits_impute")
 def sits_impute(*args, **kwargs) -> SITSTimeSeriesModel:
     """Impute missing values in a time series."""
-    ...

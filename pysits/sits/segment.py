@@ -36,4 +36,3 @@ sits_slic = closure_factory("sits_slic")
 @attach_doc("sits_segment")
 def sits_segment(*args, **kwargs) -> SITSCubeModel:
     """Segment an image."""
-    ...

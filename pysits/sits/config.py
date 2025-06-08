@@ -31,18 +31,15 @@ def sits_config(*args, **kwargs) -> SITStructureData:
     ToDo:
         - Enhance result type to a Dict-like object.
     """
-    ...
 
 
 @function_call(r_pkg_sits.sits_config_show, lambda x: None)
 @attach_doc("sits_config_show")
 def sits_config_show(*args, **kwargs) -> None:
     """Show current sits configuration."""
-    ...
 
 
 @function_call(r_pkg_sits.sits_config_user_file, lambda x: None)
 @attach_doc("sits_config_user_file")
 def sits_config_user_file(*args, **kwargs) -> None:
     """Create a user configuration file."""
-    ...

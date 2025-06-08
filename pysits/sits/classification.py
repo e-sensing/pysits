@@ -28,18 +28,15 @@ from pysits.models.builder import resolve_and_invoke_data_class
 @attach_doc("sits_classify")
 def sits_classify(*args, **kwargs) -> SITSCubeModel:
     """Classify data."""
-    ...
 
 
 @function_call(r_pkg_sits.sits_smooth, SITSCubeModel)
 @attach_doc("sits_smooth")
 def sits_smooth(*args, **kwargs) -> SITSCubeModel:
     """Smooth classification data."""
-    ...
 
 
 @function_call(r_pkg_sits.sits_label_classification, SITSCubeModel)
 @attach_doc("sits_label_classification")
 def sits_label_classification(*args, **kwargs) -> SITSCubeModel:
     """Label probabilities data."""
-    ...

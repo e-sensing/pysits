@@ -28,21 +28,18 @@ from pysits.sits.visualization import sits_plot
 @attach_doc("sits_colors")
 def sits_colors(*args, **kwargs) -> SITSFrame:
     """List all supported legend colors."""
-    ...
 
 
 @function_call(r_pkg_sits.sits_colors_reset, lambda x: None)
 @attach_doc("sits_colors_reset")
 def sits_colors_reset(*args, **kwargs) -> None:
     """Reset color table."""
-    ...
 
 
 @function_call(r_pkg_sits.sits_colors_set, SITSFrame)
 @attach_doc("sits_colors_set")
 def sits_colors_set(*args, **kwargs) -> SITSFrame:
     """Set color table."""
-    ...
 
 
 @rpy2_fix_type

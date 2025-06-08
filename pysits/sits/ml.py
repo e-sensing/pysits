@@ -79,11 +79,9 @@ sits_xgboost = closure_factory("sits_xgboost")
 @attach_doc("sits_train")
 def sits_train(*args, **kwargs) -> SITSMachineLearningMethod:
     """Train a machine learning model."""
-    ...
 
 
 @function_call(r_pkg_sits.sits_kfold_validate, SITStructureData)
 @attach_doc("sits_kfold_validate")
 def sits_kfold_validate(*args, **kwargs) -> SITStructureData:
     """Train a machine learning model."""
-    ...
