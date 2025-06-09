@@ -23,6 +23,7 @@ from pysits.conversions.decorators import function_call
 from pysits.docs import attach_doc
 from pysits.models import (
     SITSFrame,
+    SITSMatrix,
     SITSTimeSeriesModel,
     SITSTimeSeriesPatternsModel,
     SITStructureData,
@@ -90,6 +91,15 @@ def sits_sample(*args, **kwargs) -> SITSTimeSeriesModel:
 @attach_doc("sits_reduce_imbalance")
 def sits_reduce_imbalance(*args, **kwargs) -> SITSTimeSeriesModel:
     """Reduce imbalance in a set of samples."""
+
+
+#
+# Sampling
+#
+@function_call(r_pkg_sits.sits_sampling_design, SITSMatrix)
+@attach_doc("sits_sampling_design")
+def sits_sampling_design(*args, **kwargs) -> SITSMatrix:
+    """Allocation of sample size to strata."""
 
 
 #

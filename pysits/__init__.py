@@ -84,6 +84,7 @@ from .sits.ts import (
     sits_predictors,
     sits_reduce_imbalance,
     sits_sample,
+    sits_sampling_design,
     sits_sgolay,
     sits_som_clean_samples,
     sits_som_evaluate_cluster,
@@ -166,6 +167,7 @@ __all__ = (
     "sits_patterns",
     "sits_sample",
     "sits_reduce_imbalance",
+    "sits_sampling_design",
     # Tiles
     "sits_mgrs_to_roi",
     "sits_tiles_to_roi",

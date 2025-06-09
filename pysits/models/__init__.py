@@ -19,7 +19,7 @@
 
 from .base import SITSBase
 from .cube import SITSCubeModel
-from .data import SITSData, SITSFrame, SITSNamedVector, SITStructureData
+from .data import SITSData, SITSFrame, SITSMatrix, SITSNamedVector, SITStructureData
 from .ml import SITSMachineLearningMethod
 from .ts import (
     SITSTimeSeriesClassificationModel,
@@ -34,6 +34,7 @@ __all__ = (
     "SITSFrame",
     "SITStructureData",
     "SITSNamedVector",
+    "SITSMatrix",
     # Data Cube
     "SITSCubeModel",
     # Time-series

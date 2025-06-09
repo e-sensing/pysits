@@ -22,6 +22,8 @@ from pandas import DataFrame as PandasDataFrame
 from rpy2.robjects.vectors import DataFrame as RDataFrame
 from rpy2.robjects.vectors import IntVector
 
+from pysits.backend.functions import r_fnc_class
+from pysits.conversions.matrix import matrix_to_pandas
 from pysits.conversions.tibble import tibble_to_pandas
 from pysits.conversions.vector import vector_to_pandas
 from pysits.models.base import SITSBase
@@ -151,3 +153,28 @@ class SITSNamedVector(SITSFrame):
     def _convert_from_r(self, instance):
         """Convert data from R to Python."""
         return vector_to_pandas(instance)
+
+
+class SITSMatrix(SITSFrame):
+    """Base class for sits matrix results."""
+
+    #
+    # Dunder methods
+    #
+    def __init__(self, instance, **kwargs):
+        """Initializer."""
+        self._instance = instance
+
+        # Proxy instance
+        if "matrix" in r_fnc_class(instance):
+            instance = self._convert_from_r(instance)
+
+        # Initialize super class
+        PandasDataFrame.__init__(self, data=instance, **kwargs)
+
+    #
+    # Convertions
+    #
+    def _convert_from_r(self, instance):
+        """Convert data from R to Python."""
+        return matrix_to_pandas(instance)

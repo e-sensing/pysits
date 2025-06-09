@@ -36,3 +36,12 @@ r_fnc_set_seed = load_function_from_package("base::set_seed")
 
 # Base - class (base)
 r_fnc_class = load_function_from_package("base::class")
+
+# Base - as.data.frame (base)
+r_fnc_as_data_frame = load_function_from_package("base::as_data_frame")
+
+# Base - colnames (base)
+r_fnc_colnames = load_function_from_package("base::colnames")
+
+# Base - rownames (base)
+r_fnc_rownames = load_function_from_package("base::rownames")
