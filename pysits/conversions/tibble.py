@@ -19,13 +19,15 @@
 
 from collections.abc import Callable
 
+import geopandas
 from pandas import DataFrame as PandasDataFrame
 from pandas import to_datetime as pandas_to_datetime
 from rpy2.robjects import StrVector, pandas2ri
 from rpy2.robjects.vectors import DataFrame as RDataFrame
+from shapely import wkt
 
 from pysits.backend.functions import r_fnc_class
-from pysits.backend.pkgs import r_pkg_base
+from pysits.backend.pkgs import r_pkg_base, r_pkg_sf
 from pysits.models.frame import SITSFrameArray
 
 
@@ -51,6 +53,25 @@ def _column_to_datetime(data: PandasDataFrame, colname: str) -> PandasDataFrame:
     return data
 
 
+def _sf_to_shapely(sf_object: RDataFrame) -> list:
+    """Transform a columns from R to a valid geometry column in Python.
+
+    Args:
+        sf_object (rpy2.robjects.vectors.ListVector): R (tibble/data.frame) Data frame.
+
+    Returns:
+        list: List of Shapely geometries.
+    """
+    # Extract geometry and convert to WKT in R directly
+    geom_wkt = r_pkg_sf.st_as_text(r_pkg_sf.st_geometry(sf_object))
+
+    # Convert R character vector to Python list of strings
+    geom_wkt_py = list(geom_wkt)
+
+    # Convert each WKT string to a Shapely geometry
+    return [wkt.loads(g) for g in geom_wkt_py]
+
+
 #
 # Base conversion function
 #
@@ -61,6 +82,28 @@ def _tibble_to_pandas(
     nested_processor: Callable[[PandasDataFrame], PandasDataFrame] | None = None,
 ) -> PandasDataFrame:
     """Transform tibble to pandas."""
+    # Check if the data is an SF object
+    has_geometries = "sf" in r_fnc_class(data)
+
+    # Define shapely geometries and CRS
+    shapely_crs = None
+    shapely_geometries = None
+
+    # Handle SF objects
+    if has_geometries:
+        # Convert geometry to Shapely geometries
+        shapely_geometries = _sf_to_shapely(data)
+
+        # Get CRS
+        shapely_crs = r_pkg_sf.st_crs(data)
+
+        # Check if CRS is available
+        if "NULL" not in r_fnc_class(shapely_crs):
+            shapely_crs = shapely_crs.rx2("wkt")[0]
+
+        # Drop geometry column
+        data = r_pkg_sf.st_drop_geometry(data)
+
     # Convert columns definitions
     nested_columns = nested_columns if nested_columns else []
 
@@ -119,6 +162,12 @@ def _tibble_to_pandas(
     # If a processor function is available to the main table, use it
     if table_processor:
         rdf_data = table_processor(rdf_data)
+
+    # Transform dataframe to geodataframe
+    if shapely_geometries:
+        rdf_data = geopandas.GeoDataFrame(
+            rdf_data, geometry=shapely_geometries, crs=shapely_crs
+        )
 
     # Return!
     return rdf_data

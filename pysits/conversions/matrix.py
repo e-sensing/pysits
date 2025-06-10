@@ -19,6 +19,7 @@
 
 from typing import Any
 
+import numpy as np
 from pandas import DataFrame as PandasDataFrame
 from rpy2.robjects import DataFrame as RDataFrame
 from rpy2.robjects import Matrix
@@ -76,3 +77,47 @@ def matrix_to_pandas(matrix: Matrix) -> PandasDataFrame:
 
     # Create pandas DataFrame with the processed data and row indices
     return PandasDataFrame(data, index=rownames)
+
+
+def table_to_pandas(table) -> PandasDataFrame:
+    """Convert an R table to a pandas DataFrame.
+
+    This function takes an R table (typically used for contingency
+    tables and frequency data)and converts it to a pandas DataFrame
+    while preserving the structure and names. It handles both
+    1-dimensional and 2-dimensional tables.
+
+    Args:
+        table: An R table object to be converted.
+
+    Returns:
+        A pandas DataFrame containing the data from the R table, with
+        preserved dimension names and structure. For 2D tables, rows
+        represent the first dimension and columns represent the second
+        dimension.
+    """
+    # Get the table's dimensions
+    dims = table.dim
+    if len(dims) > 2:  # noqa: PLR2004 Number of dimensions
+        raise ValueError("Only 1D and 2D tables are supported")
+
+    # Get the dimension names (these are the categories for each dimension)
+    dimnames = table.dimnames
+
+    # Convert table data to numpy array for easier manipulation
+    data = np.array(table)
+
+    if len(dims) == 1:
+        # For 1D tables, create a single-column DataFrame
+        return PandasDataFrame(
+            {dimnames[0][0]: data},  # Use first dimension name as column name
+            index=list(dimnames[0]),  # Categories as index
+        )
+
+    else:
+        # For 2D tables, preserve the structure with rows and columns
+        return PandasDataFrame(
+            data,
+            index=list(dimnames[0]),  # First dimension categories as row labels
+            columns=list(dimnames[1]),  # Second dimension categories as column labels
+        )

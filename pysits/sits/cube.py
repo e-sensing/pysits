@@ -97,8 +97,14 @@ def sits_combine_predictions(*args, **kwargs) -> SITSCubeModel:
 
 @function_call(r_pkg_sits.sits_uncertainty_sampling, SITSFrame)
 @attach_doc("sits_uncertainty_sampling")
-def sits_uncertainty_sampling(*args, **kwargs) -> SITSCubeModel:
+def sits_uncertainty_sampling(*args, **kwargs) -> SITSFrame:
     """Suggest samples for enhancing classification accuracy."""
+
+
+@function_call(r_pkg_sits.sits_confidence_sampling, SITSFrame)
+@attach_doc("sits_confidence_sampling")
+def sits_confidence_sampling(*args, **kwargs) -> SITSFrame:
+    """Suggest high confidence samples to increase the training set."""
 
 
 @function_call(r_pkg_sits.sits_colors_qgis, lambda x: None)
