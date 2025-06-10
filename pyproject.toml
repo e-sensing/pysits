@@ -57,7 +57,9 @@ dependencies = [
     "rpy2>=3.5.17,<4.0.0",
     "pandas>=2.2.3",
     "pillow>=11.1.0",
-    "matplotlib>=3.10.1"
+    "matplotlib>=3.10.1",
+    "geopandas>=1.1.0",
+    "shapely>=2.1.1",
 ]
 
 [project.urls]
