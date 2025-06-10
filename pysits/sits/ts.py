@@ -23,7 +23,9 @@ from pysits.conversions.decorators import function_call
 from pysits.docs import attach_doc
 from pysits.models import (
     SITSFrame,
+    SITSFrameSF,
     SITSMatrix,
+    SITSTable,
     SITSTimeSeriesModel,
     SITSTimeSeriesPatternsModel,
     SITStructureData,
@@ -49,6 +51,9 @@ def sits_stats(*args, **kwargs) -> SITStructureData:
     """
 
 
+#
+# Predictors
+#
 @function_call(r_pkg_sits.sits_predictors, SITSFrame)
 @attach_doc("sits_predictors")
 def sits_predictors(*args, **kwargs) -> SITSFrame:
@@ -93,12 +98,24 @@ def sits_reduce_imbalance(*args, **kwargs) -> SITSTimeSeriesModel:
     """Reduce imbalance in a set of samples."""
 
 
+@function_call(r_pkg_sits.sits_show_prediction, SITSFrame)
+@attach_doc("sits_show_prediction")
+def sits_show_prediction(*args, **kwargs) -> SITSFrame:
+    """Show prediction results."""
+
+
 #
 # Sampling
 #
 @function_call(r_pkg_sits.sits_sampling_design, SITSMatrix)
 @attach_doc("sits_sampling_design")
 def sits_sampling_design(*args, **kwargs) -> SITSMatrix:
+    """Allocation of sample size to strata."""
+
+
+@function_call(r_pkg_sits.sits_stratified_sampling, SITSFrameSF)
+@attach_doc("sits_stratified_sampling")
+def sits_stratified_sampling(*args, **kwargs) -> SITSFrameSF:
     """Allocation of sample size to strata."""
 
 
@@ -129,7 +146,23 @@ def sits_som_clean_samples(*args, **kwargs) -> SITSTimeSeriesModel:
 @function_call(r_pkg_sits.sits_cluster_dendro, SITSTimeSeriesModel)
 @attach_doc("sits_cluster_dendro")
 def sits_cluster_dendro(*args, **kwargs) -> SITSTimeSeriesModel:
-    """Find clusters in time series samples."""
+    """Find clusters in time series samples.
+
+    ToDo:
+        - ToDo: Add support for the `plot` argument.
+    """
+
+
+@function_call(r_pkg_sits.sits_cluster_frequency, SITSTable)
+@attach_doc("sits_cluster_frequency")
+def sits_cluster_frequency(*args, **kwargs) -> SITSTable:
+    """Show label frequency in each cluster produced by dendrogram analysis."""
+
+
+@function_call(r_pkg_sits.sits_cluster_clean, SITSTimeSeriesModel)
+@attach_doc("sits_cluster_clean")
+def sits_cluster_clean(*args, **kwargs) -> SITSTimeSeriesModel:
+    """Removes labels that are minority in each cluster."""
 
 
 #
