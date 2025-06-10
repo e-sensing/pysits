@@ -17,11 +17,12 @@
 
 """time-series models."""
 
+from geopandas import GeoDataFrame as GeoPandasDataFrame
 from pandas import DataFrame as PandasDataFrame
 from rpy2.robjects.vectors import DataFrame as RDataFrame
 
 from pysits.conversions.tibble import tibble_sits_to_pandas
-from pysits.models.data import SITSFrame
+from pysits.models.data import SITSFrame, SITSFrameSF
 
 
 #
@@ -38,6 +39,25 @@ class SITSTimeSeriesModel(SITSFrame):
     # Convertions
     #
     def _convert_from_r(self, instance: RDataFrame) -> PandasDataFrame:
+        """Convert data from R to Python.
+
+        Args:
+            instance (rpy2.robjects.vectors.DataFrame): Data instance.
+        """
+        return tibble_sits_to_pandas(instance)
+
+
+class SITSTimeSeriesSFModel(SITSFrameSF):
+    """SITS time-series model as sf."""
+
+    def __init__(self, *args, **kwargs):
+        """Initializer."""
+        super().__init__(*args, **kwargs)
+
+    #
+    # Convertions
+    #
+    def _convert_from_r(self, instance: RDataFrame) -> GeoPandasDataFrame:
         """Convert data from R to Python.
 
         Args:

@@ -18,12 +18,13 @@
 """base models."""
 
 import numpy as np
+from geopandas import GeoDataFrame as GeoPandasDataFrame
 from pandas import DataFrame as PandasDataFrame
 from rpy2.robjects.vectors import DataFrame as RDataFrame
 from rpy2.robjects.vectors import IntVector
 
 from pysits.backend.functions import r_fnc_class
-from pysits.conversions.matrix import matrix_to_pandas
+from pysits.conversions.matrix import matrix_to_pandas, table_to_pandas
 from pysits.conversions.tibble import tibble_to_pandas
 from pysits.conversions.vector import vector_to_pandas
 from pysits.models.base import SITSBase
@@ -60,22 +61,8 @@ class SITStructureData(SITSData):
         return instance
 
 
-class SITSFrame(PandasDataFrame, SITSData):
+class SITSFrameBase(SITSData):
     """Base class for SITS Data."""
-
-    #
-    # Dunder methods
-    #
-    def __init__(self, instance, **kwargs):
-        """Initializer."""
-        self._instance = instance
-
-        # Proxy instance
-        if isinstance(instance, RDataFrame):
-            instance = self._convert_from_r(instance)
-
-        # Initialize super class
-        super().__init__(data=instance, **kwargs)
 
     def __finalize__(self, other, method=None, **kwargs):
         """Propagate metadata from another object to the current one.
@@ -131,6 +118,42 @@ class SITSFrame(PandasDataFrame, SITSData):
         return tibble_to_pandas(instance)
 
 
+class SITSFrame(SITSFrameBase, PandasDataFrame):
+    """Base class for sits frame results."""
+
+    #
+    # Dunder methods
+    #
+    def __init__(self, instance, **kwargs):
+        """Initializer."""
+        self._instance = instance
+
+        # Proxy instance
+        if isinstance(instance, RDataFrame):
+            instance = self._convert_from_r(instance)
+
+        # Initialize super class
+        PandasDataFrame.__init__(self, data=instance, **kwargs)
+
+
+class SITSFrameSF(SITSFrameBase, GeoPandasDataFrame):
+    """Base class for sits frame as sf."""
+
+    #
+    # Dunder methods
+    #
+    def __init__(self, instance, **kwargs):
+        """Initializer."""
+        self._instance = instance
+
+        # Proxy instance
+        if isinstance(instance, RDataFrame):
+            instance = self._convert_from_r(instance)
+
+        # Initialize super class
+        GeoPandasDataFrame.__init__(self, data=instance, **kwargs)
+
+
 class SITSNamedVector(SITSFrame):
     """Base class for sits named vector results."""
 
@@ -178,3 +201,28 @@ class SITSMatrix(SITSFrame):
     def _convert_from_r(self, instance):
         """Convert data from R to Python."""
         return matrix_to_pandas(instance)
+
+
+class SITSTable(SITSFrame):
+    """Base class for sits table results."""
+
+    #
+    # Dunder methods
+    #
+    def __init__(self, instance, **kwargs):
+        """Initializer."""
+        self._instance = instance
+
+        # Proxy instance
+        if "table" in r_fnc_class(instance):
+            instance = self._convert_from_r(instance)
+
+        # Initialize super class
+        PandasDataFrame.__init__(self, data=instance, **kwargs)
+
+    #
+    # Convertions
+    #
+    def _convert_from_r(self, instance):
+        """Convert data from R to Python."""
+        return table_to_pandas(instance)

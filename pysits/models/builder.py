@@ -6,8 +6,10 @@ from pysits.backend.functions import r_fnc_class
 from pysits.models import (
     SITSCubeModel,
     SITSFrame,
+    SITSFrameSF,
     SITSTimeSeriesClassificationModel,
     SITSTimeSeriesModel,
+    SITSTimeSeriesSFModel,
 )
 
 
@@ -42,6 +44,15 @@ def data_class_selector(data: RDataFrame) -> type[SITSFrame]:
         case class_ if "raster_cube" in class_:
             content_class = SITSCubeModel
 
+        # Time-series data (``sits``) as sf
+        case class_ if "sf" in class_ and "tbl_df" in class_:
+            content_class = SITSTimeSeriesSFModel
+
+        # Data frame as sf
+        case class_ if "sf" in class_:
+            content_class = SITSFrameSF
+
+        # Data frame
         case class_ if "tbl_df" in class_:
             content_class = SITSFrame
 

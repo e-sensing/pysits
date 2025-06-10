@@ -15,19 +15,16 @@
 # along with this program; if not, see <https://www.gnu.org/licenses/>.
 #
 
-"""backend packages."""
+"""Exporters module."""
 
-from rpy2.robjects.packages import importr
+from pysits.backend.pkgs import r_pkg_sits
+from pysits.conversions.decorators import function_call
+from pysits.docs import attach_doc
+from pysits.models import SITSFrame
+from pysits.models.builder import resolve_and_invoke_data_class
 
-# system pakage
-r_pkg_base = importr("base")
-r_pkg_grdevices = importr("grDevices")
 
-# sits package
-r_pkg_sits = importr("sits")
-
-# sits-dependencies packages
-r_pkg_tibble = importr("tibble")
-r_pkg_leaflet = importr("leaflet")
-r_pkg_kohonen = importr("kohonen")
-r_pkg_sf = importr("sf")
+@function_call(r_pkg_sits.sits_as_sf, resolve_and_invoke_data_class)
+@attach_doc("sits_as_geopandas")
+def sits_as_geopandas(data: SITSFrame) -> SITSFrame:
+    """Export a sits data object as an geopandas object."""

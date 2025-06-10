@@ -36,6 +36,7 @@ from .sits.cube import (
     sits_clean,
     sits_colors_qgis,
     sits_combine_predictions,
+    sits_confidence_sampling,
     sits_cube,
     sits_cube_copy,
     sits_reclassify,
@@ -58,7 +59,7 @@ from .sits.data import (
     sits_timeline,
 )
 from .sits.data import sits_summary as summary
-from .sits.exporters import sits_as_xarray, sits_to_csv, sits_to_xlsx
+from .sits.exporters import sits_as_geopandas, sits_as_xarray, sits_to_csv, sits_to_xlsx
 from .sits.impute import impute_linear, sits_impute
 from .sits.ml import (
     sits_kfold_validate,
@@ -74,7 +75,9 @@ from .sits.ml import (
 from .sits.segment import sits_segment, sits_slic
 from .sits.tiles import sits_mgrs_to_roi, sits_tiles_to_roi
 from .sits.ts import (
+    sits_cluster_clean,
     sits_cluster_dendro,
+    sits_cluster_frequency,
     sits_get_data,
     sits_patterns,
     sits_pred_features,
@@ -86,10 +89,12 @@ from .sits.ts import (
     sits_sample,
     sits_sampling_design,
     sits_sgolay,
+    sits_show_prediction,
     sits_som_clean_samples,
     sits_som_evaluate_cluster,
     sits_som_map,
     sits_stats,
+    sits_stratified_sampling,
     sits_whittaker,
 )
 from .sits.utils import (
@@ -115,6 +120,7 @@ __all__ = (
     "sits_colors_qgis",
     "sits_uncertainty",
     "sits_uncertainty_sampling",
+    "sits_confidence_sampling",
     "sits_variance",
     # Colors
     "sits_colors",
@@ -137,6 +143,8 @@ __all__ = (
     "summary",
     "sits_labels_summary",
     "sits_cluster_dendro",
+    "sits_cluster_frequency",
+    "sits_cluster_clean",
     "sits_reduce",
     # Machine Learning methods
     "sits_train",
@@ -152,6 +160,7 @@ __all__ = (
     "sits_impute",
     "impute_linear",
     # Time-series
+    "sits_show_prediction",
     "sits_sgolay",
     "sits_whittaker",
     "sits_get_data",
@@ -168,6 +177,7 @@ __all__ = (
     "sits_sample",
     "sits_reduce_imbalance",
     "sits_sampling_design",
+    "sits_stratified_sampling",
     # Tiles
     "sits_mgrs_to_roi",
     "sits_tiles_to_roi",
@@ -179,6 +189,7 @@ __all__ = (
     # Exporters
     "sits_to_csv",
     "sits_as_xarray",
+    "sits_as_geopandas",
     "sits_to_xlsx",
     # Visualization
     "plot",
