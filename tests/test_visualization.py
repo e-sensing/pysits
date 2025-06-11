@@ -22,7 +22,7 @@ from pysits.sits.cube import sits_cube
 from pysits.sits.ml import sits_rfor, sits_train
 from pysits.sits.ts import sits_patterns, sits_som_map
 from pysits.sits.utils import r_package_dir
-from pysits.sits.visualization import sits_plot
+from pysits.sits.visualization import sits_plot, sits_view
 
 
 def test_sits_visualization(no_plot_window):
@@ -87,3 +87,21 @@ def test_classified_cube_visualization(no_plot_window):
 
     # Plot the result
     sits_plot(cube)
+
+
+def test_sits_visualization_leaflet(no_browser):
+    """Test sits visualization."""
+    sits_view(samples_l8_rondonia_2bands)
+
+
+def test_cube_visualization_leaflet(no_browser):
+    """Test cube visualization."""
+    # Create a cube
+    cube = sits_cube(
+        source="BDC",
+        collection="MOD13Q1-6.1",
+        data_dir=r_package_dir("extdata/raster/mod13q1", package="sits"),
+    )
+
+    # Plot the cube
+    sits_view(cube)

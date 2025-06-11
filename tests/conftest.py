@@ -17,6 +17,8 @@
 
 """Pytest configuration file."""
 
+import webbrowser
+
 import matplotlib
 
 #
@@ -37,3 +39,12 @@ def no_plot_window(monkeypatch):
     monkeypatch.setattr(plt, "show", lambda: None)
     yield
     plt.close("all")
+
+
+@pytest.fixture
+def no_browser(monkeypatch):
+    """Fixture to prevent webbrowser from opening during tests."""
+    monkeypatch.setattr(webbrowser, "open", lambda x: None)
+    monkeypatch.setattr(webbrowser, "open_new", lambda x: None)
+    monkeypatch.setattr(webbrowser, "open_new_tab", lambda x: None)
+    yield
