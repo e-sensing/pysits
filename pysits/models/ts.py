@@ -38,7 +38,7 @@ class SITSTimeSeriesModel(SITSFrame):
     #
     # Convertions
     #
-    def _convert_from_r(self, instance: RDataFrame) -> PandasDataFrame:
+    def _convert_from_r(self, instance: RDataFrame, **kwargs) -> PandasDataFrame:
         """Convert data from R to Python.
 
         Args:
@@ -57,7 +57,7 @@ class SITSTimeSeriesSFModel(SITSFrameSF):
     #
     # Convertions
     #
-    def _convert_from_r(self, instance: RDataFrame) -> GeoPandasDataFrame:
+    def _convert_from_r(self, instance: RDataFrame, **kwargs) -> GeoPandasDataFrame:
         """Convert data from R to Python.
 
         Args:

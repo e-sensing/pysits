@@ -21,12 +21,13 @@ from datetime import date, timedelta
 from pathlib import Path, PosixPath
 
 import rpy2.robjects as ro
+from geopandas import GeoDataFrame as GeoPandasDataFrame
 from pandas import DataFrame as PandasDataFrame
 from rpy2.robjects.robject import RObjectMixin
 
 from pysits.backend.pkgs import r_pkg_tibble
 from pysits.conversions.dsl import ExpressionList
-from pysits.conversions.pandasr import pandas_to_r
+from pysits.conversions.pandasr import geopandas_to_r, pandas_to_r
 
 #
 # Type mapping dictionary
@@ -43,6 +44,7 @@ TYPE_CONVERSIONS = {
     Path: lambda obj: ro.StrVector([obj.as_posix()]),
     PosixPath: lambda obj: ro.StrVector([obj.as_posix()]),
     PandasDataFrame: lambda obj: r_pkg_tibble.as_tibble(pandas_to_r(obj)),
+    GeoPandasDataFrame: lambda obj: geopandas_to_r(obj),
 }
 
 

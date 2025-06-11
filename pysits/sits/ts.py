@@ -23,6 +23,7 @@ from pysits.conversions.decorators import function_call
 from pysits.docs import attach_doc
 from pysits.models import (
     SITSFrame,
+    SITSFrameNested,
     SITSFrameSF,
     SITSMatrix,
     SITSTable,
@@ -39,6 +40,18 @@ from pysits.models import (
 @attach_doc("sits_get_data")
 def sits_get_data(*args, **kwargs) -> SITSTimeSeriesModel:
     """Retrieve time series data from a data cube."""
+
+
+@function_call(r_pkg_sits.sits_get_class, SITSFrame)
+@attach_doc("sits_get_class")
+def sits_get_class(*args, **kwargs) -> SITSFrame:
+    """Get values from classified maps."""
+
+
+@function_call(r_pkg_sits.sits_get_probs, lambda x: SITSFrameNested(x, ["neighbors"]))
+@attach_doc("sits_get_probs")
+def sits_get_probs(*args, **kwargs) -> SITSFrameNested:
+    """Get probabilities from classified maps."""
 
 
 @function_call(r_pkg_sits.sits_stats, SITStructureData)
@@ -187,3 +200,12 @@ def sits_sgolay(*args, **kwargs) -> SITSTimeSeriesModel:
 @attach_doc("sits_whittaker")
 def sits_whittaker(*args, **kwargs) -> SITSTimeSeriesModel:
     """Apply Whittaker filter to time series."""
+
+
+#
+# Distances
+#
+@function_call(r_pkg_sits.sits_geo_dist, SITSFrame)
+@attach_doc("sits_geo_dist")
+def sits_geo_dist(*args, **kwargs) -> SITSFrame:
+    """Compute the minimum distances among samples and prediction points."""

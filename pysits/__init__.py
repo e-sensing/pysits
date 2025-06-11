@@ -65,6 +65,7 @@ from .sits.ml import (
     sits_kfold_validate,
     sits_lighttae,
     sits_mlp,
+    sits_resnet,
     sits_rfor,
     sits_svm,
     sits_tae,
@@ -78,7 +79,10 @@ from .sits.ts import (
     sits_cluster_clean,
     sits_cluster_dendro,
     sits_cluster_frequency,
+    sits_geo_dist,
+    sits_get_class,
     sits_get_data,
+    sits_get_probs,
     sits_patterns,
     sits_pred_features,
     sits_pred_normalize,
@@ -104,6 +108,7 @@ from .sits.utils import (
     read_rds,
 )
 from .sits.visualization import sits_plot as plot
+from .sits.visualization import sits_view
 
 __all__ = (
     # Classification
@@ -150,6 +155,7 @@ __all__ = (
     "sits_train",
     "sits_mlp",
     "sits_rfor",
+    "sits_resnet",
     "sits_tempcnn",
     "sits_lighttae",
     "sits_svm",
@@ -164,6 +170,8 @@ __all__ = (
     "sits_sgolay",
     "sits_whittaker",
     "sits_get_data",
+    "sits_get_class",
+    "sits_get_probs",
     "sits_stats",
     "sits_predictors",
     "sits_pred_features",
@@ -173,6 +181,7 @@ __all__ = (
     "sits_som_map",
     "sits_som_evaluate_cluster",
     "sits_som_clean_samples",
+    "sits_geo_dist",
     "sits_patterns",
     "sits_sample",
     "sits_reduce_imbalance",
@@ -193,6 +202,7 @@ __all__ = (
     "sits_to_xlsx",
     # Visualization
     "plot",
+    "sits_view",
     # Context data
     "samples_l8_rondonia_2bands",
     "samples_modis_ndvi",

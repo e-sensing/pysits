@@ -81,7 +81,30 @@ def _tibble_to_pandas(
     table_processor: Callable[[PandasDataFrame], PandasDataFrame] | None = None,
     nested_processor: Callable[[PandasDataFrame], PandasDataFrame] | None = None,
 ) -> PandasDataFrame:
-    """Transform tibble to pandas."""
+    """Convert an R tibble containing nested data frames to a Pandas DataFrame.
+
+    Args:
+        data (RDataFrame): An R tibble/data.frame object that contains
+                           nested data frames.
+
+        nested_columns (list): List of column names that contain nested
+                               data frames.
+
+        table_processor (Callable | None, optional):
+            A function to process the main table after conversion. The function should
+            take a pandas DataFrame as input and return a processed pandas DataFrame.
+            Defaults to None.
+
+        nested_processor (Callable | None, optional):
+            A function to process each nested data frame after conversion. The function
+            should take a pandas DataFrame as input and return a processed pandas
+            DataFrame. Defaults to None.
+
+    Returns:
+        PandasDataFrame: A pandas DataFrame where the nested columns are converted to
+                         SITSFrameArray objects containing the processed nested
+                         data frames.
+    """
     # Check if the data is an SF object
     has_geometries = "sf" in r_fnc_class(data)
 
@@ -199,6 +222,44 @@ def tibble_to_pandas(data: RDataFrame) -> PandasDataFrame:
     return _tibble_to_pandas(
         data=data,
         table_processor=_table_processor,
+    )
+
+
+def tibble_nested_to_pandas(
+    data: RDataFrame,
+    nested_columns: list,
+    table_processor: Callable[[PandasDataFrame], PandasDataFrame] | None = None,
+    nested_processor: Callable[[PandasDataFrame], PandasDataFrame] | None = None,
+) -> PandasDataFrame:
+    """(Public) Convert an R tibble containing nested data frames to a Pandas DataFrame.
+
+    Args:
+        data (RDataFrame): An R tibble/data.frame object that contains
+                           nested data frames.
+
+        nested_columns (list): List of column names that contain nested
+                               data frames.
+
+        table_processor (Callable | None, optional):
+            A function to process the main table after conversion. The function should
+            take a pandas DataFrame as input and return a processed pandas DataFrame.
+            Defaults to None.
+
+        nested_processor (Callable | None, optional):
+            A function to process each nested data frame after conversion. The function
+            should take a pandas DataFrame as input and return a processed pandas
+            DataFrame. Defaults to None.
+
+    Returns:
+        PandasDataFrame: A pandas DataFrame where the nested columns are converted to
+                         SITSFrameArray objects containing the processed nested
+                         data frames.
+    """
+    return _tibble_to_pandas(
+        data=data,
+        nested_columns=nested_columns,
+        table_processor=table_processor,
+        nested_processor=nested_processor,
     )
 
 

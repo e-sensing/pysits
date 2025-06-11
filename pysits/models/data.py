@@ -25,7 +25,7 @@ from rpy2.robjects.vectors import IntVector
 
 from pysits.backend.functions import r_fnc_class
 from pysits.conversions.matrix import matrix_to_pandas, table_to_pandas
-from pysits.conversions.tibble import tibble_to_pandas
+from pysits.conversions.tibble import tibble_nested_to_pandas, tibble_to_pandas
 from pysits.conversions.vector import vector_to_pandas
 from pysits.models.base import SITSBase
 
@@ -45,7 +45,7 @@ class SITSData(SITSBase):
     #
     # Convertions
     #
-    def _convert_from_r(self, instance):
+    def _convert_from_r(self, instance, **kwargs):
         """Convert data from R to Python."""
         return None
 
@@ -113,7 +113,7 @@ class SITSFrameBase(SITSData):
     #
     # Convertions
     #
-    def _convert_from_r(self, instance):
+    def _convert_from_r(self, instance, **kwargs):
         """Convert data from R to Python."""
         return tibble_to_pandas(instance)
 
@@ -173,7 +173,7 @@ class SITSNamedVector(SITSFrame):
     #
     # Convertions
     #
-    def _convert_from_r(self, instance):
+    def _convert_from_r(self, instance, **kwargs):
         """Convert data from R to Python."""
         return vector_to_pandas(instance)
 
@@ -198,7 +198,7 @@ class SITSMatrix(SITSFrame):
     #
     # Convertions
     #
-    def _convert_from_r(self, instance):
+    def _convert_from_r(self, instance, **kwargs):
         """Convert data from R to Python."""
         return matrix_to_pandas(instance)
 
@@ -223,6 +223,27 @@ class SITSTable(SITSFrame):
     #
     # Convertions
     #
-    def _convert_from_r(self, instance):
+    def _convert_from_r(self, instance, **kwargs):
         """Convert data from R to Python."""
         return table_to_pandas(instance)
+
+
+class SITSFrameNested(SITSFrame):
+    """General class for sits frame with embedded data frames."""
+
+    # Dunder methods
+    #
+    def __init__(self, instance, nested_columns, **kwargs):
+        """Initializer."""
+        self._instance = instance
+
+        # Proxy instance
+        if isinstance(instance, RDataFrame):
+            instance = self._convert_from_r(instance, nested_columns)
+
+        # Initialize super class
+        PandasDataFrame.__init__(self, data=instance, **kwargs)
+
+    def _convert_from_r(self, instance, nested_columns, **kwargs):
+        """Convert data from R to Python."""
+        return tibble_nested_to_pandas(instance, nested_columns=nested_columns)

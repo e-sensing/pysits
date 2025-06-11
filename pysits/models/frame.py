@@ -52,6 +52,9 @@ class SITSFrameDtype(ExtensionDtype):
     To learn more, please check: https://numpy.org/doc/stable/reference/generated/numpy.dtype.kind.html
     """
 
+    isnative = True
+    """Whether the dtype is native."""
+
     #
     # Class methods
     #
