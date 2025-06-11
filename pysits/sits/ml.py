@@ -63,6 +63,8 @@ sits_tae = closure_factory("sits_tae", converters=dl_converters)
 sits_tempcnn = closure_factory("sits_tempcnn", converters=dl_converters)
 sits_lighttae = closure_factory("sits_lighttae", converters=dl_converters)
 sits_mlp = closure_factory("sits_mlp", converters=dl_converters)
+sits_resnet = closure_factory("sits_resnet", converters=dl_converters)
+
 
 #
 # ML Methods
