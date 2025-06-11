@@ -21,6 +21,7 @@ import os
 import tempfile
 
 from rpy2.robjects import r as ro
+from rpy2.robjects.robject import RObject
 
 from pysits.backend.functions import r_fnc_plot
 from pysits.visualization.image import show_local_image
@@ -29,8 +30,8 @@ from pysits.visualization.image import show_local_image
 #
 # Utility function
 #
-def _save_tmap_plot(r_tmap_plot, image_args=None, **kwargs) -> None:
-    """Saves an R tmap plot to a temporary directory and displays it.
+def _show_tmap_plot(r_tmap_plot: RObject, image_args: dict = None, **kwargs) -> None:
+    """Show an R tmap plot.
 
     Args:
         r_tmap_plot (rpy2.robjects.RObject): The R tmap plot object.
@@ -66,7 +67,7 @@ def _save_tmap_plot(r_tmap_plot, image_args=None, **kwargs) -> None:
 #
 # High-level operation
 #
-def plot_tmap(instance, **kwargs) -> None:
+def plot_tmap(instance: RObject, **kwargs) -> None:
     """Generates and saves a tmap plot, then displays it.
 
     Args:
@@ -81,4 +82,4 @@ def plot_tmap(instance, **kwargs) -> None:
     tmap_plot = r_fnc_plot(instance, **kwargs)
 
     # Save and display the plot
-    _save_tmap_plot(tmap_plot)
+    _show_tmap_plot(tmap_plot)

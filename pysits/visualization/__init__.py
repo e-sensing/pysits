@@ -18,6 +18,7 @@
 """Plot module."""
 
 from .base import plot_base
+from .leaflet import plot_leaflet
 from .tmap import plot_tmap
 
-__all__ = ("plot_tmap", "plot_base")
+__all__ = ("plot_tmap", "plot_base", "plot_leaflet")

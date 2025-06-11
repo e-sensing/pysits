@@ -30,11 +30,20 @@ from pysits.models import (
     SITSTimeSeriesPatternsModel,
     SITStructureData,
 )
-from pysits.visualization import plot_base, plot_tmap
+from pysits.visualization import plot_base, plot_leaflet, plot_tmap
 
 
 #
-# Dispatch chain for plot
+# Interactive plot
+#
+@rpy2_fix_type
+def sits_view(data: object, **kwargs) -> None:
+    """sits view as dispatch."""
+    return plot_leaflet(data, **kwargs)
+
+
+#
+# Static plot (dispatch chain)
 #
 @singledispatch
 @rpy2_fix_type
