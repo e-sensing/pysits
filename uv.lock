@@ -1028,6 +1028,7 @@ dependencies = [
 
 [package.optional-dependencies]
 dev = [
+    { name = "cloudpickle" },
     { name = "pre-commit" },
     { name = "pytest" },
     { name = "pytest-cov" },
@@ -1044,6 +1045,7 @@ xarray = [
 [package.metadata]
 requires-dist = [
     { name = "affine", marker = "extra == 'xarray'", specifier = ">=2.4.0" },
+    { name = "cloudpickle", marker = "extra == 'dev'", specifier = ">=3.1.1" },
     { name = "dask", marker = "extra == 'xarray'", specifier = ">=2025.3.0" },
     { name = "geopandas", specifier = ">=1.1.0" },
     { name = "matplotlib", specifier = ">=3.10.1" },

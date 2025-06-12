@@ -17,10 +17,17 @@
 
 """Unit tests for ml/dl models."""
 
+import cloudpickle
 import pytest
 
 from pysits.models import SITSMachineLearningMethod
-from pysits.sits.context import samples_l8_rondonia_2bands
+from pysits.sits.classification import sits_classify
+from pysits.sits.context import (
+    point_mt_6bands,
+    samples_l8_rondonia_2bands,
+    samples_modis_ndvi,
+)
+from pysits.sits.data import sits_labels, sits_select
 from pysits.sits.ml import (
     sits_formula_linear,
     sits_formula_logref,
@@ -70,6 +77,37 @@ def test_model_training(model_fn):
 
     except Exception as e:
         pytest.fail(f"Training failed: {str(e)}")
+
+
+@pytest.mark.parametrize("model_fn", ALL_MODELS)
+def test_model_serialization(model_fn, tmp_path):
+    """Test model serialization."""
+    ml_method = model_fn()
+    model = sits_train(samples_modis_ndvi, ml_method=ml_method)
+
+    assert isinstance(model, SITSMachineLearningMethod)
+
+    # Serialize model
+    serialized_model = cloudpickle.dumps(model)
+
+    # Save serialized model to file
+    model_file = tmp_path / "model.pkl"
+
+    with model_file.open("wb") as f:
+        f.write(serialized_model)
+
+    # Load serialized model from file
+    with model_file.open("rb") as f:
+        loaded_model = cloudpickle.load(f)
+
+    assert isinstance(loaded_model, SITSMachineLearningMethod)
+
+    # Classify a time-series point
+    point_ndvi = sits_select(point_mt_6bands, bands=("NDVI"))
+    point_class = sits_classify(data=point_ndvi, ml_model=loaded_model)
+
+    assert point_class.shape[0] == 1  # noqa: PLR2004 - number of points
+    assert len(sits_labels(point_class)) == 1  # noqa: PLR2004 - number of labels
 
 
 def test_model_svm_params():
