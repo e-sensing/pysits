@@ -73,6 +73,12 @@ sits_rfor = closure_factory("sits_rfor")
 sits_svm = closure_factory("sits_svm")
 sits_xgboost = closure_factory("sits_xgboost")
 
+#
+# Extra parameters - SVM
+#
+sits_formula_logref = closure_factory("sits_formula_logref")
+sits_formula_linear = closure_factory("sits_formula_linear")
+
 
 #
 # High-level utility operations

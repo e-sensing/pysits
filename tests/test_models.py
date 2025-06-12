@@ -22,6 +22,8 @@ import pytest
 from pysits.models import SITSMachineLearningMethod
 from pysits.sits.context import samples_l8_rondonia_2bands
 from pysits.sits.ml import (
+    sits_formula_linear,
+    sits_formula_logref,
     sits_lighttae,
     sits_mlp,
     sits_model_export,
@@ -68,6 +70,23 @@ def test_model_training(model_fn):
 
     except Exception as e:
         pytest.fail(f"Training failed: {str(e)}")
+
+
+def test_model_svm_params():
+    """Test SVM parameters."""
+
+    model_linear = sits_train(
+        samples_l8_rondonia_2bands,
+        ml_method=sits_svm(formula=sits_formula_linear()),
+    )
+
+    model_logref = sits_train(
+        samples_l8_rondonia_2bands,
+        ml_method=sits_svm(formula=sits_formula_logref()),
+    )
+
+    assert isinstance(model_linear, SITSMachineLearningMethod)
+    assert isinstance(model_logref, SITSMachineLearningMethod)
 
 
 #

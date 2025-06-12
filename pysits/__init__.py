@@ -62,6 +62,8 @@ from .sits.data import sits_summary as summary
 from .sits.exporters import sits_as_geopandas, sits_as_xarray, sits_to_csv, sits_to_xlsx
 from .sits.impute import impute_linear, sits_impute
 from .sits.ml import (
+    sits_formula_linear,
+    sits_formula_logref,
     sits_kfold_validate,
     sits_lighttae,
     sits_mlp,
@@ -164,6 +166,8 @@ __all__ = (
     "sits_tae",
     "sits_kfold_validate",
     "sits_model_export",
+    "sits_formula_linear",
+    "sits_formula_logref",
     # Impute
     "sits_impute",
     "impute_linear",
