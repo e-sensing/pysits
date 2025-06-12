@@ -22,6 +22,7 @@ from pysits.conversions.base import convert_to_python
 from pysits.conversions.decorators import function_call
 from pysits.docs import attach_doc
 from pysits.models import (
+    SITSConfusionMatrix,
     SITSFrame,
     SITSFrameNested,
     SITSFrameSF,
@@ -62,6 +63,15 @@ def sits_stats(*args, **kwargs) -> SITStructureData:
     ToDo:
         - Enhance result type to a Dict-like object.
     """
+
+
+#
+# Validation
+#
+@function_call(r_pkg_sits.sits_validate, SITSConfusionMatrix)
+@attach_doc("sits_validate")
+def sits_validate(*args, **kwargs) -> SITSConfusionMatrix:
+    """Validate time series samples."""
 
 
 #

@@ -20,10 +20,12 @@
 import numpy as np
 from geopandas import GeoDataFrame as GeoPandasDataFrame
 from pandas import DataFrame as PandasDataFrame
+from rpy2.rinterface_lib.sexp import NULLType
 from rpy2.robjects.vectors import DataFrame as RDataFrame
-from rpy2.robjects.vectors import IntVector
+from rpy2.robjects.vectors import FloatMatrix, IntVector
 
 from pysits.backend.functions import r_fnc_class
+from pysits.conversions.base import convert_to_python
 from pysits.conversions.matrix import matrix_to_pandas, table_to_pandas
 from pysits.conversions.tibble import tibble_nested_to_pandas, tibble_to_pandas
 from pysits.conversions.vector import vector_to_pandas
@@ -247,3 +249,135 @@ class SITSFrameNested(SITSFrame):
     def _convert_from_r(self, instance, nested_columns, **kwargs):
         """Convert data from R to Python."""
         return tibble_nested_to_pandas(instance, nested_columns=nested_columns)
+
+
+class SITSConfusionMatrix(SITSData):
+    """Base class for sits confusion matrix results."""
+
+    #
+    # Convertions
+    #
+    def _convert_from_r(self, instance):
+        """Convert data from R to Python."""
+        return instance
+
+    #
+    # Properties
+    #
+    @property
+    def positive(self) -> str | None:
+        """Positive property."""
+        value = self._instance.rx2("positive")
+        is_null = isinstance(value, NULLType)
+
+        return str(value[0]) if not is_null else None
+
+    @property
+    def table(self) -> SITSTable:
+        """Table property."""
+        return SITSTable(self._instance.rx2("table"))
+
+    @property
+    def overall(self) -> SITSNamedVector:
+        """Overall property."""
+        return SITSNamedVector(self._instance.rx2("overall"))
+
+    @property
+    def by_class(self) -> SITSNamedVector | SITSMatrix:
+        """By class property."""
+        value = self._instance.rx2("byClass")
+        is_matrix = isinstance(value, FloatMatrix)
+
+        return SITSNamedVector(value) if not is_matrix else SITSMatrix(value)
+
+    @property
+    def mode(self) -> str | None:
+        """Mode property."""
+        value = self._instance.rx2("mode")
+        is_null = isinstance(value, NULLType)
+
+        return str(value[0]) if not is_null else None
+
+    @property
+    def dots(self) -> list:
+        """Dots property."""
+        return convert_to_python(self._instance.rx2("dots"))
+
+    #
+    # Dunder methods
+    #
+    def __str__(self):
+        """String representation."""
+        return str(self._instance)
+
+    def __repr__(self):
+        """Representation."""
+        return str(self._instance)
+
+
+class SITSAccuracy(SITSData):
+    """Base class for sits accuracy results."""
+
+    #
+    # Convertions
+    #
+    def _convert_from_r(self, instance):
+        """Convert data from R to Python."""
+        return instance
+
+    #
+    # Properties
+    #
+    @property
+    def error_matrix(self) -> SITSConfusionMatrix:
+        """Error matrix property."""
+        return SITSTable(self._instance.rx2("error_matrix"))
+
+    @property
+    def area_pixels(self) -> SITSTable:
+        """Area pixels property."""
+        return SITSNamedVector(self._instance.rx2("area_pixels"))
+
+    @property
+    def error_ajusted_area(self) -> SITSNamedVector:
+        """Error adjusted area property."""
+        return SITSNamedVector(self._instance.rx2("error_ajusted_area"))
+
+    @property
+    def stderr_prop(self) -> SITSNamedVector | SITSMatrix:
+        """Standard error property."""
+        return SITSNamedVector(self._instance.rx2("stderr_prop"))
+
+    @property
+    def stderr_area(self) -> SITSNamedVector | SITSMatrix:
+        """Standard error area property."""
+        return SITSNamedVector(self._instance.rx2("stderr_area"))
+
+    @property
+    def conf_interval(self) -> SITSNamedVector | SITSMatrix:
+        """Confidence interval property."""
+        return SITSNamedVector(self._instance.rx2("conf_interval"))
+
+    @property
+    def accuracy(self) -> SITSNamedVector:
+        """Accuracy property."""
+        value = convert_to_python(self._instance.rx2("accuracy"), as_type=None)
+        value = {k: v for d in value for k, v in d.items()}
+
+        # Updating user and producer values
+        value["user"] = PandasDataFrame(value["user"], index=[0])
+        value["producer"] = PandasDataFrame(value["producer"], index=[0])
+
+        # Return
+        return value
+
+    #
+    # Dunder methods
+    #
+    def __str__(self):
+        """String representation."""
+        return str(self._instance)
+
+    def __repr__(self):
+        """Representation."""
+        return str(self._instance)

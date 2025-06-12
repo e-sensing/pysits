@@ -46,6 +46,8 @@ from .sits.cube import (
     sits_variance,
 )
 from .sits.data import (
+    sits_accuracy,
+    sits_accuracy_summary,
     sits_apply,
     sits_bands,
     sits_bbox,
@@ -102,6 +104,7 @@ from .sits.ts import (
     sits_som_map,
     sits_stats,
     sits_stratified_sampling,
+    sits_validate,
     sits_whittaker,
 )
 from .sits.utils import (
@@ -150,6 +153,8 @@ __all__ = (
     "sits_mixture_model",
     "summary",
     "sits_labels_summary",
+    "sits_accuracy",
+    "sits_accuracy_summary",
     "sits_cluster_dendro",
     "sits_cluster_frequency",
     "sits_cluster_clean",
@@ -179,6 +184,7 @@ __all__ = (
     "sits_get_class",
     "sits_get_probs",
     "sits_stats",
+    "sits_validate",
     "sits_predictors",
     "sits_pred_features",
     "sits_pred_normalize",

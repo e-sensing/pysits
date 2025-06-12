@@ -26,8 +26,11 @@ from pysits.backend.pkgs import r_pkg_sits
 from pysits.conversions.base import convert_to_python
 from pysits.conversions.decorators import function_call, rpy2_fix_type
 from pysits.docs import attach_doc
-from pysits.models import SITSFrame
-from pysits.models.builder import resolve_and_invoke_data_class
+from pysits.models import SITSData, SITSFrame
+from pysits.models.builder import (
+    resolve_and_invoke_accuracy_class,
+    resolve_and_invoke_data_class,
+)
 
 
 @function_call(r_pkg_sits.sits_bands, lambda x: convert_to_python(x, as_type="str"))
@@ -92,6 +95,18 @@ def sits_labels_summary(*args, **kwargs) -> SITSFrame:
     Notes:
         - Deprecated function. Use `summary` instead.
     """
+
+
+@function_call(r_pkg_sits.sits_accuracy, resolve_and_invoke_accuracy_class)
+@attach_doc("sits_accuracy")
+def sits_accuracy(*args, **kwargs) -> SITSData:
+    """Assess classification accuracy."""
+
+
+@function_call(r_pkg_sits.sits_accuracy_summary, resolve_and_invoke_accuracy_class)
+@attach_doc("sits_accuracy_summary")
+def sits_accuracy_summary(*args, **kwargs) -> SITSData:
+    """Print accuracy summary."""
 
 
 #

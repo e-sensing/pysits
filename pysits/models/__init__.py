@@ -20,6 +20,8 @@
 from .base import SITSBase
 from .cube import SITSCubeModel
 from .data import (
+    SITSAccuracy,
+    SITSConfusionMatrix,
     SITSData,
     SITSFrame,
     SITSFrameBase,
@@ -50,6 +52,8 @@ __all__ = (
     "SITSNamedVector",
     "SITSMatrix",
     "SITSTable",
+    "SITSConfusionMatrix",
+    "SITSAccuracy",
     # Data Cube
     "SITSCubeModel",
     # Time-series

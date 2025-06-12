@@ -23,6 +23,8 @@ from pathlib import Path, PosixPath
 import rpy2.robjects as ro
 from geopandas import GeoDataFrame as GeoPandasDataFrame
 from pandas import DataFrame as PandasDataFrame
+from rpy2.rinterface_lib.sexp import NULLType
+from rpy2.robjects import pandas2ri
 from rpy2.robjects.robject import RObjectMixin
 
 from pysits.backend.pkgs import r_pkg_tibble
@@ -208,7 +210,7 @@ def convert_to_python(obj, as_type="str"):
                     }
                 )
 
-        elif isinstance(value, ro.Vector):
+        elif as_type and isinstance(value, ro.Vector):
             for el in value:
                 if as_type == "str":
                     result.append(str(el))
@@ -226,6 +228,13 @@ def convert_to_python(obj, as_type="str"):
 
                 elif as_type == "bool":
                     result.append(bool(el))
+
+        elif isinstance(value, ro.Vector):
+            result = pandas2ri.rpy2py(value)
+            names = value.names
+
+            if not isinstance(names, NULLType):
+                result = {str(k): v for k, v in zip(names, result)}
 
         return result
 
