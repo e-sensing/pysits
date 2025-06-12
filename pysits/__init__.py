@@ -65,6 +65,7 @@ from .sits.ml import (
     sits_kfold_validate,
     sits_lighttae,
     sits_mlp,
+    sits_model_export,
     sits_resnet,
     sits_rfor,
     sits_svm,
@@ -162,6 +163,7 @@ __all__ = (
     "sits_xgboost",
     "sits_tae",
     "sits_kfold_validate",
+    "sits_model_export",
     # Impute
     "sits_impute",
     "impute_linear",

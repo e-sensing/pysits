@@ -87,3 +87,17 @@ def sits_train(*args, **kwargs) -> SITSMachineLearningMethod:
 @attach_doc("sits_kfold_validate")
 def sits_kfold_validate(*args, **kwargs) -> SITStructureData:
     """Train a machine learning model."""
+
+
+#
+# Model export functions
+#
+def sits_model_export(*args, **kwargs) -> None:
+    """Export a machine learning model.
+
+    This function is only available in R.
+
+    Raises:
+        NotImplementedError: Function is only available in R.
+    """
+    raise NotImplementedError("``sits_model_export`` is only available in R")
