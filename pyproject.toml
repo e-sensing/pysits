@@ -60,6 +60,8 @@ dependencies = [
     "matplotlib>=3.10.1",
     "geopandas>=1.1.0",
     "shapely>=2.1.1",
+    "pyarrow>=20.0.0",
+    "jinja2>=3.1.6",
 ]
 
 [project.urls]
@@ -106,6 +108,7 @@ packages = ["pysits"]
 include = [
   "pysits/**/*.py",
   "pysits/docs/**/*.md",
+  "pysits/templates/**/*.html",
   "README.md",
   "LICENSE"
 ]
