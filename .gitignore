@@ -227,6 +227,7 @@ rsconnect/
 # Data + extra resources
 examples/data/output/
 _resources/
+sits-map.html
 
 # Add uv entries
 .venv/
