@@ -15,24 +15,29 @@
 # along with this program; if not, see <https://www.gnu.org/licenses/>.
 #
 
-"""Segmentation operations."""
-
-from pysits.backend.pkgs import r_pkg_sits
-from pysits.conversions.clojure import closure_factory
-from pysits.conversions.decorators import function_call
-from pysits.docs import attach_doc
-from pysits.models.data.cube import SITSCubeModel
-
-#
-# Segmentation functions
-#
-sits_slic = closure_factory("sits_slic")
+"""Base DSL classes."""
 
 
-#
-# Segmentation operation
-#
-@function_call(r_pkg_sits.sits_segment, SITSCubeModel)
-@attach_doc("sits_segment")
-def sits_segment(*args, **kwargs) -> SITSCubeModel:
-    """Segment an image."""
+class DSLObject:
+    """Base class for DSL classes."""
+
+
+class RExpression(DSLObject):
+    def r_repr(self) -> str:
+        """Convert the expression to its R representation.
+
+        Returns:
+            str: The R code string representation of the expression.
+
+        Raises:
+            NotImplementedError: This method must be implemented by subclasses.
+        """
+        raise NotImplementedError()
+
+    def __str__(self) -> str:
+        """String representation of the R expression.
+
+        Returns:
+            str: The R code string representation.
+        """
+        return self.r_repr()

@@ -20,11 +20,11 @@
 from pysits.backend.pkgs import r_pkg_sits
 from pysits.conversions.decorators import function_call
 from pysits.docs import attach_doc
-from pysits.models import SITSCubeModel
-from pysits.models.builder import resolve_and_invoke_data_class
+from pysits.models.data.cube import SITSCubeModel
+from pysits.models.resolver import resolve_and_invoke_content_class
 
 
-@function_call(r_pkg_sits.sits_classify, resolve_and_invoke_data_class)
+@function_call(r_pkg_sits.sits_classify, resolve_and_invoke_content_class)
 @attach_doc("sits_classify")
 def sits_classify(*args, **kwargs) -> SITSCubeModel:
     """Classify data."""

@@ -21,15 +21,15 @@ from functools import singledispatch
 
 from pysits.backend.pkgs import r_pkg_sits
 from pysits.conversions.decorators import rpy2_fix_type
-from pysits.models import (
-    SITSCubeModel,
-    SITSFrame,
-    SITSMachineLearningMethod,
+from pysits.models.data.base import SITStructureData
+from pysits.models.data.cube import SITSCubeItemModel, SITSCubeModel
+from pysits.models.data.frame import SITSFrame
+from pysits.models.data.ts import (
     SITSTimeSeriesClassificationModel,
     SITSTimeSeriesModel,
     SITSTimeSeriesPatternsModel,
-    SITStructureData,
 )
+from pysits.models.ml import SITSMachineLearningMethod
 from pysits.visualization import plot_base, plot_leaflet, plot_tmap
 
 
@@ -70,6 +70,13 @@ def _(data: SITStructureData, **kwargs) -> None:
 @sits_plot.register
 @rpy2_fix_type
 def _(data: SITSCubeModel, **kwargs) -> None:
+    """Plot cube."""
+    return plot_tmap(data, **kwargs)
+
+
+@sits_plot.register
+@rpy2_fix_type
+def _(data: SITSCubeItemModel, **kwargs) -> None:
     """Plot cube."""
     return plot_tmap(data, **kwargs)
 

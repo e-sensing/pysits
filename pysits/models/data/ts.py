@@ -15,25 +15,87 @@
 # along with this program; if not, see <https://www.gnu.org/licenses/>.
 #
 
-"""time-series models."""
+"""Time-series data models."""
 
 from geopandas import GeoDataFrame as GeoPandasDataFrame
 from pandas import DataFrame as PandasDataFrame
+from pandas import Series as PandasSeries
 from rpy2.robjects.vectors import DataFrame as RDataFrame
 
 from pysits.conversions.tibble import tibble_sits_to_pandas
-from pysits.models.data import SITSFrame, SITSFrameSF
+from pysits.conversions.tibble_arrow import (
+    pandas_sits_to_tibble_arrow,
+    tibble_sits_to_pandas_arrow,
+)
+from pysits.models.data.frame import SITSFrame, SITSFrameSF
 
 
 #
 # Time-series data class
 #
+class SITSTimeSeriesItemModel(PandasSeries):
+    """SITS time-series item model."""
+
+    #
+    # Attributes
+    #
+    _instance: RDataFrame = None
+    """R DataFrame instance."""
+
+    required_columns: list[str] = [
+        "start_date",
+        "end_date",
+        "time_series",
+    ]
+    """Required columns for a valid time-series item."""
+
+    def __init__(self, data: PandasSeries, **kwargs):
+        """Initializer."""
+        # Create a cube from a Pandas Series
+        if isinstance(data, PandasSeries):
+            # Check if required columns are present
+            has_required_columns = all(
+                col in data.index for col in self.required_columns
+            )
+
+            if has_required_columns:
+                # Convert to Pandas DataFrame
+                ts_data = PandasDataFrame([data])
+
+                # Convert to R DataFrame
+                self._instance = pandas_sits_to_tibble_arrow(ts_data)
+
+        # Initialize super class
+        super().__init__(data=data, **kwargs)
+
+
 class SITSTimeSeriesModel(SITSFrame):
     """Time-series base class."""
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, instance, **kwargs):
         """Initializer."""
-        super().__init__(*args, **kwargs)
+        # If instance is a Pandas DataFrame, convert to R cube
+        if isinstance(instance, PandasDataFrame):
+            # Convert to R DataFrame
+            self._instance = pandas_sits_to_tibble_arrow(instance)
+
+        else:
+            self._instance = instance
+
+        # Proxy instance
+        if isinstance(instance, RDataFrame):
+            instance = self._convert_from_r(instance)
+
+        # Initialize super class
+        PandasDataFrame.__init__(self, data=instance, **kwargs)
+
+    #
+    # Properties
+    #
+    @property
+    def _constructor_sliced(self):
+        """Return the constructor for sliced data."""
+        return SITSTimeSeriesItemModel
 
     #
     # Convertions
@@ -44,7 +106,7 @@ class SITSTimeSeriesModel(SITSFrame):
         Args:
             instance (rpy2.robjects.vectors.DataFrame): Data instance.
         """
-        return tibble_sits_to_pandas(instance)
+        return tibble_sits_to_pandas_arrow(instance)
 
 
 class SITSTimeSeriesSFModel(SITSFrameSF):

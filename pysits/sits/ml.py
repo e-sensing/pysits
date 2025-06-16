@@ -21,11 +21,12 @@ from typing import Any
 
 from pysits.backend.loaders import load_function_from_package
 from pysits.backend.pkgs import r_pkg_sits
-from pysits.conversions.base import convert_dict_like_as_list_to_r
 from pysits.conversions.clojure import closure_factory
+from pysits.conversions.common import convert_dict_like_as_list_to_r
 from pysits.conversions.decorators import function_call
 from pysits.docs import attach_doc
-from pysits.models import SITSMachineLearningMethod, SITStructureData
+from pysits.models.data.base import SITStructureData
+from pysits.models.ml import SITSMachineLearningMethod
 
 
 #

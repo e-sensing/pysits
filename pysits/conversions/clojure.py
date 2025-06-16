@@ -62,4 +62,7 @@ def closure_factory(
     def _fnc(*args: P.args, **kwargs: P.kwargs) -> R:
         return getattr(r_pkg_sits, name)(*args, **kwargs)
 
+    # set function name
+    _fnc.__name__ = name
+
     return _fnc

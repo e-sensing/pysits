@@ -15,7 +15,7 @@
 # along with this program; if not, see <https://www.gnu.org/licenses/>.
 #
 
-"""frame models."""
+"""Pandas extension models."""
 
 import warnings
 from collections.abc import Sequence

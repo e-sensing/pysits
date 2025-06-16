@@ -20,11 +20,11 @@
 from pysits.backend.pkgs import r_pkg_sits
 from pysits.conversions.decorators import function_call
 from pysits.docs import attach_doc
-from pysits.models import SITSFrame
-from pysits.models.builder import resolve_and_invoke_data_class
+from pysits.models.data.frame import SITSFrame
+from pysits.models.resolver import resolve_and_invoke_content_class
 
 
-@function_call(r_pkg_sits.sits_as_sf, resolve_and_invoke_data_class)
+@function_call(r_pkg_sits.sits_as_sf, resolve_and_invoke_content_class)
 @attach_doc("sits_as_geopandas")
 def sits_as_geopandas(data: SITSFrame) -> SITSFrame:
     """Export a sits data object as an geopandas object."""

@@ -22,7 +22,7 @@ import inspect
 from collections.abc import Callable
 from typing import Any, ParamSpec, TypeVar
 
-from pysits.conversions.base import convert_to_r, fix_reserved_words_parameters
+from pysits.conversions.common import convert_to_r, fix_reserved_words_parameters
 
 #
 # Generics

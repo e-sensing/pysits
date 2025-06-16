@@ -15,7 +15,7 @@
 # along with this program; if not, see <https://www.gnu.org/licenses/>.
 #
 
-"""Base type conversions."""
+"""Common conversions."""
 
 from datetime import date, timedelta
 from pathlib import Path, PosixPath
@@ -28,8 +28,8 @@ from rpy2.robjects import pandas2ri
 from rpy2.robjects.robject import RObjectMixin
 
 from pysits.backend.pkgs import r_pkg_tibble
-from pysits.conversions.dsl import ExpressionList
-from pysits.conversions.pandasr import geopandas_to_r, pandas_to_r
+from pysits.conversions.dsl.base import DSLObject
+from pysits.conversions.tibble import geopandas_to_tibble, pandas_to_tibble
 
 #
 # Type mapping dictionary
@@ -45,8 +45,8 @@ TYPE_CONVERSIONS = {
     str: lambda obj: ro.StrVector([obj]),
     Path: lambda obj: ro.StrVector([obj.as_posix()]),
     PosixPath: lambda obj: ro.StrVector([obj.as_posix()]),
-    PandasDataFrame: lambda obj: r_pkg_tibble.as_tibble(pandas_to_r(obj)),
-    GeoPandasDataFrame: lambda obj: geopandas_to_r(obj),
+    PandasDataFrame: lambda obj: r_pkg_tibble.as_tibble(pandas_to_tibble(obj)),
+    GeoPandasDataFrame: lambda obj: geopandas_to_tibble(obj),
 }
 
 
@@ -165,7 +165,7 @@ def convert_to_r(obj):
         return obj._instance
 
     # Handle ``raw R`` / Expressions objects
-    if isinstance(obj, RObjectMixin | ExpressionList):
+    if isinstance(obj, RObjectMixin | DSLObject):
         return obj
 
     # Check if the object type exists in the conversion dictionary
@@ -253,9 +253,24 @@ def fix_reserved_words_parameters(**kwargs) -> dict:
     Returns:
         dict: The fixed keyword arguments.
     """
+    new_values = {}
+    keys_to_remove = []
+
     for key, _ in kwargs.items():
         # Assuming all reserved words end with "_"
         if key.endswith("_"):
-            kwargs[key[:-1]] = kwargs.pop(key)
+            # Save key to remove
+            keys_to_remove.append(key)
+
+            # Save new value
+            new_values[key[:-1]] = kwargs.pop(key)
+
+    # Remove keys that were converted
+    for key in keys_to_remove:
+        kwargs.pop(key)
+
+    # Add remaining kwargs
+    if new_values:
+        kwargs.update(new_values)
 
     return kwargs

@@ -20,7 +20,7 @@
 from pysits.backend.pkgs import r_pkg_sits
 from pysits.conversions.decorators import function_call
 from pysits.docs import attach_doc
-from pysits.models import SITStructureData
+from pysits.models.data.base import SITStructureData
 
 
 @function_call(r_pkg_sits.sits_config, SITStructureData)

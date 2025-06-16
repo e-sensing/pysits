@@ -100,7 +100,7 @@ def _base_plot(
         # Assuming a plot is a list of elements, we always have many elements.
         # Cases where we have a single element indicates that the plot object is
         # inside a list.
-        if len(plots) == 1:
+        while len(plots) == 1:
             plots = plots[0]
 
         # Create a temporary file

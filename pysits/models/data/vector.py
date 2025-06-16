@@ -15,32 +15,33 @@
 # along with this program; if not, see <https://www.gnu.org/licenses/>.
 #
 
-"""cube models."""
+"""Vector data models."""
 
 from pandas import DataFrame as PandasDataFrame
-from rpy2.robjects.vectors import DataFrame as RDataFrame
 
-from pysits.conversions.tibble import tibble_cube_to_pandas
-from pysits.models.data import SITSFrame
+from pysits.conversions.vector import vector_to_pandas
+from pysits.models.data.frame import SITSFrame
 
 
-#
-# Base class
-#
-class SITSCubeModel(SITSFrame):
-    """SITS Data Cube data."""
+class SITSNamedVector(SITSFrame):
+    """Base class for sits named vector results."""
 
-    def __init__(self, *args, **kwargs):
+    #
+    # Dunder methods
+    #
+    def __init__(self, instance, **kwargs):
         """Initializer."""
-        super().__init__(*args, **kwargs)
+        self._instance = instance
+
+        # Convert vector to pandas dataframe
+        instance = self._convert_from_r(instance)
+
+        # Initialize super class
+        PandasDataFrame.__init__(self, data=instance, **kwargs)
 
     #
     # Convertions
     #
-    def _convert_from_r(self, instance: RDataFrame) -> PandasDataFrame:
-        """Convert data from R to Python.
-
-        Args:
-            instance (rpy2.robjects.vectors.DataFrame): Data instance.
-        """
-        return tibble_cube_to_pandas(instance)
+    def _convert_from_r(self, instance, **kwargs):
+        """Convert data from R to Python."""
+        return vector_to_pandas(instance)

@@ -20,16 +20,18 @@
 from datetime import date
 
 import rpy2.robjects as ro
+from rpy2.robjects import globalenv as rpy2_globalenv
 
 from pysits.backend.functions import r_fnc_summary
 from pysits.backend.pkgs import r_pkg_sits
-from pysits.conversions.base import convert_to_python
+from pysits.conversions.common import convert_to_python
 from pysits.conversions.decorators import function_call, rpy2_fix_type
 from pysits.docs import attach_doc
-from pysits.models import SITSData, SITSFrame
-from pysits.models.builder import (
+from pysits.models.data.base import SITSData
+from pysits.models.data.frame import SITSFrame
+from pysits.models.resolver import (
     resolve_and_invoke_accuracy_class,
-    resolve_and_invoke_data_class,
+    resolve_and_invoke_content_class,
 )
 
 
@@ -57,19 +59,19 @@ def sits_bbox(*args, **kwargs) -> SITSFrame:
     """Get bbox of sits tibble or data cube."""
 
 
-@function_call(r_pkg_sits.sits_select, resolve_and_invoke_data_class)
+@function_call(r_pkg_sits.sits_select, resolve_and_invoke_content_class)
 @attach_doc("sits_select")
 def sits_select(*args, **kwargs) -> SITSFrame:
     """Select bands from a sits tibble or data cube."""
 
 
-@function_call(r_pkg_sits.sits_merge, resolve_and_invoke_data_class)
+@function_call(r_pkg_sits.sits_merge, resolve_and_invoke_content_class)
 @attach_doc("sits_merge")
 def sits_merge(*args, **kwargs) -> SITSFrame:
     """Merge two sits tibbles or data cubes."""
 
 
-@function_call(r_pkg_sits.sits_mixture_model, resolve_and_invoke_data_class)
+@function_call(r_pkg_sits.sits_mixture_model, resolve_and_invoke_content_class)
 @attach_doc("sits_mixture_model")
 def sits_mixture_model(*args, **kwargs) -> SITSFrame:
     """Multiple endmember spectral mixture analysis."""
@@ -81,13 +83,13 @@ def sits_list_collections(*args, **kwargs) -> None:
     """List collections available."""
 
 
-@function_call(r_fnc_summary, resolve_and_invoke_data_class)
+@function_call(r_fnc_summary, resolve_and_invoke_content_class)
 @attach_doc("summary")
 def sits_summary(*args, **kwargs) -> str:
     """Summary of a sits data object."""
 
 
-@function_call(r_pkg_sits.sits_labels_summary, resolve_and_invoke_data_class)
+@function_call(r_pkg_sits.sits_labels_summary, resolve_and_invoke_content_class)
 @attach_doc("sits_labels_summary")
 def sits_labels_summary(*args, **kwargs) -> SITSFrame:
     """Inform label distribution of a set of time series.
@@ -126,7 +128,10 @@ def sits_apply(data, **kwargs) -> SITSFrame:
             current_v = f"'{current_v}'"
 
         elif k == "progress":
-            current_v = "FALSE" if current_v else "TRUE"
+            current_v = "TRUE" if current_v else "FALSE"
+
+        elif k == "normalized":
+            current_v = "TRUE" if current_v else "FALSE"
 
         params.append(f"{k}={current_v}")
 
@@ -143,7 +148,7 @@ def sits_apply(data, **kwargs) -> SITSFrame:
     result = ro.r(command)
 
     # Return
-    return resolve_and_invoke_data_class(result)
+    return resolve_and_invoke_content_class(result)
 
 
 #
@@ -167,7 +172,7 @@ def sits_reduce(data, impute_fn=None, **kwargs) -> SITSFrame:
             current_v = f"'{current_v}'"
 
         elif k == "progress":
-            current_v = "FALSE" if current_v else "TRUE"
+            current_v = "TRUE" if current_v else "FALSE"
 
         params.append(f"{k}={current_v}")
 
@@ -183,5 +188,33 @@ def sits_reduce(data, impute_fn=None, **kwargs) -> SITSFrame:
     # Run operation
     result = ro.r(command)
 
+    # Check if the result is a time-series data frame. If so, convert reduced
+    # date type to numeric.
+    if "time_series" in result.colnames:
+        # Define conversion function
+        ro.r("""
+            convert_ts_reduce <- 
+            function(data, column_name = "time_series", exclude = "Index") {
+                data |>
+                    dplyr::mutate(
+                        {{ column_name }} := purrr::map(
+                            .data[[column_name]],
+                            ~ {
+                                .x |>
+                                    dplyr::mutate(dplyr::across(
+                                        .cols = !dplyr::all_of(exclude),
+                                        .fns = ~ as.numeric(.)
+                                    ))
+                            }
+                        )
+                    )
+            }
+        """)
+
+        convert_ts_reduce = rpy2_globalenv["convert_ts_reduce"]
+
+        # Convert result
+        result = convert_ts_reduce(result)
+
     # Return
-    return resolve_and_invoke_data_class(result)
+    return resolve_and_invoke_content_class(result)

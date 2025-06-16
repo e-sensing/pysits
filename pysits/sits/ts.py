@@ -18,20 +18,15 @@
 """Time-series operations."""
 
 from pysits.backend.pkgs import r_pkg_sits
-from pysits.conversions.base import convert_to_python
+from pysits.conversions.common import convert_to_python
 from pysits.conversions.decorators import function_call
 from pysits.docs import attach_doc
-from pysits.models import (
-    SITSConfusionMatrix,
-    SITSFrame,
-    SITSFrameNested,
-    SITSFrameSF,
-    SITSMatrix,
-    SITSTable,
-    SITSTimeSeriesModel,
-    SITSTimeSeriesPatternsModel,
-    SITStructureData,
-)
+from pysits.models.data.accuracy import SITSConfusionMatrix
+from pysits.models.data.base import SITStructureData
+from pysits.models.data.frame import SITSFrame, SITSFrameNested, SITSFrameSF
+from pysits.models.data.matrix import SITSMatrix
+from pysits.models.data.table import SITSTable
+from pysits.models.data.ts import SITSTimeSeriesModel, SITSTimeSeriesPatternsModel
 
 
 #

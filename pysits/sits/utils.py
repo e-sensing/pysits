@@ -21,9 +21,9 @@ from pathlib import Path
 
 from pysits.backend.functions import r_fnc_read_rds, r_fnc_set_seed, r_fnc_system_file
 from pysits.backend.loaders import load_data_from_global, load_data_from_package
-from pysits.models import SITSFrame
-from pysits.models.builder import resolve_and_invoke_data_class
-from pysits.models.ts import SITSTimeSeriesModel
+from pysits.models.data.frame import SITSFrame
+from pysits.models.data.ts import SITSTimeSeriesModel
+from pysits.models.resolver import resolve_and_invoke_content_class
 
 
 #
@@ -60,7 +60,7 @@ def read_rds(file: str | Path) -> SITSFrame:
     rds_content = r_fnc_read_rds(file.as_posix())
 
     # Resolve and invoke data class
-    return resolve_and_invoke_data_class(rds_content)
+    return resolve_and_invoke_content_class(rds_content)
 
 
 def r_package_dir(content_dir: str, package: str) -> Path | None:

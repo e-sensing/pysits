@@ -15,7 +15,7 @@
 # along with this program; if not, see <https://www.gnu.org/licenses/>.
 #
 
-"""xarray conversion."""
+"""Xarray conversions."""
 
 from __future__ import annotations
 
@@ -27,7 +27,7 @@ from affine import Affine
 from pandas import concat as pandas_concat
 from pandas import to_datetime as pandas_to_datetime
 
-from pysits.models import SITSData
+from pysits.models.data.base import SITSData
 
 
 #

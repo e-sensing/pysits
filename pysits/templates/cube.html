@@ -1,0 +1,195 @@
+{% macro render_tile_info(tile_id, row, bands, bbox_str, bbox_coords, crs_str, time_str) %}
+<div class="sits-accordion-item">
+    <div class="sits-accordion-header" onclick="toggleAccordion(this)">
+        <span>
+            <b>Source:</b> {{ row.get('source', '') }} | 
+            <b>Collection:</b> {{ row.get('collection', '') }} | 
+            <b>Tile:</b> {{ tile_id }}
+        </span>
+        <button class="view-btn" type="button" onclick="event.stopPropagation(); toggleAccordion(this.parentElement);">View</button>
+    </div>
+    <div class="sits-accordion-content">
+        <div class="metadata-grid">
+            <div class="metadata-item">
+                <span class="label">Time extent:</span>
+                <span class="value">{{ time_str }}</span>
+            </div>
+            <div class="metadata-item">
+                <span class="label">Bands:</span>
+                <span class="value">{{ bands|join(', ') if bands else 'Unknown' }}</span>
+            </div>
+            <div class="metadata-item">
+                <span class="label">Satellite:</span>
+                <span class="value">{{ row.get('satellite', '') }}</span>
+            </div>
+            <div class="metadata-item">
+                <span class="label">Sensor:</span>
+                <span class="value">{{ row.get('sensor', '') }}</span>
+            </div>
+            <div class="metadata-item">
+                <span class="label">Bounding box:</span>
+                <span class="value">{{ bbox_str }}</span>
+            </div>
+            <div class="metadata-item">
+                <span class="label">CRS:</span>
+                <span class="crs-collapsible" onclick="toggleCrs(this)">Click to expand</span>
+                <div class="crs-content" style="display:none; white-space:pre-wrap;">{{ crs_str }}</div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endmacro %}
+
+<style>
+    .sits-accordion {
+        font-family: Arial, sans-serif;
+        margin: 10px 0;
+    }
+    .sits-accordion-item {
+        margin-bottom: 5px;
+    }
+    .sits-accordion-header {
+        background-color: #2c3e50;
+        color: white;
+        padding: 10px 15px;
+        cursor: pointer;
+        border-radius: 4px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .sits-accordion-header:hover {
+        background-color: #34495e;
+    }
+    .sits-accordion-content {
+        padding: 0 20px;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease, padding 0.3s ease;
+        background-color: #f8f9fa;
+        border-radius: 0 0 4px 4px;
+    }
+    .sits-accordion-content.active {
+        padding: 20px;
+        max-height: 1000px;
+    }
+    .metadata-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 18px 32px;
+    }
+    .metadata-item {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+    .label {
+        color: #666;
+        font-size: 0.9em;
+        font-weight: 500;
+    }
+    .value {
+        color: #2c3e50;
+        font-size: 1em;
+    }
+    .crs-collapsible {
+        display: inline-block;
+        background: #e3eefc;
+        color: #217dbb;
+        border-radius: 5px;
+        padding: 2px 12px;
+        font-size: 0.95em;
+        cursor: pointer;
+        text-decoration: none;
+        margin-left: 8px;
+        transition: background 0.3s, color 0.3s;
+        border: 1px solid #b6d4fa;
+    }
+    .crs-collapsible:hover {
+        background: #217dbb;
+        color: #fff;
+        text-decoration: none;
+    }
+    .crs-content {
+        margin-top: 7px;
+        background: #eee;
+        padding: 10px;
+        border-radius: 4px;
+        font-size: 0.97em;
+        font-family: monospace;
+        word-break: break-all;
+        display: none;
+        transition: display 0.3s;
+    }
+    .crs-content.active {
+        display: block;
+    }
+    .view-btn {
+        background: #3498db;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 6px 16px;
+        font-size: 1em;
+        cursor: pointer;
+        margin-left: 10px;
+        transition: background 0.3s;
+    }
+    .view-btn:hover {
+        background: #217dbb;
+    }
+</style>
+
+<h3>SITS Data Cube</h3>
+<div class="sits-accordion">
+    {% for idx, row in cube_obj.iterrows() %}
+        {% set tile_id = row.get('tile', idx) %}
+        {% set tile_df = cube_obj.iloc[[idx]] %}
+        {% set tile_timeline = sits_timeline(tile_df) %}
+        {% set tile_time_str = (tile_timeline|min ~ ' to ' ~ tile_timeline|max) if tile_timeline else overall_time_str %}
+        {% set tile_bbox = sits_bbox(tile_df) %}
+        {% set bbox_row = tile_bbox.iloc[0] if tile_bbox is defined and tile_bbox.iloc is defined else tile_bbox %}
+        {% set bbox_str = 'xmin: ' ~ bbox_row.get('xmin', '') ~ ', xmax: ' ~ bbox_row.get('xmax', '') ~ ', ymin: ' ~ bbox_row.get('ymin', '') ~ ', ymax: ' ~ bbox_row.get('ymax', '') %}
+        {% set bbox_coords = bbox_row %}
+        {% set bands = sits_bands(tile_df) %}
+        {% set crs_str = row.get('crs', 'Unknown') %}
+        {{ render_tile_info(tile_id, row, bands, bbox_str, bbox_coords, crs_str, tile_time_str) }}
+    {% endfor %}
+</div>
+
+<h3>Cube content</h3>
+{{ super_html|safe }}
+
+<script>
+    function toggleAccordion(element) {
+        element.classList.toggle('active');
+        var content = element.nextElementSibling;
+        if (content.style.maxHeight) {
+            content.style.maxHeight = null;
+            content.classList.remove('active');
+        } else {
+            content.style.maxHeight = content.scrollHeight + "px";
+            content.classList.add('active');
+        }
+    }
+    function toggleCrs(element) {
+        var crsDiv = element.nextElementSibling;
+        if (crsDiv.style.display === 'none' || crsDiv.style.display === '') {
+            crsDiv.style.display = 'block';
+            crsDiv.classList.add('active');
+            element.textContent = 'Click to collapse';
+        } else {
+            crsDiv.style.display = 'none';
+            crsDiv.classList.remove('active');
+            element.textContent = 'Click to expand';
+        }
+        // Also trigger a resize of the accordion for smoothness
+        var accordionContent = element.closest('.sits-accordion-content');
+        if (accordionContent) {
+            accordionContent.style.maxHeight = null;
+            setTimeout(function() {
+                accordionContent.style.maxHeight = accordionContent.scrollHeight + "px";
+            }, 150);
+        }
+    }
+</script>

@@ -17,12 +17,15 @@
 
 """tibble conversions."""
 
+import warnings
 from collections.abc import Callable
 
-import geopandas
+from geopandas import GeoDataFrame as GeoPandasDataFrame
 from pandas import DataFrame as PandasDataFrame
 from pandas import to_datetime as pandas_to_datetime
+from rpy2 import robjects
 from rpy2.robjects import StrVector, pandas2ri
+from rpy2.robjects.conversion import localconverter
 from rpy2.robjects.vectors import DataFrame as RDataFrame
 from shapely import wkt
 
@@ -188,7 +191,7 @@ def _tibble_to_pandas(
 
     # Transform dataframe to geodataframe
     if shapely_geometries:
-        rdf_data = geopandas.GeoDataFrame(
+        rdf_data = GeoPandasDataFrame(
             rdf_data, geometry=shapely_geometries, crs=shapely_crs
         )
 
@@ -316,7 +319,7 @@ def tibble_sits_to_pandas(data: RDataFrame) -> PandasDataFrame:
 
 
 #
-# SITS conversions function
+# Cube conversions function
 #
 def tibble_cube_to_pandas(data: RDataFrame) -> PandasDataFrame:
     """Convert sits tibble to Pandas Data Frame.
@@ -370,3 +373,72 @@ def tibble_cube_to_pandas(data: RDataFrame) -> PandasDataFrame:
         table_processor=_table_processor,
         nested_processor=_nested_processor,
     )
+
+
+#
+# Pandas to R conversions
+#
+def pandas_to_tibble(data: PandasDataFrame) -> RDataFrame:
+    """Convert a pandas DataFrame to an R DataFrame object.
+
+    This function converts a pandas DataFrame to an R DataFrame using
+    rpy2's conversion infrastructure. It handles the conversion context
+    to ensure proper type mapping between Python and R objects.
+
+    Args:
+        data (pandas.DataFrame): The pandas DataFrame to convert to R.
+
+    Returns:
+        rpy2.robjects.vectors.DataFrame: The converted R DataFrame object.
+
+    Notes:
+        - The function uses rpy2's localconverter to ensure proper conversion context
+        - Handles both DataFrame and non-DataFrame inputs
+        - Preserves column names and data types where possible
+        - For non-DataFrame inputs, falls back to rpy2's default converter
+    """
+    with localconverter(robjects.default_converter + pandas2ri.converter):
+        return robjects.conversion.py2rpy(data)
+
+
+def geopandas_to_tibble(data: GeoPandasDataFrame) -> RDataFrame:
+    """Convert pandas DataFrame or GeoDataFrame to R DataFrame or sf object.
+
+    Removes columns that contain embedded pandas DataFrames.
+    """
+    data = GeoPandasDataFrame(data)
+
+    if data.crs is None:
+        raise ValueError("GeoDataFrame must have a CRS")
+
+    # Identify columns where no cell is a DataFrame
+    safe_columns = [col for col in data.columns if not data[col].dtype.name == "sits"]
+
+    # Warn if columns are dropped
+    dropped_columns = set(data.columns) - set(safe_columns)
+    if dropped_columns:
+        warnings.warn(
+            f"Warning: Dropping columns with embedded DataFrames: {dropped_columns}"
+        )
+
+    # Keep only safe columns
+    data_safe = data[safe_columns].copy()
+
+    # If GeoDataFrame, convert geometry to WKT and include geometry column
+    if isinstance(data, GeoPandasDataFrame):
+        geom_col = data.geometry.name
+        data_safe[geom_col] = data.geometry.to_wkt()
+
+    # Convert to R DataFrame
+    with localconverter(robjects.default_converter + pandas2ri.converter):
+        r_df = robjects.conversion.py2rpy(data_safe)
+
+    # If GeoDataFrame, convert to sf
+    if isinstance(data, GeoPandasDataFrame):
+        r_df = r_pkg_sf.st_as_sf(
+            r_df,
+            wkt=robjects.StrVector([geom_col]),
+            crs=robjects.StrVector([data.crs.to_wkt()]),
+        )
+
+    return r_df

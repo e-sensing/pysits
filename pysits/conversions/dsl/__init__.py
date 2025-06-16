@@ -15,12 +15,4 @@
 # along with this program; if not, see <https://www.gnu.org/licenses/>.
 #
 
-"""pysits variables."""
-
-from pysits.conversions.dsl import Var
-
-#
-# Exported variables for DSL operations
-#
-Mask = Var("mask")
-"""Mask variable for reclassify operations."""
+"""dsl module."""

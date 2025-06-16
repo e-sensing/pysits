@@ -1,0 +1,183 @@
+{% macro render_metric(name, value) %}
+<span class="metric">{{ name }}: {{ "%.4f"|format(value) }}</span>
+{% endmacro %}
+
+{% macro render_list_value(value) %}
+<td class="list-value">{{ value|string }}</td>
+{% endmacro %}
+
+<style>
+    .sits-accordion {
+        font-family: Arial, sans-serif;
+        margin: 10px 0;
+    }
+    .sits-accordion-item {
+        margin-bottom: 5px;
+    }
+    .sits-accordion-header {
+        background-color: #2c3e50;
+        color: white;
+        padding: 10px 15px;
+        cursor: pointer;
+        border-radius: 4px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .sits-accordion-header:hover {
+        background-color: #34495e;
+    }
+    .sits-accordion-content {
+        padding: 0;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease-out;
+        background-color: #f8f9fa;
+        border-radius: 0 0 4px 4px;
+    }
+    .sits-accordion-content.active {
+        padding: 15px;
+        max-height: 1000px;
+    }
+    .sits-results-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+    }
+    .sits-results-table th, .sits-results-table td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+    }
+    .sits-results-table th {
+        background-color: #f5f5f5;
+        font-weight: bold;
+    }
+    .metric-value {
+        font-weight: bold;
+        color: #2c3e50;
+    }
+    .run-number {
+        font-weight: bold;
+        margin-right: 10px;
+    }
+    .run-metrics {
+        display: flex;
+        gap: 20px;
+    }
+    .metric {
+        background-color: #3498db;
+        color: white;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 0.9em;
+    }
+    .list-value {
+        font-family: monospace;
+        white-space: pre;
+    }
+</style>
+
+<script>
+    function toggleAccordion(element) {
+        element.classList.toggle('active');
+        var content = element.nextElementSibling;
+        if (content.style.maxHeight) {
+            content.style.maxHeight = null;
+        } else {
+            content.style.maxHeight = content.scrollHeight + "px";
+        }
+    }
+</script>
+
+<div class="sits-accordion">
+    {# Assuming number of accuracy is the same as number of runs #}
+    {% set n_runs = tuning_obj.accuracy|length if tuning_obj.accuracy else 0 %}
+    {% for i in range(n_runs) %}
+    <div class="sits-accordion-item">
+        <div class="sits-accordion-header" onclick="toggleAccordion(this)">
+            <span class="run-number">Run {{ i + 1 }}</span>
+            <div class="run-metrics">
+                {{ render_metric('Accuracy', tuning_obj.accuracy[i]) }}
+                {{ render_metric('Kappa', tuning_obj.kappa[i]) }}
+            </div>
+        </div>
+        <div class="sits-accordion-content">
+            <table class="sits-results-table">
+                <tr>
+                    <th>Parameter</th>
+                    <th>Value</th>
+                </tr>
+
+                {% if tuning_obj.cnn_layers %}
+                <tr>
+                    <td>CNN Layers</td>
+                    {{ render_list_value(tuning_obj.cnn_layers[i]) }}
+                </tr>
+                <tr>
+                    <td>CNN Kernels</td>
+                    {{ render_list_value(tuning_obj.cnn_kernels[i]) }}
+                </tr>
+                <tr>
+                    <td>CNN Dropout Rates</td>
+                    {{ render_list_value(tuning_obj.cnn_dropout_rates[i]) }}
+                </tr>
+                {% endif %}
+
+                {% if tuning_obj.dense_layer_nodes %}
+                <tr>
+                    <td>Dense Layer Nodes</td>
+                    {{ render_list_value(tuning_obj.dense_layer_nodes[i]) }}
+                </tr>
+                <tr>
+                    <td>Dense Layer Dropout Rate</td>
+                    {{ render_list_value(tuning_obj.dense_layer_dropout_rate[i]) }}
+                </tr>
+                {% endif %}
+
+                <tr>
+                    <td>Epochs</td>
+                    <td>{{ tuning_obj.epochs[i] }}</td>
+                </tr>
+                <tr>
+                    <td>Batch Size</td>
+                    <td>{{ tuning_obj.batch_size[i] }}</td>
+                </tr>
+                <tr>
+                    <td>Validation Split</td>
+                    <td>{{ tuning_obj.validation_split[i] }}</td>
+                </tr>
+
+                {% if tuning_obj.optimizer %}
+                <tr>
+                    <td>Optimizer</td>
+                    <td>{{ tuning_obj.optimizer[i] }}</td>
+                </tr>
+                {% endif %}
+
+                {% if tuning_obj.lr_decay_epochs %}
+                <tr>
+                    <td>Learning Rate Decay Epochs</td>
+                    {{ render_list_value(tuning_obj.lr_decay_epochs[i]) }}
+                </tr>
+                <tr>
+                    <td>Learning Rate Decay Rate</td>
+                    {{ render_list_value(tuning_obj.lr_decay_rate[i]) }}
+                </tr>
+                {% endif %}
+
+                {% if tuning_obj.patience %}
+                <tr>
+                    <td>Patience</td>
+                    <td>{{ tuning_obj.patience[i] }}</td>
+                </tr>
+                <tr>
+                    <td>Minimum Delta</td>
+                    <td>{{ tuning_obj.min_delta[i] }}</td>
+                </tr>
+                {% endif %}
+            </table>
+        </div>
+    </div>
+    {% endfor %}
+</div> 

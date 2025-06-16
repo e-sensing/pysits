@@ -19,7 +19,9 @@
 
 from functools import singledispatch
 
-from pysits.models import SITSCubeModel, SITSFrame, SITSTimeSeriesModel
+from pysits.models.data.cube import SITSCubeModel
+from pysits.models.data.frame import SITSFrame
+from pysits.models.data.ts import SITSTimeSeriesModel
 
 
 @singledispatch

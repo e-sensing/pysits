@@ -15,13 +15,37 @@
 # along with this program; if not, see <https://www.gnu.org/licenses/>.
 #
 
-"""ML methods models."""
+"""Base data models."""
 
 from pysits.models.base import SITSBase
 
 
-#
-# Base class
-#
-class SITSMachineLearningMethod(SITSBase):
-    """ML Method base class."""
+class SITSData(SITSBase):
+    #
+    # Dunder methods
+    #
+    def __init__(self, instance, **kwargs):
+        """Initializer."""
+        # Convert data
+        instance = self._convert_from_r(instance)
+
+        # Initialize super class
+        super().__init__(instance=instance, **kwargs)
+
+    #
+    # Convertions
+    #
+    def _convert_from_r(self, instance, **kwargs):
+        """Convert data from R to Python."""
+        return None
+
+
+class SITStructureData(SITSData):
+    """Base class for sits structure (e.g., list) results."""
+
+    #
+    # Convertions
+    #
+    def _convert_from_r(self, instance):
+        """Convert data from R to Python."""
+        return instance

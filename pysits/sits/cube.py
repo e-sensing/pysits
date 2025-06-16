@@ -25,21 +25,22 @@ from pysits.conversions.decorators import (
     rpy2_fix_type,
     rpy2_fix_type_custom,
 )
-from pysits.conversions.dsl import ExpressionList
+from pysits.conversions.dsl.mask import MaskExpressionList
 from pysits.docs import attach_doc
-from pysits.models import SITSCubeModel, SITSFrame
+from pysits.models.data.cube import SITSCubeModel
+from pysits.models.data.frame import SITSFrame
 
 
 #
 # Reclassify-specific converters functions
 #
-def convert_reclassify_rules(obj: object) -> ExpressionList:
+def convert_reclassify_rules(obj: object) -> MaskExpressionList:
     """Convert reclassify rules to a propert ExpressionList."""
 
     if not isinstance(obj, dict):
         raise ValueError("Reclassify rules must be a dictionary.")
 
-    return ExpressionList(**obj)
+    return MaskExpressionList(**obj)
 
 
 #
@@ -117,7 +118,7 @@ def sits_colors_qgis(*args, **kwargs) -> None:
 @rpy2_fix_type
 @attach_doc("sits_reclassify")
 def sits_reclassify(
-    cube: SITSCubeModel, mask: SITSCubeModel, rules: ExpressionList, *args, **kwargs
+    cube: SITSCubeModel, mask: SITSCubeModel, rules: MaskExpressionList, *args, **kwargs
 ) -> SITSCubeModel:
     """Reclassify a classified cube."""
     params = []
@@ -130,7 +131,7 @@ def sits_reclassify(
             current_v = f"'{current_v}'"
 
         elif k == "progress":
-            current_v = "FALSE" if current_v else "TRUE"
+            current_v = "TRUE" if current_v else "FALSE"
 
         params.append(f"{k}={current_v}")
 

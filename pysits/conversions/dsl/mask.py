@@ -15,20 +15,18 @@
 # along with this program; if not, see <https://www.gnu.org/licenses/>.
 #
 
-"""DSL for R expressions."""
+"""DSL for mask operations."""
 
 from typing import Any
+
+from pysits.conversions.dsl.base import RExpression
 
 
 #
 # Base R expression class
 #
-class RExpr:
-    """Base class for R expressions.
-
-    This class serves as the foundation for all R expression types and provides
-    operator overloading for common operations.
-    """
+class MaskExpression(RExpression):
+    """Mask expression class."""
 
     #
     # Magic methods
@@ -91,37 +89,35 @@ class RExpr:
 #
 # Helper function
 #
-def as_rexpr(x: int | float | str | RExpr) -> RExpr:
+def as_rexpr(x: int | float | str | MaskExpression) -> MaskExpression:
     """Convert a Python value to an R expression.
 
     Args:
-        x: Value to convert, can be an integer, float, string or existing RExpr.
+        x: Value to convert, can be an integer, float, string or
+            existing ``MaskExpression``.
 
     Returns:
-        RExpr: The value wrapped in an appropriate RExpr subclass.
+        MaskExpression: The value wrapped in an appropriate
+            ``MaskExpression`` subclass.
 
     Raises:
-        TypeError: If the input type cannot be converted to an RExpr.
+        TypeError: If the input type cannot be converted to an
+            ``MaskExpression``s.
     """
-    if isinstance(x, RExpr):
+    if isinstance(x, MaskExpression):
         return x
 
     elif isinstance(x, (int | float | str)):
         return Literal(x)
 
-    else:
-        raise TypeError(f"Cannot convert {type(x)} to RExpr")
+    raise TypeError(f"Cannot convert {type(x)} to MaskExpression")
 
 
 #
 # Variable (symbol)
 #
-class Var(RExpr):
-    """Represents an R variable or symbol.
-
-    Args:
-        name (str): The name of the R variable.
-    """
+class MaskVariable(MaskExpression):
+    """Represents an R variable or symbol."""
 
     def __init__(self, name: str) -> None:
         self.name = name
@@ -150,7 +146,7 @@ class Var(RExpr):
 #
 # Literal value
 #
-class Literal(RExpr):
+class Literal(MaskExpression):
     """Represents a literal value in R code.
 
     Args:
@@ -172,19 +168,22 @@ class Literal(RExpr):
 #
 # Binary operator
 #
-class BinaryOp(RExpr):
-    """Base class for binary operators in R.
+class BinaryOp(MaskExpression):
+    """Base class for binary operators.
 
     Args:
-        left (Union[RExpr, int, float, str]): Left operand.
+        left (Union[MaskExpression, int, float, str]): Left operand.
 
-        right (Union[RExpr, int, float, str]): Right operand.
+        right (Union[MaskExpression, int, float, str]): Right operand.
     """
 
     op: str | None = None
+    """Operator."""
 
     def __init__(
-        self, left: RExpr | int | float | str, right: RExpr | int | float | str
+        self,
+        left: MaskExpression | int | float | str,
+        right: MaskExpression | int | float | str,
     ) -> None:
         self.left = as_rexpr(left)
         self.right = as_rexpr(right)
@@ -252,14 +251,14 @@ class Or(BinaryOp):
 #
 # Unary operator (NOT)
 #
-class Not(RExpr):
+class Not(MaskExpression):
     """Represents logical NOT (!) in R.
 
     Args:
         expr (Union[RExpr, int, float, str]): Expression to negate.
     """
 
-    def __init__(self, expr: RExpr | int | float | str) -> None:
+    def __init__(self, expr: MaskExpression | int | float | str) -> None:
         self.expr = as_rexpr(expr)
 
     def r_repr(self) -> str:
@@ -274,16 +273,17 @@ class Not(RExpr):
 #
 # In operator: mask %in% c(...)
 #
-class In(RExpr):
+class In(MaskExpression):
     """Represents the %in% operator in R.
 
     Args:
         left (Union[RExpr, int, float, str]): Value to check.
+
         values (List[Union[int, float, str]]): List of values to check against.
     """
 
     def __init__(
-        self, left: RExpr | int | float | str, values: list[int | float | str]
+        self, left: MaskExpression | int | float | str, values: list[int | float | str]
     ) -> None:
         self.left = as_rexpr(left)
         self.values = values
@@ -301,14 +301,14 @@ class In(RExpr):
 #
 # List of expressions
 #
-class ExpressionList:
+class MaskExpressionList(MaskExpression):
     """Represents a named list of R expressions.
 
     Args:
         **entries (Dict[str, RExpr]): Keyword arguments mapping names to expressions.
     """
 
-    def __init__(self, **entries: dict[str, RExpr]) -> None:
+    def __init__(self, **entries: dict[str, MaskExpression]) -> None:
         self.entries = entries
 
     def r_repr(self) -> str:
@@ -321,3 +321,10 @@ class ExpressionList:
             f'"{key}" = {expr.r_repr()}' for key, expr in self.entries.items()
         )
         return f"list(\n    {entries_str}\n)"
+
+
+#
+# Mask variables
+#
+MaskValue = MaskVariable("mask")
+"""Mask variable for reclassify operations."""

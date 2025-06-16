@@ -15,20 +15,35 @@
 # along with this program; if not, see <https://www.gnu.org/licenses/>.
 #
 
-"""Base models."""
+"""Table data models."""
 
-import abc
+from pandas import DataFrame as PandasDataFrame
+
+from pysits.backend.functions import r_fnc_class
+from pysits.conversions.vector import table_to_pandas
+from pysits.models.data.frame import SITSFrame
 
 
-class SITSBase(abc.ABC):
-    """Base class for SITS models."""
-
-    _instance = None
-    """R Object instance."""
+class SITSTable(SITSFrame):
+    """Base class for sits table results."""
 
     #
-    # Dunder methods (magic methods)
+    # Dunder methods
     #
     def __init__(self, instance, **kwargs):
         """Initializer."""
         self._instance = instance
+
+        # Proxy instance
+        if "table" in r_fnc_class(instance):
+            instance = self._convert_from_r(instance)
+
+        # Initialize super class
+        PandasDataFrame.__init__(self, data=instance, **kwargs)
+
+    #
+    # Convertions
+    #
+    def _convert_from_r(self, instance, **kwargs):
+        """Convert data from R to Python."""
+        return table_to_pandas(instance)

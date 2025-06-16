@@ -17,6 +17,8 @@
 
 """pysits module."""
 
+from .conversions.dsl.mask import MaskValue
+from .conversions.dsl.tuning import hparam
 from .settings import __version__
 from .sits.classification import sits_classify, sits_label_classification, sits_smooth
 from .sits.colors import (
@@ -107,6 +109,7 @@ from .sits.ts import (
     sits_validate,
     sits_whittaker,
 )
+from .sits.tuning import sits_tuning, sits_tuning_hparams
 from .sits.utils import (
     load_samples_dataset,
     r_package_dir,
@@ -212,9 +215,15 @@ __all__ = (
     "sits_as_xarray",
     "sits_as_geopandas",
     "sits_to_xlsx",
+    # Tuning
+    "sits_tuning_hparams",
+    "sits_tuning",
     # Visualization
     "plot",
     "sits_view",
+    # DSL Variables
+    "MaskValue",
+    "hparam",
     # Context data
     "samples_l8_rondonia_2bands",
     "samples_modis_ndvi",

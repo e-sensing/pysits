@@ -15,24 +15,4 @@
 # along with this program; if not, see <https://www.gnu.org/licenses/>.
 #
 
-"""Segmentation operations."""
-
-from pysits.backend.pkgs import r_pkg_sits
-from pysits.conversions.clojure import closure_factory
-from pysits.conversions.decorators import function_call
-from pysits.docs import attach_doc
-from pysits.models.data.cube import SITSCubeModel
-
-#
-# Segmentation functions
-#
-sits_slic = closure_factory("sits_slic")
-
-
-#
-# Segmentation operation
-#
-@function_call(r_pkg_sits.sits_segment, SITSCubeModel)
-@attach_doc("sits_segment")
-def sits_segment(*args, **kwargs) -> SITSCubeModel:
-    """Segment an image."""
+"""Data models module."""
