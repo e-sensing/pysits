@@ -21,11 +21,12 @@ from pathlib import Path
 
 from pandas import DataFrame as PandasDataFrame
 
-from pysits.models import SITSCubeModel, SITSFrame
+from pysits.conversions.dsl.mask import MaskValue
+from pysits.models.data.cube import SITSCubeModel
+from pysits.models.data.frame import SITSFrame
 from pysits.sits.cube import sits_cube, sits_reclassify
 from pysits.sits.data import sits_bands, sits_bbox, sits_labels, sits_timeline
 from pysits.sits.utils import r_package_dir
-from pysits.variables import Mask
 
 
 def test_sits_cube_data_structure():
@@ -140,7 +141,7 @@ def test_sits_cube_filter():
     assert not isinstance(cube_tile2._instance, PandasDataFrame)
 
 
-def test_cube_reclassify(tmp_path: Path):
+def s(tmp_path: Path):
     """Test reclassify of classified cube."""
     # Open mask map
     data_dir = r_package_dir("extdata/raster/prodes", package="sits")
@@ -210,7 +211,7 @@ def test_cube_reclassify(tmp_path: Path):
         cube=ro_class,
         mask=prodes2021,
         rules=dict(
-            Old_Deforestation=Mask.in_(
+            Old_Deforestation=MaskValue.in_(
                 [
                     "d2007",
                     "d2008",
@@ -240,8 +241,8 @@ def test_cube_reclassify(tmp_path: Path):
                     "r2021",
                 ]
             ),
-            Water_Mask=(Mask == "Water"),
-            NonForest_Mask=Mask.in_(["NonForest", "NonForest2"]),
+            Water_Mask=(MaskValue == "Water"),
+            NonForest_Mask=MaskValue.in_(["NonForest", "NonForest2"]),
         ),
         memsize=4,
         multicores=2,

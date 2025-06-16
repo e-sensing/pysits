@@ -19,7 +19,8 @@
 
 from geopandas import GeoDataFrame as GeoPandasDataFrame
 
-from pysits.models import SITSFrameSF, SITSTimeSeriesSFModel
+from pysits.models.data.frame import SITSFrameSF
+from pysits.models.data.ts import SITSTimeSeriesSFModel
 from pysits.sits.context import samples_l8_rondonia_2bands
 from pysits.sits.cube import sits_cube
 from pysits.sits.exporters import sits_as_geopandas

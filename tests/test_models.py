@@ -20,7 +20,7 @@
 import cloudpickle
 import pytest
 
-from pysits.models import SITSMachineLearningMethod
+from pysits.models.ml import SITSMachineLearningMethod
 from pysits.sits.classification import sits_classify
 from pysits.sits.context import (
     point_mt_6bands,

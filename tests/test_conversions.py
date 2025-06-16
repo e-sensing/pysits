@@ -20,12 +20,12 @@
 import pytest
 import rpy2.robjects as ro
 
-from pysits.conversions.base import (
+from pysits.conversions.clojure import closure_factory
+from pysits.conversions.common import (
     convert_dict_like_as_list_to_r,
     convert_dict_like_to_r,
     convert_list_like_to_r,
 )
-from pysits.conversions.clojure import closure_factory
 
 
 def test_closure_factory_invalid_function():

@@ -22,7 +22,7 @@ from pathlib import Path
 import pytest
 
 from pysits.backend.loaders import load_function_from_package
-from pysits.models import SITSTimeSeriesModel
+from pysits.models.data.ts import SITSTimeSeriesModel
 from pysits.sits.context import samples_modis_ndvi
 from pysits.sits.utils import (
     r_package_dir,

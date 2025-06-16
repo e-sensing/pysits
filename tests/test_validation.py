@@ -17,7 +17,9 @@
 
 """Unit tests for validation operations (cube and time-series)."""
 
-from pysits.models import SITSConfusionMatrix, SITSNamedVector, SITSTable
+from pysits.models.data.matrix import SITSConfusionMatrix
+from pysits.models.data.table import SITSTable
+from pysits.models.data.vector import SITSNamedVector
 from pysits.sits.context import cerrado_2classes
 from pysits.sits.ml import sits_rfor
 from pysits.sits.ts import sits_sample, sits_validate

@@ -18,7 +18,8 @@
 """Unit tests for tile-related operations."""
 
 from pysits import sits_cube, sits_mgrs_to_roi, sits_tiles_to_roi
-from pysits.models import SITSCubeModel, SITSNamedVector
+from pysits.models.data.cube import SITSCubeModel
+from pysits.models.data.vector import SITSNamedVector
 
 
 def test_tiles_to_roi():

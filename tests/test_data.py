@@ -19,7 +19,8 @@
 
 from pathlib import Path
 
-from pysits.models import SITSCubeModel, SITSTimeSeriesModel
+from pysits.models.data.cube import SITSCubeModel
+from pysits.models.data.ts import SITSTimeSeriesModel
 from pysits.sits.context import samples_l8_rondonia_2bands
 from pysits.sits.cube import sits_cube, sits_regularize
 from pysits.sits.data import (
@@ -152,7 +153,14 @@ def test_sits_apply():
         points, NDVI_norm="(NDVI - min(NDVI)) / (max(NDVI) - min(NDVI))"
     )
 
+    points_nonnorm = sits_apply(
+        points,
+        NDVI_nonnorm="(NDVI - min(NDVI)) / (max(NDVI) - min(NDVI))",
+        normalized=False,
+    )
+
     assert all(band in sits_bands(points_norm) for band in ["NDVI", "NDVI_norm"])
+    assert all(band in sits_bands(points_nonnorm) for band in ["NDVI", "NDVI_nonnorm"])
 
 
 def test_cube_apply(tmp_path: Path):
