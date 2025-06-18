@@ -21,12 +21,18 @@ from geopandas import GeoDataFrame as GeoPandasDataFrame
 from pandas import DataFrame as PandasDataFrame
 from rpy2.robjects.vectors import DataFrame as RDataFrame
 
-from pysits.conversions.tibble import tibble_nested_to_pandas, tibble_to_pandas
+from pysits.conversions.tibble import (
+    tibble_nested_to_pandas,
+    tibble_to_pandas,
+)
 from pysits.models.data.base import SITSData
 
 
 class SITSFrameBase(SITSData):
     """Base class for SITS Data."""
+
+    _is_updated = False
+    """Whether the instance is updated."""
 
     def __finalize__(self, other, method=None, **kwargs):
         """Propagate metadata from another object to the current one.
@@ -48,6 +54,11 @@ class SITSFrameBase(SITSData):
     def _constructor(self):
         # Always return the current subclass
         return self.__class__
+
+    def __setitem__(self, key, value):
+        """Set item."""
+        super().__setitem__(key, value)
+        self._is_updated = True
 
     #
     # Convertions

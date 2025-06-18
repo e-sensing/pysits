@@ -25,8 +25,8 @@ from pysits.conversions.clojure import closure_factory
 from pysits.conversions.common import convert_dict_like_as_list_to_r
 from pysits.conversions.decorators import function_call
 from pysits.docs import attach_doc
-from pysits.models.data.base import SITStructureData
 from pysits.models.ml import SITSMachineLearningMethod
+from pysits.models.resolver import resolve_and_invoke_accuracy_class
 
 
 #
@@ -90,10 +90,10 @@ def sits_train(*args, **kwargs) -> SITSMachineLearningMethod:
     """Train a machine learning model."""
 
 
-@function_call(r_pkg_sits.sits_kfold_validate, SITStructureData)
+@function_call(r_pkg_sits.sits_kfold_validate, resolve_and_invoke_accuracy_class)
 @attach_doc("sits_kfold_validate")
-def sits_kfold_validate(*args, **kwargs) -> SITStructureData:
-    """Train a machine learning model."""
+def sits_kfold_validate(*args, **kwargs) -> resolve_and_invoke_accuracy_class:
+    """Cross-validate time series samples."""
 
 
 #

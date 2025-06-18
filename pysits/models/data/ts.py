@@ -108,6 +108,23 @@ class SITSTimeSeriesModel(SITSFrame):
         """
         return tibble_sits_to_pandas_arrow(instance)
 
+    #
+    # Data management
+    #
+    def _sync_instance(self):
+        """Sync instance with R."""
+        if not self._is_updated:
+            return
+
+        # Save current classes
+        classes = self._instance.rclass
+
+        # Update instance
+        self._instance = pandas_sits_to_tibble_arrow(self)
+
+        # Restore classes
+        self._instance.rclass = classes
+
 
 class SITSTimeSeriesSFModel(SITSFrameSF):
     """SITS time-series model as sf."""

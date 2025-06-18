@@ -76,7 +76,7 @@ class SITSCubeItemModel(PandasSeries):
             to an R DataFrame instance.
         """
         # Create a cube from a Pandas Series
-        if isinstance(data, PandasSeries):
+        if isinstance(data, PandasSeries) and getattr(data, "_instance", None) is None:
             # Check if required columns are present
             has_required_columns = all(
                 col in data.index for col in self.required_columns
@@ -162,6 +162,26 @@ class SITSCubeModel(SITSFrame):
         """
         return tibble_cube_to_pandas_arrow(instance)
 
+    #
+    # Data management
+    #
+    def _sync_instance(self):
+        """Sync instance with R."""
+        if not self._is_updated:
+            return
+
+        # Save current classes
+        classes = self._instance.rclass
+
+        # Update instance
+        self._instance = pandas_cube_to_tibble_arrow(self)
+
+        # Restore classes
+        self._instance.rclass = classes
+
+    #
+    # Representation
+    #
     def _repr_html_(self) -> str:
         """Create an HTML representation of the cube."""
         from pysits.jinja import get_template

@@ -162,6 +162,10 @@ def convert_to_r(obj):
 
     # Handle ``SITSBase`` objects
     if getattr(obj, "_instance", None):
+        # Sync instance with R
+        if getattr(obj, "_sync_instance", None):
+            obj._sync_instance()
+
         return obj._instance
 
     # Handle ``raw R`` / Expressions objects
@@ -263,7 +267,7 @@ def fix_reserved_words_parameters(**kwargs) -> dict:
             keys_to_remove.append(key)
 
             # Save new value
-            new_values[key[:-1]] = kwargs.pop(key)
+            new_values[key[:-1]] = kwargs[key]
 
     # Remove keys that were converted
     for key in keys_to_remove:

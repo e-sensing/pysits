@@ -26,7 +26,7 @@ from pysits.models.data.accuracy import SITSAccuracy
 from pysits.models.data.base import SITSBase, SITSData, SITStructureData
 from pysits.models.data.cube import SITSCubeModel
 from pysits.models.data.frame import SITSFrame, SITSFrameSF
-from pysits.models.data.matrix import SITSConfusionMatrix
+from pysits.models.data.matrix import SITSConfusionMatrix, SITSMatrix
 from pysits.models.data.ts import (
     SITSTimeSeriesClassificationModel,
     SITSTimeSeriesModel,
@@ -80,8 +80,12 @@ def content_class_resolver(data: Any) -> type[SITSBase]:
             content_class = SITSFrameSF
 
         # Data frame
-        case class_ if "tbl_df" in class_:
+        case class_ if "tbl_df" in class_ or "data.frame" in class_:
             content_class = SITSFrame
+
+        # Matrix
+        case class_ if "matrix" in class_:
+            content_class = SITSMatrix
 
         # ML model (any `sits_model`, including `random forest`, `svm`, `ltae`, etc.)
         case class_ if "sits_model" in class_:

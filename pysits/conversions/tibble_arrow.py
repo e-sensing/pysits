@@ -22,7 +22,9 @@ import tempfile
 from collections.abc import Callable
 
 from pandas import DataFrame as PandasDataFrame
+from pandas.core.generic import NDFrame as PandasNDFrame
 from pyarrow import feather
+from rpy2.rinterface_lib.sexp import NULLType
 from rpy2.robjects import StrVector
 from rpy2.robjects import globalenv as rpy2_globalenv
 from rpy2.robjects import r as rpy2_r_interface
@@ -32,6 +34,9 @@ from pysits.backend.functions import r_fnc_class
 from pysits.backend.pkgs import r_pkg_arrow, r_pkg_base, r_pkg_sits
 
 
+#
+# Helper functions
+#
 def _load_arrow_table_reader_function() -> Callable[[str, list[str]], RDataFrame]:
     """Load and return an R function for reading Arrow tables with nested columns.
 
@@ -53,15 +58,40 @@ def _load_arrow_table_reader_function() -> Callable[[str, list[str]], RDataFrame
 
                 for (col in nested_cols) {
                     row_nested <- row_data[[col]]
-                    row_nested <- list(tidyr::unnest(
-                        row_nested, 
-                        cols = dplyr::everything()     
-                    ))
-                    row_data[[col]] <- NULL
-                    row_data <- tibble::tibble(
-                        row_data, 
-                        !!col := row_nested
-                    )
+                    
+                    # Handle arrow_list class
+                    if (inherits(row_nested, "arrow_list")) {
+                        row_nested <- lapply(row_nested, function(v) {
+                            if (is.null(v)) return(NULL)
+                            # Try to parse as JSON first
+                            tryCatch({
+                                parsed <- jsonlite::fromJSON(v)
+                                setNames(as.character(parsed), names(parsed))
+                            }, error = function(e) {
+                                # If JSON parsing fails, return NULL
+                                NULL
+                            })
+                        })
+                        # If any values in row_nested are NULL, set the whole 
+                        # thing to NULL
+                        if (any(sapply(row_nested, is.null))) {
+                            row_nested <- NULL
+                        }
+                    } else {
+                        row_nested <- list(tidyr::unnest(
+                            row_nested, 
+                            cols = dplyr::everything()     
+                        ))
+                    }
+                    
+                    # Only create tibble if row_nested is not NULL
+                    if (!is.null(row_nested)) {
+                        row_data[[col]] <- NULL
+                        row_data <- tibble::tibble(
+                            row_data, 
+                            !!col := row_nested
+                        )
+                    }
                 }
                 row_data
             })
@@ -71,8 +101,41 @@ def _load_arrow_table_reader_function() -> Callable[[str, list[str]], RDataFrame
     return rpy2_globalenv["load_arrow_table"]
 
 
+def _named_vector_to_json(x: RDataFrame, colname: str) -> RDataFrame:
+    """Convert a named vector to a JSON string.
+
+    Args:
+        x (RDataFrame): R DataFrame containing a column with named vectors
+
+        colname (str): Name of the column containing named vectors.
+
+    Returns:
+        RDataFrame: DataFrame with named vectors converted to JSON strings
+    """
+    # Define R code to convert named vector to JSON
+    rpy2_r_interface(f"""
+        named_vector_to_json <- function(x) {{
+            vec_list <- lapply(x${colname}, function(v) {{
+                if (is.null(names(v))) return(NULL)
+                class(v) <- NULL
+                json <- jsonlite::toJSON(as.list(setNames(as.character(v), names(v))), 
+                                       auto_unbox=TRUE)
+                class(json) <- NULL
+                json
+            }})
+            x${colname} <- vec_list
+            x
+        }}
+    """)
+
+    # Call the R function and return result
+    return rpy2_globalenv["named_vector_to_json"](x)
+
+
 def _tibble_to_pandas_arrow(
-    instance: RDataFrame, nested_columns: list[str] | None = None
+    instance: RDataFrame,
+    nested_columns: list[str] | None = None,
+    table_processor: Callable[[RDataFrame], RDataFrame] | None = None,
 ) -> PandasDataFrame:
     """Convert an R DataFrame (tibble) to a Pandas DataFrame using Arrow format.
 
@@ -112,6 +175,10 @@ def _tibble_to_pandas_arrow(
 
     # Select regular columns (using ``[]``) and convert to Pandas
     rdf_data = instance.rx(StrVector(data_columns_valid))
+
+    # Process table
+    if table_processor:
+        rdf_data = table_processor(rdf_data)
 
     # Write to Feather format
     r_pkg_arrow.write_feather(rdf_data, tmp_path)
@@ -171,7 +238,11 @@ def _pandas_to_tibble_arrow(
         # Convert nested columns to R DataFrame
         for nested_column in nested_columns:
             instance[nested_column] = instance[nested_column].apply(
-                lambda arr: arr.to_dict(orient="list")
+                lambda arr: (
+                    arr.to_dict(orient="list")
+                    if isinstance(arr, PandasNDFrame)
+                    else arr
+                )
             )
 
     # Write to Feather
@@ -188,7 +259,9 @@ def _pandas_to_tibble_arrow(
 # General conversions
 #
 def tibble_nested_to_pandas_arrow(
-    data: RDataFrame, nested_columns: list[str]
+    data: RDataFrame,
+    nested_columns: list[str],
+    table_processor: Callable[[RDataFrame], RDataFrame] | None = None,
 ) -> PandasDataFrame:
     """Convert any tibble to Pandas DataFrame.
 
@@ -198,7 +271,7 @@ def tibble_nested_to_pandas_arrow(
     Returns:
         pandas.DataFrame: R Data Frame as Pandas.
     """
-    return _tibble_to_pandas_arrow(data, nested_columns)
+    return _tibble_to_pandas_arrow(data, nested_columns, table_processor)
 
 
 def pandas_to_tibble_arrow(
@@ -233,6 +306,7 @@ def tibble_sits_to_pandas_arrow(data: RDataFrame) -> PandasDataFrame:
         "label",
         "cube",
         "time_series",
+        "predicted",
         "cluster",
     ]
 
@@ -258,11 +332,17 @@ def pandas_sits_to_tibble_arrow(data: PandasDataFrame) -> RDataFrame:
     # Define nested columns
     nested_columns = ["time_series", "predicted"]
 
+    # Define data classes
+    data_classes = ["sits", "tbl_df", "tbl", "data.frame"]
+
+    if "predicted" in data.columns:
+        data_classes.append("predicted")
+
     # Convert to R DataFrame
     data = pandas_to_tibble_arrow(data, nested_columns)
 
     # Set class
-    data.rclass = StrVector(["sits", "tbl_df", "tbl", "data.frame"])
+    data.rclass = StrVector(data_classes)
 
     # Convert to R DataFrame
     return data
@@ -297,8 +377,30 @@ def tibble_cube_to_pandas_arrow(data: RDataFrame) -> PandasDataFrame:
     # Define nested columns
     nested_columns = ["file_info", "vector_info"]
 
+    # Define table processor
+    def table_processor(x: RDataFrame) -> RDataFrame:
+        """Process table."""
+
+        # Process ``labels`` column
+        if "labels" in x.colnames:
+            # Get labels column
+            labels = x.rx2("labels")
+
+            # Check if labels have names
+            labels_has_names = all(
+                not isinstance(label.names, NULLType) for label in labels
+            )
+
+            # If labels have names, convert to JSON
+            if labels_has_names:
+                x = _named_vector_to_json(x, "labels")
+
+        return x
+
     # Convert to Pandas DataFrame
-    data_converted = tibble_nested_to_pandas_arrow(data, nested_columns)
+    data_converted = tibble_nested_to_pandas_arrow(
+        data, nested_columns, table_processor
+    )
 
     # Select columns
     columns_available = [v for v in column_order if v in data_converted.columns]
@@ -314,7 +416,7 @@ def pandas_cube_to_tibble_arrow(data: PandasDataFrame) -> RDataFrame:
         data (pandas.DataFrame): The pandas DataFrame to convert to R.
     """
     # Define nested columns
-    nested_columns = ["file_info", "vector_info"]
+    nested_columns = ["labels", "file_info", "vector_info"]
 
     # Convert to R DataFrame
     data = pandas_to_tibble_arrow(data, nested_columns)
