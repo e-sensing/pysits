@@ -71,6 +71,13 @@ class MaskExpression(RExpression):
         raise NotImplementedError("Use %in_ for 'in' operation")
 
     #
+    # Hashing
+    #
+    def __hash__(self) -> int:
+        """Hash the expression."""
+        return hash(self.r_repr())
+
+    #
     # Abstract methods
     #
     def r_repr(self) -> str:

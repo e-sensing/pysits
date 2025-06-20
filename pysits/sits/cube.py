@@ -52,7 +52,7 @@ reclassify_converters = {
 
 
 #
-# High-level operations
+# Cube
 #
 @function_call(r_pkg_sits.sits_cube, SITSCubeModel)
 @attach_doc("sits_cube")
@@ -66,16 +66,19 @@ def sits_regularize(*args, **kwargs) -> SITSCubeModel:
     """Build a regular data cube from an irregular one."""
 
 
-@function_call(r_pkg_sits.sits_variance, SITSCubeModel)
-@attach_doc("sits_variance")
-def sits_variance(*args, **kwargs) -> SITSCubeModel:
-    """Calculate the variance of a probability cube."""
-
-
 @function_call(r_pkg_sits.sits_cube_copy, SITSCubeModel)
 @attach_doc("sits_cube_copy")
 def sits_cube_copy(*args, **kwargs) -> SITSCubeModel:
     """Copy cubes."""
+
+
+#
+# Probability and metrics
+#
+@function_call(r_pkg_sits.sits_variance, SITSCubeModel)
+@attach_doc("sits_variance")
+def sits_variance(*args, **kwargs) -> SITSCubeModel:
+    """Calculate the variance of a probability cube."""
 
 
 @function_call(r_pkg_sits.sits_uncertainty, SITSCubeModel)
@@ -90,12 +93,18 @@ def sits_clean(*args, **kwargs) -> SITSCubeModel:
     """Cleans a classified map using a local window."""
 
 
+#
+# Combine predictions
+#
 @function_call(r_pkg_sits.sits_combine_predictions, SITSCubeModel)
 @attach_doc("sits_combine_predictions")
 def sits_combine_predictions(*args, **kwargs) -> SITSCubeModel:
     """Estimate ensemble prediction based on list of probs cubes."""
 
 
+#
+# Sampling
+#
 @function_call(r_pkg_sits.sits_uncertainty_sampling, SITSFrame)
 @attach_doc("sits_uncertainty_sampling")
 def sits_uncertainty_sampling(*args, **kwargs) -> SITSFrame:
@@ -108,18 +117,27 @@ def sits_confidence_sampling(*args, **kwargs) -> SITSFrame:
     """Suggest high confidence samples to increase the training set."""
 
 
+#
+# Colors
+#
 @function_call(r_pkg_sits.sits_colors_qgis, lambda x: None)
 @attach_doc("sits_colors_qgis")
 def sits_colors_qgis(*args, **kwargs) -> None:
     """Function to save color table as QML style for data cube."""
 
 
+#
+# Base cube
+#
 @function_call(r_pkg_sits.sits_add_base_cube, SITSCubeModel)
 @attach_doc("sits_add_base_cube")
 def sits_add_base_cube(*args, **kwargs) -> SITSCubeModel:
     """Add base maps to a time series data cube."""
 
 
+#
+# Reclassify
+#
 @rpy2_fix_type_custom(converters=reclassify_converters)
 @rpy2_fix_type
 @attach_doc("sits_reclassify")
@@ -159,6 +177,9 @@ def sits_reclassify(
     return SITSCubeModel(result)
 
 
+#
+# Texture
+#
 @rpy2_fix_type
 @attach_doc("sits_texture")
 def sits_texture(cube, **kwargs) -> SITSCubeModel:

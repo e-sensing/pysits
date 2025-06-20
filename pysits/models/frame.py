@@ -163,6 +163,13 @@ class SITSFrameArray(ExtensionArray):
         return NotImplemented
 
     #
+    # Hashing
+    #
+    def __hash__(self) -> int:
+        """Hash the array."""
+        return hash(self._data)
+
+    #
     # Operations
     #
     def take(self, indices, allow_fill=False, fill_value=None):
