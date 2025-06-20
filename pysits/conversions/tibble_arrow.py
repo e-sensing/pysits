@@ -30,7 +30,7 @@ from rpy2.robjects import globalenv as rpy2_globalenv
 from rpy2.robjects import r as rpy2_r_interface
 from rpy2.robjects.vectors import DataFrame as RDataFrame
 
-from pysits.backend.functions import r_fnc_class
+from pysits.backend.functions import r_fnc_class, r_fnc_set_column
 from pysits.backend.pkgs import r_pkg_arrow, r_pkg_base, r_pkg_sits
 
 
@@ -306,12 +306,16 @@ def tibble_sits_to_pandas_arrow(data: RDataFrame) -> PandasDataFrame:
         "label",
         "cube",
         "time_series",
+        "base_data",
         "predicted",
         "cluster",
+        "id_sample",
+        "id_neuron",
+        "count",
     ]
 
     # Define nested columns
-    nested_columns = ["time_series", "predicted"]
+    nested_columns = ["time_series", "base_data", "predicted"]
 
     # Convert to Pandas DataFrame
     data_converted = tibble_nested_to_pandas_arrow(data, nested_columns)
@@ -330,13 +334,19 @@ def pandas_sits_to_tibble_arrow(data: PandasDataFrame) -> RDataFrame:
         data (pandas.DataFrame): The pandas DataFrame to convert to R.
     """
     # Define nested columns
-    nested_columns = ["time_series", "predicted"]
+    nested_columns = ["time_series", "base_data", "predicted"]
 
     # Define data classes
     data_classes = ["sits", "tbl_df", "tbl", "data.frame"]
 
     if "predicted" in data.columns:
         data_classes.append("predicted")
+
+    if "base_data" in data.columns:
+        data_classes.append("sits_base")
+
+    if "id_sample" in data.columns and "id_neuron" in data.columns:
+        data_classes.append("som_clean_samples")
 
     # Convert to R DataFrame
     data = pandas_to_tibble_arrow(data, nested_columns)
@@ -372,6 +382,7 @@ def tibble_cube_to_pandas_arrow(data: RDataFrame) -> PandasDataFrame:
         "labels",
         "file_info",
         "vector_info",
+        "base_info",
     ]
 
     # Define nested columns
@@ -402,6 +413,22 @@ def tibble_cube_to_pandas_arrow(data: RDataFrame) -> PandasDataFrame:
         data, nested_columns, table_processor
     )
 
+    # Process base_info separately if it exists
+    if "base_info" in data.colnames:
+        base_info = data.rx2("base_info")
+        base_info_converted = []
+
+        # Convert each base_info item to a cube if it's not None
+        for i in range(len(base_info)):
+            if not isinstance(base_info[i], NULLType):
+                # Convert the base_info item to a cube
+                base_info_converted.append(tibble_cube_to_pandas_arrow(base_info[i]))
+            else:
+                base_info_converted.append(None)
+
+        # Add converted base_info to the DataFrame
+        data_converted["base_info"] = base_info_converted
+
     # Select columns
     columns_available = [v for v in column_order if v in data_converted.columns]
 
@@ -418,8 +445,22 @@ def pandas_cube_to_tibble_arrow(data: PandasDataFrame) -> RDataFrame:
     # Define nested columns
     nested_columns = ["labels", "file_info", "vector_info"]
 
+    # Handle base_info separately if it exists
+    base_info = None
+
+    if "base_info" in data.columns:
+        # Convert base_info to R DataFrame
+        base_info = pandas_cube_to_tibble_arrow(data.base_info)
+
+        # Drop base_info from data
+        data = data.drop(columns=["base_info"])
+
     # Convert to R DataFrame
     data = pandas_to_tibble_arrow(data, nested_columns)
+
+    # Add base_info back if it exists
+    if base_info is not None:
+        data = r_fnc_set_column(data, "base_info", base_info)
 
     # Set class
     data.rclass = r_pkg_sits._cube_s3class(data)

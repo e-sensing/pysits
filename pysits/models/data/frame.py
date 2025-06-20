@@ -22,6 +22,7 @@ from pandas import DataFrame as PandasDataFrame
 from rpy2.robjects.vectors import DataFrame as RDataFrame
 
 from pysits.conversions.tibble import (
+    pandas_to_tibble,
     tibble_nested_to_pandas,
     tibble_to_pandas,
 )
@@ -66,6 +67,18 @@ class SITSFrameBase(SITSData):
     def _convert_from_r(self, instance, **kwargs):
         """Convert data from R to Python."""
         return tibble_to_pandas(instance)
+
+    #
+    # Data management
+    def _sync_instance(self):
+        """Sync instance with R."""
+        if not self._is_updated:
+            return
+
+        self._instance = pandas_to_tibble(self)
+
+        # Update flag
+        self._is_updated = False
 
 
 class SITSFrame(SITSFrameBase, PandasDataFrame):

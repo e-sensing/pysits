@@ -35,6 +35,7 @@ from .sits.context import (
     samples_modis_ndvi,
 )
 from .sits.cube import (
+    sits_add_base_cube,
     sits_clean,
     sits_colors_qgis,
     sits_combine_predictions,
@@ -43,6 +44,7 @@ from .sits.cube import (
     sits_cube_copy,
     sits_reclassify,
     sits_regularize,
+    sits_texture,
     sits_uncertainty,
     sits_uncertainty_sampling,
     sits_variance,
@@ -128,6 +130,7 @@ __all__ = (
     "sits_cube",
     "sits_clean",
     "sits_combine_predictions",
+    "sits_add_base_cube",
     "sits_reclassify",
     "sits_regularize",
     "sits_cube_copy",
@@ -136,6 +139,7 @@ __all__ = (
     "sits_uncertainty_sampling",
     "sits_confidence_sampling",
     "sits_variance",
+    "sits_texture",
     # Colors
     "sits_colors",
     "sits_colors_reset",

@@ -16,3 +16,7 @@
 #
 
 """Data models module."""
+
+from pysits.models.data.frame_accessor import SITSAccessor
+
+__all__ = ("SITSAccessor",)

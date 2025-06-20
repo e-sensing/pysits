@@ -21,6 +21,7 @@ from pandas import DataFrame as PandasDataFrame
 from pandas import Series as PandasSeries
 from rpy2.robjects.vectors import DataFrame as RDataFrame
 
+from pysits.backend.functions import r_fnc_set_column
 from pysits.conversions.tibble_arrow import (
     pandas_cube_to_tibble_arrow,
     tibble_cube_to_pandas_arrow,
@@ -174,7 +175,20 @@ class SITSCubeModel(SITSFrame):
         classes = self._instance.rclass
 
         # Update instance
+        base_info = None
+
+        if "base_info" in self.columns:
+            # Convert each dataframe in the series to R DataFrame
+            base_info = [pandas_cube_to_tibble_arrow(df) for df in self.base_info]
+
+            # Drop base_info
+            self.drop(columns=["base_info"], inplace=True)
+
         self._instance = pandas_cube_to_tibble_arrow(self)
+
+        # Add base_info
+        if base_info is not None:
+            self._instance = r_fnc_set_column(self._instance, "base_info", base_info)
 
         # Restore classes
         self._instance.rclass = classes
