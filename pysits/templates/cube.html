@@ -142,18 +142,19 @@
 
 <h3>SITS Data Cube</h3>
 <div class="sits-accordion">
-    {% for idx, row in cube_obj.iterrows() %}
-        {% set tile_id = row.get('tile', idx) %}
+    {% for idx in range(cube_obj.shape[0]) %}
         {% set tile_df = cube_obj.iloc[[idx]] %}
+        {% set tile_row = tile_df.iloc[0] %}
+        {% set tile_id = tile_row.tile %}
         {% set tile_timeline = sits_timeline(tile_df) %}
         {% set tile_time_str = (tile_timeline|min ~ ' to ' ~ tile_timeline|max) if tile_timeline else overall_time_str %}
         {% set tile_bbox = sits_bbox(tile_df) %}
+        {% set tile_crs = tile_row.crs %}
         {% set bbox_row = tile_bbox.iloc[0] if tile_bbox is defined and tile_bbox.iloc is defined else tile_bbox %}
         {% set bbox_str = 'xmin: ' ~ bbox_row.get('xmin', '') ~ ', xmax: ' ~ bbox_row.get('xmax', '') ~ ', ymin: ' ~ bbox_row.get('ymin', '') ~ ', ymax: ' ~ bbox_row.get('ymax', '') %}
         {% set bbox_coords = bbox_row %}
         {% set bands = sits_bands(tile_df) %}
-        {% set crs_str = row.get('crs', 'Unknown') %}
-        {{ render_tile_info(tile_id, row, bands, bbox_str, bbox_coords, crs_str, tile_time_str) }}
+        {{ render_tile_info(tile_id, tile_row, bands, bbox_str, bbox_coords, tile_crs, tile_time_str) }}
     {% endfor %}
 </div>
 
