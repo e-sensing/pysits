@@ -81,20 +81,24 @@ def _base_plot(
     # Handle plots
     if multiple:
         for i, plot in enumerate(plots):
-            file_path = os.path.join(temp_dir, f"base_plot_{i}.jpeg")
+            for index, figure in enumerate(plot):
+                file_path = os.path.join(temp_dir, f"base_plot_{i}_{index}.jpeg")
 
-            # Enable image device
-            r_pkg_grdevices.jpeg(
-                file=file_path, width=image_width, height=image_height, res=image_res
-            )
+                # Enable image device
+                r_pkg_grdevices.jpeg(
+                    file=file_path,
+                    width=image_width,
+                    height=image_height,
+                    res=image_res,
+                )
 
-            # Plot the plot object directly
-            r_fnc_plot(plot[0])
+                # Plot the plot object directly
+                r_fnc_plot(figure)
 
-            r_pkg_grdevices.dev_off()
+                r_pkg_grdevices.dev_off()
 
-            # Display saved image
-            show_local_image(file_path)
+                # Display saved image
+                show_local_image(file_path)
 
     else:
         # Assuming a plot is a list of elements, we always have many elements.

@@ -85,7 +85,18 @@ def _(data: SITSCubeItemModel, **kwargs) -> None:
 @rpy2_fix_type
 def _(data: SITSTimeSeriesModel, **kwargs) -> None:
     """Plot time-series."""
-    is_multiple = len(r_pkg_sits.sits_bands(data)) > 1
+    # Check if the time-series has multiple bands or labels
+    is_multiple_1 = len(r_pkg_sits.sits_bands(data)) > 1
+    is_multiple_2 = len(r_pkg_sits.sits_labels(data)) > 1
+
+    # Define if is multiple
+    is_multiple = data.nrow > 1 and (is_multiple_1 or is_multiple_2)
+
+    # Special case: SOM clean samples
+    if "som_clean_samples" in data.rclass:
+        is_multiple = False
+
+    # Plot the time-series
     return plot_base(data, multiple=is_multiple, **kwargs)
 
 
