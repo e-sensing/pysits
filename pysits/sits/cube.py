@@ -114,6 +114,12 @@ def sits_colors_qgis(*args, **kwargs) -> None:
     """Function to save color table as QML style for data cube."""
 
 
+@function_call(r_pkg_sits.sits_add_base_cube, SITSCubeModel)
+@attach_doc("sits_add_base_cube")
+def sits_add_base_cube(*args, **kwargs) -> SITSCubeModel:
+    """Add base maps to a time series data cube."""
+
+
 @rpy2_fix_type_custom(converters=reclassify_converters)
 @rpy2_fix_type
 @attach_doc("sits_reclassify")
@@ -142,6 +148,40 @@ def sits_reclassify(
             cube = {cube.r_repr()},
             mask = {mask.r_repr()},
             rules = {rules.r_repr()},
+            {", ".join(params)}
+        )
+    """
+
+    # Run operation
+    result = ro.r(command)
+
+    # Return
+    return SITSCubeModel(result)
+
+
+@rpy2_fix_type
+@attach_doc("sits_texture")
+def sits_texture(cube, **kwargs) -> SITSCubeModel:
+    """Apply a set of texture measures on a data cube."""
+    params = []
+
+    # Process parameters manually
+    for k, v in kwargs.items():
+        current_v = v[0]
+
+        if k == "output_dir":
+            current_v = f"'{current_v}'"
+
+        elif k == "progress":
+            current_v = "TRUE" if current_v else "FALSE"
+
+        params.append(f"{k}={current_v}")
+
+    # Build the ``sits_texture`` command manually to support
+    # high-level expression definition (using string)
+    command = f"""
+        sits_texture(
+            {cube.r_repr()},
             {", ".join(params)}
         )
     """
