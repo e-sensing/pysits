@@ -42,6 +42,7 @@ from .sits.cube import (
     sits_confidence_sampling,
     sits_cube,
     sits_cube_copy,
+    sits_mosaic,
     sits_reclassify,
     sits_regularize,
     sits_texture,
@@ -140,6 +141,7 @@ __all__ = (
     "sits_confidence_sampling",
     "sits_variance",
     "sits_texture",
+    "sits_mosaic",
     # Colors
     "sits_colors",
     "sits_colors_reset",

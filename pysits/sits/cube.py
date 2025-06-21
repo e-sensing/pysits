@@ -72,6 +72,12 @@ def sits_cube_copy(*args, **kwargs) -> SITSCubeModel:
     """Copy cubes."""
 
 
+@function_call(r_pkg_sits.sits_mosaic, SITSCubeModel)
+@attach_doc("sits_mosaic")
+def sits_mosaic(*args, **kwargs) -> SITSCubeModel:
+    """Mosaic classified cubes."""
+
+
 #
 # Probability and metrics
 #
