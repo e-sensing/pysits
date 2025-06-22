@@ -31,6 +31,7 @@ from pysits.sits.data import sits_labels, sits_select
 from pysits.sits.ml import (
     sits_formula_linear,
     sits_formula_logref,
+    sits_lightgbm,
     sits_lighttae,
     sits_mlp,
     sits_model_export,
@@ -55,6 +56,7 @@ ALL_MODELS = [
     sits_rfor,
     sits_svm,
     sits_xgboost,
+    sits_lightgbm,
 ]
 
 

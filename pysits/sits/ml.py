@@ -73,6 +73,8 @@ sits_resnet = closure_factory("sits_resnet", converters=dl_converters)
 sits_rfor = closure_factory("sits_rfor")
 sits_svm = closure_factory("sits_svm")
 sits_xgboost = closure_factory("sits_xgboost")
+sits_lightgbm = closure_factory("sits_lightgbm")
+
 
 #
 # Extra parameters - SVM
