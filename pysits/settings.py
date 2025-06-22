@@ -39,6 +39,6 @@ os.environ["TORCH_INSTALL"] = "0"
 #
 # Package version
 #
-__version__ = "1.5.3.dev0"
+__version__ = "1.5.3.dev1"
 
 __all__ = ("__version__",)
