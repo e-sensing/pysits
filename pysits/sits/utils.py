@@ -106,7 +106,7 @@ def r_package_dir(content_dir: str, package: str) -> Path | None:
     return None if not dir_path.exists() else dir_path
 
 
-def load_samples_dataset(name: str, package: str, **kwargs) -> SITSTimeSeriesModel:
+def load_samples(name: str, package: str, **kwargs) -> SITSTimeSeriesModel:
     """Load sits data from package.
 
     Args:

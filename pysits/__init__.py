@@ -115,7 +115,7 @@ from .sits.ts import (
 )
 from .sits.tuning import sits_tuning, sits_tuning_hparams
 from .sits.utils import (
-    load_samples_dataset,
+    load_samples,
     r_package_dir,
     r_set_seed,
     read_rds,
@@ -241,7 +241,7 @@ __all__ = (
     "read_rds",
     "r_package_dir",
     "r_set_seed",
-    "load_samples_dataset",
+    "load_samples",
     # Package settings
     "__version__",
 )

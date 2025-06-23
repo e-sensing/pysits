@@ -17,20 +17,18 @@
 
 """Global objects from sits."""
 
-from pysits.sits.utils import load_samples_dataset
+from pysits.sits.utils import load_samples
 
 #
 # Samples objects
 #
-cerrado_2classes = load_samples_dataset("cerrado_2classes", package="sits")
+cerrado_2classes = load_samples("cerrado_2classes", package="sits")
 
-samples_modis_ndvi = load_samples_dataset("samples_modis_ndvi", package="sits")
-samples_l8_rondonia_2bands = load_samples_dataset(
-    "samples_l8_rondonia_2bands", package="sits"
-)
+samples_modis_ndvi = load_samples("samples_modis_ndvi", package="sits")
+samples_l8_rondonia_2bands = load_samples("samples_l8_rondonia_2bands", package="sits")
 
 
 #
 # Points objects
 #
-point_mt_6bands = load_samples_dataset("point_mt_6bands", package="sits")
+point_mt_6bands = load_samples("point_mt_6bands", package="sits")
