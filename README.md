@@ -68,7 +68,7 @@ ruff check .
 
 ## 📚 Learn more
 
-Explore the [examples](./examples) directory for usage demos and tutorials.
+To learn all about `sits`, including its concepts, API, and real-world examples, we recommend accessing the [official sits book](https://e-sensing.github.io/sitsbook/). The book provides examples in both R and Python. Additional simple [examples](./examples) can also be found in the examples directory.
 
 ## 🤝 Contributing
 
