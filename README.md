@@ -16,6 +16,8 @@ or the development version:
 pip install git+https://github.com/e-sensing/pysits.git
 ```
 
+> To use `pysits`, you must have [sits](https://github.com/e-sensing/sits) installed. For more information, refer to the [official sits documentation](https://e-sensing.github.io/sitsbook/setup.html).
+
 ## 🛠 Development setup (for contributors)
 
 To set up a local development environment:
@@ -68,7 +70,7 @@ ruff check .
 
 ## 📚 Learn more
 
-To learn all about `sits`, including its concepts, API, and real-world examples, we recommend accessing the [official sits book](https://e-sensing.github.io/sitsbook/). The book provides examples in both R and Python. Additional simple [examples](./examples) can also be found in the examples directory.
+To learn all about `sits`, including its concepts, API, and real-world examples, we recommend accessing the [official sits book](https://e-sensing.github.io/sitsbook/). The book provides examples in both R and Python.
 
 ## 🤝 Contributing
 
