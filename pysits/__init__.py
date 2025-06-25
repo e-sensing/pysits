@@ -85,7 +85,7 @@ from .sits.ml import (
     sits_xgboost,
 )
 from .sits.segment import sits_segment, sits_slic
-from .sits.tiles import sits_mgrs_to_roi, sits_tiles_to_roi
+from .sits.tiles import sits_mgrs_to_roi, sits_roi_to_tiles, sits_tiles_to_roi
 from .sits.ts import (
     sits_cluster_clean,
     sits_cluster_dendro,
@@ -213,6 +213,7 @@ __all__ = (
     # Tiles
     "sits_mgrs_to_roi",
     "sits_tiles_to_roi",
+    "sits_roi_to_tiles",
     # Segments
     "sits_segment",
     "sits_slic",

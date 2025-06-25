@@ -20,6 +20,7 @@
 from pysits.backend.pkgs import r_pkg_sits
 from pysits.conversions.decorators import function_call
 from pysits.docs import attach_doc
+from pysits.models.data.frame import SITSFrameSF
 from pysits.models.data.vector import SITSNamedVector
 
 
@@ -33,3 +34,9 @@ def sits_mgrs_to_roi(*args, **kwargs) -> SITSNamedVector:
 @attach_doc("sits_tiles_to_roi")
 def sits_tiles_to_roi(*args, **kwargs) -> SITSNamedVector:
     """Convert tiles to ROI."""
+
+
+@function_call(r_pkg_sits.sits_roi_to_tiles, SITSFrameSF)
+@attach_doc("sits_roi_to_tiles")
+def sits_roi_to_tiles(*args, **kwargs) -> SITSFrameSF:
+    """Find tiles of a given ROI and Grid System."""
