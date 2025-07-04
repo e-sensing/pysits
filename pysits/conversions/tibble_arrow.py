@@ -25,7 +25,7 @@ from pandas import DataFrame as PandasDataFrame
 from pandas.core.generic import NDFrame as PandasNDFrame
 from pyarrow import feather
 from rpy2.rinterface_lib.sexp import NULLType
-from rpy2.robjects import StrVector
+from rpy2.robjects import StrVector, pandas2ri
 from rpy2.robjects import globalenv as rpy2_globalenv
 from rpy2.robjects import r as rpy2_r_interface
 from rpy2.robjects.vectors import DataFrame as RDataFrame
@@ -159,6 +159,10 @@ def _tibble_to_pandas_arrow(
     tmp = tempfile.NamedTemporaryFile(suffix=".feather", delete=False)
     tmp_path = tmp.name
     tmp.close()
+
+    # Check if instance is a empty
+    if instance.nrow == 0:
+        return pandas2ri.rpy2py(instance)
 
     # Extract columns from the data
     data_columns = r_pkg_base.colnames(instance)
