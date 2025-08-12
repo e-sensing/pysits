@@ -17,19 +17,20 @@
 
 """backend packages."""
 
-from rpy2.robjects.packages import importr
+from pysits.backend.loaders import load_package
+from pysits.settings import __sitsver__
 
 # system pakage
-r_pkg_base = importr("base")
-r_pkg_grdevices = importr("grDevices")
+r_pkg_base = load_package("base")
+r_pkg_grdevices = load_package("grDevices")
 
 # sits package
-r_pkg_sits = importr("sits")
+r_pkg_sits = load_package("sits", min_version=__sitsver__)
 
 # sits-dependencies packages
-r_pkg_tibble = importr("tibble")
-r_pkg_leaflet = importr("leaflet")
-r_pkg_kohonen = importr("kohonen")
-r_pkg_sf = importr("sf")
-r_pkg_htmlwidgets = importr("htmlwidgets")
-r_pkg_arrow = importr("arrow")
+r_pkg_tibble = load_package("tibble")
+r_pkg_leaflet = load_package("leaflet")
+r_pkg_kohonen = load_package("kohonen")
+r_pkg_sf = load_package("sf")
+r_pkg_htmlwidgets = load_package("htmlwidgets")
+r_pkg_arrow = load_package("arrow")

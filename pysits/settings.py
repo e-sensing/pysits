@@ -37,6 +37,11 @@ rpy2.rinterface_lib.callbacks.consolewrite_warnerror = lambda x: None
 os.environ["TORCH_INSTALL"] = "0"
 
 #
+# Compatible sits version
+#
+__sitsver__ = "1.5.3"
+
+#
 # Package version
 #
 __version__ = "1.5.3.dev2"

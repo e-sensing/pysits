@@ -20,8 +20,23 @@
 from collections.abc import Callable
 from typing import Any
 
-from rpy2.robjects import r
+from rpy2.robjects import r as rpy2_r_interface
 from rpy2.robjects.packages import importr
+
+
+def load_package(name: str, min_version: str | None = None) -> Any:
+    """Load R package."""
+    if min_version:
+        has_min_version = rpy2_r_interface(
+            f'packageVersion("{name}") >= "{min_version}"'
+        )
+
+        if not has_min_version[0]:
+            raise RuntimeError(
+                f"`{name}` must have at least version {min_version} or greater."
+            )
+
+    return importr(name)
 
 
 def load_data_from_package(name: str, package: str, **kwargs) -> object:
@@ -36,7 +51,7 @@ def load_data_from_package(name: str, package: str, **kwargs) -> object:
 
         **kwargs: Additional arguments to pass to the function.
     """
-    return r.data(name, package=package, **kwargs)
+    return rpy2_r_interface.data(name, package=package, **kwargs)
 
 
 def load_data_from_global(name: str) -> object:
@@ -47,7 +62,7 @@ def load_data_from_global(name: str) -> object:
     Args:
         name (str): Dataset name.
     """
-    return r[name]
+    return rpy2_r_interface[name]
 
 
 def load_function_from_package(name: str) -> Callable[..., Any]:
