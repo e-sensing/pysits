@@ -44,6 +44,6 @@ __sitsver__ = "1.5.3"
 #
 # Package version
 #
-__version__ = "1.5.3.dev2"
+__version__ = "1.5.3"
 
 __all__ = ("__version__",)
