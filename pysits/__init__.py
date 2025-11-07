@@ -84,7 +84,7 @@ from .sits.ml import (
     sits_train,
     sits_xgboost,
 )
-from .sits.segment import sits_segment, sits_slic
+from .sits.segment import sits_segment, sits_slic, sits_snic
 from .sits.tiles import sits_mgrs_to_roi, sits_roi_to_tiles, sits_tiles_to_roi
 from .sits.ts import (
     sits_cluster_clean,
@@ -217,6 +217,7 @@ __all__ = (
     # Segments
     "sits_segment",
     "sits_slic",
+    "sits_snic",
     # Apply
     "sits_apply",
     # Exporters
