@@ -67,7 +67,13 @@ from .sits.data import (
 )
 from .sits.data import sits_summary as summary
 from .sits.exporters import sits_as_geopandas, sits_as_xarray, sits_to_csv, sits_to_xlsx
-from .sits.impute import impute_linear, sits_impute
+from .sits.impute import (
+    impute_linear,
+    impute_mean,
+    impute_mean_window,
+    impute_median,
+    sits_impute,
+)
 from .sits.ml import (
     sits_formula_linear,
     sits_formula_logref,
@@ -187,6 +193,9 @@ __all__ = (
     # Impute
     "sits_impute",
     "impute_linear",
+    "impute_mean",
+    "impute_median",
+    "impute_mean_window",
     # Time-series
     "sits_show_prediction",
     "sits_sgolay",
