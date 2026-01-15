@@ -27,6 +27,9 @@ from pysits.models.data.ts import SITSTimeSeriesModel
 # Impute methods
 #
 impute_linear = closure_factory("impute_linear")
+impute_mean = closure_factory("impute_mean")
+impute_median = closure_factory("impute_median")
+impute_mean_window = closure_factory("impute_mean_window")
 
 
 #

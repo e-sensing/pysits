@@ -27,6 +27,7 @@ from pysits.models.data.cube import SITSCubeModel
 # Segmentation functions
 #
 sits_slic = closure_factory("sits_slic")
+sits_snic = closure_factory("sits_snic")
 
 
 #
