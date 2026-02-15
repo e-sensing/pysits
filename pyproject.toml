@@ -93,7 +93,7 @@ dev = [
 exclude = ["examples", "_resources"]
 
 [tool.ruff.lint]
-ignore = ["PLC0415"]
+ignore = ["PLC0415", "PLW0108"]
 select = [
     "E",   # pycodestyle
     "F",   # pyflakes
