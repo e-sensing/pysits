@@ -33,22 +33,22 @@ def _sits_as_xarray(data: SITSFrame):
 
 
 @_sits_as_xarray.register
-def _(data: SITSTimeSeriesModel):
+def _(data: SITSTimeSeriesModel, chunks=None):
     """Convert sits to xarray."""
     from pysits.conversions.xarray import pandas_sits_as_xarray
 
-    return pandas_sits_as_xarray(data)
+    return pandas_sits_as_xarray(data, chunks=chunks)
 
 
 @_sits_as_xarray.register
-def _(data: SITSCubeModel):
+def _(data: SITSCubeModel, chunks="auto"):
     """Convert cube to xarray."""
     from pysits.conversions.xarray import pandas_cube_as_xarray
 
-    return pandas_cube_as_xarray(data)
+    return pandas_cube_as_xarray(data, chunks=chunks)
 
 
-def sits_as_xarray(data: SITSFrame):
+def sits_as_xarray(data: SITSFrame, chunks="auto"):
     """Convert data to xarray."""
     try:
         from pysits.conversions.xarray import (
@@ -62,4 +62,4 @@ def sits_as_xarray(data: SITSFrame):
             "them with `pip install pysits[xarray]`."
         ) from e
 
-    return _sits_as_xarray(data)
+    return _sits_as_xarray(data, chunks)

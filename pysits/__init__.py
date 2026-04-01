@@ -75,13 +75,16 @@ from .sits.impute import (
     sits_impute,
 )
 from .sits.ml import (
+    sits_contrastive_network,
     sits_formula_linear,
     sits_formula_logref,
     sits_kfold_validate,
     sits_lightgbm,
     sits_lighttae,
+    sits_mae,
     sits_mlp,
     sits_model_export,
+    sits_pre_train,
     sits_resnet,
     sits_rfor,
     sits_svm,
@@ -96,6 +99,7 @@ from .sits.ts import (
     sits_cluster_clean,
     sits_cluster_dendro,
     sits_cluster_frequency,
+    sits_encode,
     sits_geo_dist,
     sits_get_class,
     sits_get_data,
@@ -190,6 +194,9 @@ __all__ = (
     "sits_model_export",
     "sits_formula_linear",
     "sits_formula_logref",
+    "sits_mae",
+    "sits_contrastive_network",
+    "sits_pre_train",
     # Impute
     "sits_impute",
     "impute_linear",
@@ -219,6 +226,7 @@ __all__ = (
     "sits_reduce_imbalance",
     "sits_sampling_design",
     "sits_stratified_sampling",
+    "sits_encode",
     # Tiles
     "sits_mgrs_to_roi",
     "sits_tiles_to_roi",

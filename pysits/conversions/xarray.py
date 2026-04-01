@@ -34,8 +34,13 @@ from pysits.models.data.base import SITSData
 # Auxiliary functions
 #
 def _xarray_load_raster(
-    raster_path: str, crs: str, shape: tuple[int, int], transform: float
-) -> xr.Dataset:
+    raster_path: str,
+    crs: str,
+    shape: tuple[int, int],
+    transform: float,
+    chunks=None,
+    dtype=None,
+) -> xr.DataArray:
     """Load raster with rio-xarray.
 
     Args:
@@ -47,28 +52,75 @@ def _xarray_load_raster(
 
         transform (float): Project transform.
 
+        chunks: Dask chunk specification. If None, loads eagerly. If not None,
+            wraps the load+reproject in ``dask.delayed`` (one chunk per file) so the
+            computation graph stays deferred until ``.compute()`` is called.
+            Note: ``rio.reproject`` always materialises internally; laziness is
+            achieved by deferring the entire operation as a single dask task.
+
+        dtype: NumPy dtype for the lazy dask array. Only used when chunks is not None.
+
     Returns:
-        xr.Dataset: Raster loaded as Dataset
+        xr.DataArray: Raster loaded as DataArray
     """
+    if chunks is not None:
+        import dask
+
+        height, width = shape
+
+        def _load() -> np.ndarray:
+            # Load raster with rio-xarray
+            _da = xrio.open_rasterio(raster_path, masked=True)
+            _da = _da.squeeze("band", drop=True)
+
+            # Reproject raster
+            return _da.rio.reproject(
+                dst_crs=crs, shape=shape, transform=transform, resampling=0
+            ).values
+
+        # Wrap with dask
+        lazy_values = dask_array.from_delayed(
+            dask.delayed(_load)(),
+            shape=(height, width),
+            dtype=dtype if dtype is not None else np.float32,
+        )
+
+        # Calculate coordinates
+        x_coords = transform.c + (np.arange(width) + 0.5) * transform.a
+        y_coords = transform.f + (np.arange(height) + 0.5) * transform.e
+
+        # Create xarray DataArray
+        return xr.DataArray(
+            lazy_values, dims=["y", "x"], coords={"x": x_coords, "y": y_coords}
+        )
+
+    # Load raster with rio-xarray
     da = xrio.open_rasterio(raster_path, masked=True)
+
+    # Squeeze band dimension
     da = da.squeeze("band", drop=True)
 
+    # Reproject raster
     return da.rio.reproject(
         dst_crs=crs,
         shape=shape,
         transform=transform,
-        resampling=0,  # 0 = Nearest
+        # resampling=0,  # 0 = Nearest
     )
 
 
 #
 # SITS conversions function
 #
-def pandas_sits_as_xarray(data: SITSData) -> xr.Dataset:
+def pandas_sits_as_xarray(data: SITSData, chunks=None) -> xr.Dataset:
     """Convert sits to xarray.
 
     Args:
         data (pysits.models.SITSData): SITS Data.
+
+        chunks: Dask chunk specification. If None (default), data is kept as a numpy
+            array. If provided, wraps the array with dask for lazy graph-based
+            downstream operations.
 
     Returns:
         xr.Dataset: SITS data as xarray.Dataset.
@@ -90,9 +142,16 @@ def pandas_sits_as_xarray(data: SITSData) -> xr.Dataset:
     timeline = time_series_data[0]["Index"]
 
     # Drop ``Index`` and create a stack
-    time_series_data = np.stack(
+    time_series_np = np.stack(
         [ts.drop(columns="Index").to_numpy() for ts in time_series_data]
     )
+
+    # Optionally wrap with dask
+    if chunks is not None:
+        time_series_data = dask_array.from_array(time_series_np, chunks=chunks)
+
+    else:
+        time_series_data = time_series_np
 
     # Create xarray dataset
     return xr.Dataset(
@@ -111,11 +170,16 @@ def pandas_sits_as_xarray(data: SITSData) -> xr.Dataset:
     )
 
 
-def pandas_cube_as_xarray(cube: SITSData) -> xr.Dataset:
+def pandas_cube_as_xarray(cube: SITSData, chunks="auto") -> xr.Dataset:
     """Convert cube to xarray.
 
     Args:
         cube (pysits.models.SITSData): Cube data
+
+        chunks: Dask chunk specification passed to ``open_rasterio``. Defaults to
+            "auto", which lets dask size chunks based on available memory. Pass None
+            to load eagerly, or a dict such as ``{"x": 512, "y": 512}`` for fixed
+            spatial tiles.
 
     Returns:
         xr.Dataset: Cube data as xarray.Dataset.
@@ -128,15 +192,13 @@ def pandas_cube_as_xarray(cube: SITSData) -> xr.Dataset:
     cube_file_info = cube_file_info.sort_values(["date", "band"]).reset_index(drop=True)
 
     # Assuming all cube have the same CRS / resolution, use one file
-    # to extract ``shape``, ``coords`` and ``crs``
-    cube_sample = cube_file_info.iloc[0]["path"]
-
-    # Open file
-    cube_sample = xrio.open_rasterio(cube_sample, masked=True)
+    # to extract ``shape``, ``coords``, ``crs``, and ``dtype`` (no pixel data read)
+    cube_sample = xrio.open_rasterio(cube_file_info.iloc[0]["path"], masked=True)
 
     # Extract info
     cube_crs = cube_sample.rio.crs
-    cube_res_x, cube_res_y = list(map(lambda x: abs(x), cube_sample.rio.resolution()))
+    cube_dtype = cube_sample.dtype
+    cube_res_x, cube_res_y = [abs(x) for x in cube_sample.rio.resolution()]
 
     # To handle multiple tiles, use a ``global`` extent, covering all tiles
     xmin = cube_file_info["xmin"].min()
@@ -153,53 +215,30 @@ def pandas_cube_as_xarray(cube: SITSData) -> xr.Dataset:
         cube_res_x, -cube_res_y
     )
 
-    # Define X and Y coordinates
-    x_coords = np.arange(width) * cube_res_x + xmin + cube_res_x / 2
-    y_coords = ymax - np.arange(height) * cube_res_y - cube_res_y / 2
-
-    # Prepare variables by band and date
-    dataset_vars = {}
+    # Build per-band DataArrays using xr.concat (lazy-safe)
+    band_arrays = []
 
     for band, band_data in cube_file_info.groupby("band"):
-        data_arrays = []
-        time_coords = []
+        time_slices = []
 
-        # Sort by date
-        band_data_sorted = band_data.sort_values("date")
-
-        # Iterate bands
-        for _, row in band_data_sorted.iterrows():
-            # Get info
-            da_path = row["path"]
-            da_date = row["date"]
-
-            # Load raster (band / date)
-            da_raster = _xarray_load_raster(
-                raster_path=da_path,
+        for _, row in band_data.sort_values("date").iterrows():
+            # Load raster using rio-xarray
+            da = _xarray_load_raster(
+                raster_path=row["path"],
                 crs=cube_crs,
                 shape=(height, width),
                 transform=global_transform,
+                chunks=chunks,
+                dtype=cube_dtype,
             )
 
-            # Save data
-            data_arrays.append(da_raster)
-            time_coords.append(da_date)
+            da = da.expand_dims({"time": [pandas_to_datetime(row["date"])]})
+            time_slices.append(da)
 
-        # Stack data
-        stacked = dask_array.stack(data_arrays, axis=0)
+        band_da = xr.concat(time_slices, dim="time").rename(band)
+        band_arrays.append(band_da)
 
-        # Save as variable (all bands in ``time``, ``y`` and ``x``)
-        dataset_vars[band] = (("time", "y", "x"), stacked)
-
-    # Build data cube
-    ds = xr.Dataset(
-        data_vars=dataset_vars,
-        coords={
-            "time": pandas_to_datetime(time_coords),
-            "y": y_coords,
-            "x": x_coords,
-        },
-    )
+    ds = xr.merge(band_arrays)
 
     # Save CRS
     ds.rio.write_crs(cube_crs, inplace=True)
