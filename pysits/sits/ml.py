@@ -77,6 +77,12 @@ sits_lightgbm = closure_factory("sits_lightgbm")
 
 
 #
+# Encoder Methods
+#
+sits_mae = closure_factory("sits_mae")
+sits_contrastive_network = closure_factory("sits_contrastive_network")
+
+#
 # Extra parameters - SVM
 #
 sits_formula_logref = closure_factory("sits_formula_logref")
@@ -90,6 +96,12 @@ sits_formula_linear = closure_factory("sits_formula_linear")
 @attach_doc("sits_train")
 def sits_train(*args, **kwargs) -> SITSMachineLearningMethod:
     """Train a machine learning model."""
+
+
+@function_call(r_pkg_sits.sits_pre_train, SITSMachineLearningMethod)
+@attach_doc("sits_pre_train")
+def sits_pre_train(*args, **kwargs) -> SITSMachineLearningMethod:
+    """Pre-train deep learning models for sits."""
 
 
 @function_call(r_pkg_sits.sits_kfold_validate, resolve_and_invoke_accuracy_class)

@@ -32,6 +32,12 @@ from pysits.models.data.ts import SITSTimeSeriesModel, SITSTimeSeriesPatternsMod
 #
 # High-level operation
 #
+@function_call(r_pkg_sits.sits_encode, SITSTimeSeriesModel)
+@attach_doc("sits_encode")
+def sits_encode(*args, **kwargs) -> SITSTimeSeriesModel:
+    """Encode time series or data cubes."""
+
+
 @function_call(r_pkg_sits.sits_get_data, SITSTimeSeriesModel)
 @attach_doc("sits_get_data")
 def sits_get_data(*args, **kwargs) -> SITSTimeSeriesModel:

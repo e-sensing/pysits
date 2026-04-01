@@ -81,7 +81,13 @@ def _base_plot(
     # Handle plots
     if multiple:
         for i, plot in enumerate(plots):
-            for index, figure in enumerate(plot):
+            try:
+                figures = list(plot)
+
+            except TypeError:
+                figures = [plot]
+
+            for index, figure in enumerate(figures):
                 file_path = os.path.join(temp_dir, f"base_plot_{i}_{index}.jpeg")
 
                 # Enable image device
