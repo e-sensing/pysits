@@ -39,11 +39,11 @@ os.environ["TORCH_INSTALL"] = "0"
 #
 # Compatible sits version
 #
-__sitsver__ = "1.6.0"
+__sitsver__ = "2.0.0"
 
 #
 # Package version
 #
-__version__ = "1.6.0"
+__version__ = "2.0.0"
 
 __all__ = ("__version__",)

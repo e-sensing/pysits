@@ -75,7 +75,8 @@ from .sits.impute import (
     sits_impute,
 )
 from .sits.ml import (
-    sits_contrastive_network,
+    sits_barlow_twins,
+    sits_contrastive_learning,
     sits_formula_linear,
     sits_formula_logref,
     sits_kfold_validate,
@@ -195,7 +196,8 @@ __all__ = (
     "sits_formula_linear",
     "sits_formula_logref",
     "sits_mae",
-    "sits_contrastive_network",
+    "sits_barlow_twins",
+    "sits_contrastive_learning",
     "sits_pre_train",
     # Impute
     "sits_impute",
