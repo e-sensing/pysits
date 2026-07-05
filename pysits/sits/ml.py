@@ -80,7 +80,6 @@ sits_lightgbm = closure_factory("sits_lightgbm")
 # Encoder Methods
 #
 sits_mae = closure_factory("sits_mae")
-sits_barlow_twins = closure_factory("sits_barlow_twins")
 sits_contrastive_learning = closure_factory("sits_contrastive_learning")
 
 
