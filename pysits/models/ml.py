@@ -25,3 +25,7 @@ from pysits.models.base import SITSBase
 #
 class SITSMachineLearningMethod(SITSBase):
     """ML Method base class."""
+
+
+class SITSRepresentationLearningMethod(SITSBase):
+    """RL Method base class."""

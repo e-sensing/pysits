@@ -199,21 +199,6 @@ def sits_patterns(*args, **kwargs) -> SITSTimeSeriesPatternsModel:
 
 
 #
-# Filtering
-#
-@function_call(r_pkg_sits.sits_sgolay, SITSTimeSeriesModel)
-@attach_doc("sits_sgolay")
-def sits_sgolay(*args, **kwargs) -> SITSTimeSeriesModel:
-    """Apply Savitzky-Golay filter to time series."""
-
-
-@function_call(r_pkg_sits.sits_whittaker, SITSTimeSeriesModel)
-@attach_doc("sits_whittaker")
-def sits_whittaker(*args, **kwargs) -> SITSTimeSeriesModel:
-    """Apply Whittaker filter to time series."""
-
-
-#
 # Distances
 #
 @function_call(r_pkg_sits.sits_geo_dist, SITSFrame)

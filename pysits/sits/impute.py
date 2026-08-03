@@ -17,11 +17,7 @@
 
 """Impute operations."""
 
-from pysits.backend.pkgs import r_pkg_sits
 from pysits.conversions.clojure import closure_factory
-from pysits.conversions.decorators import function_call
-from pysits.docs import attach_doc
-from pysits.models.data.ts import SITSTimeSeriesModel
 
 #
 # Impute methods
@@ -30,12 +26,3 @@ impute_linear = closure_factory("impute_linear")
 impute_mean = closure_factory("impute_mean")
 impute_median = closure_factory("impute_median")
 impute_mean_window = closure_factory("impute_mean_window")
-
-
-#
-# High-level utility operations
-#
-@function_call(r_pkg_sits.sits_impute, SITSTimeSeriesModel)
-@attach_doc("sits_impute")
-def sits_impute(*args, **kwargs) -> SITSTimeSeriesModel:
-    """Impute missing values in a time series."""

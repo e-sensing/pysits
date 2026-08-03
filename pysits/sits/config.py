@@ -43,3 +43,9 @@ def sits_config_show(*args, **kwargs) -> None:
 @attach_doc("sits_config_user_file")
 def sits_config_user_file(*args, **kwargs) -> None:
     """Create a user configuration file."""
+
+
+@function_call(r_pkg_sits.sits_parallel, lambda x: None)
+@attach_doc("sits_parallel")
+def sits_parallel(*args, **kwargs) -> None:
+    """Create sits cluster."""

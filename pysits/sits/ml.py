@@ -25,7 +25,7 @@ from pysits.conversions.clojure import closure_factory
 from pysits.conversions.common import convert_dict_like_as_list_to_r
 from pysits.conversions.decorators import function_call
 from pysits.docs import attach_doc
-from pysits.models.ml import SITSMachineLearningMethod
+from pysits.models.ml import SITSMachineLearningMethod, SITSRepresentationLearningMethod
 from pysits.models.resolver import resolve_and_invoke_accuracy_class
 
 
@@ -103,10 +103,10 @@ def sits_train(*args, **kwargs) -> SITSMachineLearningMethod:
     """Train a machine learning model."""
 
 
-@function_call(r_pkg_sits.sits_pre_train, SITSMachineLearningMethod)
+@function_call(r_pkg_sits.sits_pre_train, SITSRepresentationLearningMethod)
 @attach_doc("sits_pre_train")
-def sits_pre_train(*args, **kwargs) -> SITSMachineLearningMethod:
-    """Pre-train deep learning models for sits."""
+def sits_pre_train(*args, **kwargs) -> SITSRepresentationLearningMethod:
+    """Pre-train representation learning models for sits."""
 
 
 @function_call(r_pkg_sits.sits_kfold_validate, resolve_and_invoke_accuracy_class)
