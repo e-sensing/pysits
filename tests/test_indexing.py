@@ -17,72 +17,146 @@
 
 """Unit tests for indexing operations."""
 
+import numpy as np
+import pytest
+import rasterio
+from affine import Affine
 from pandas import Series as PandasSeries
+from rasterio.crs import CRS
 
 from pysits.models.data.cube import SITSCubeItemModel, SITSCubeModel
 from pysits.models.data.ts import SITSTimeSeriesItemModel, SITSTimeSeriesModel
 from pysits.sits.context import samples_l8_rondonia_2bands
 from pysits.sits.cube import sits_cube
 
+#
+# Tiles of the cube used to test indexing
+#
+CUBE_TILES = ("20LLQ", "20LLR")
 
-def test_cube_indexing():
-    """Test cube indexing."""
-    cbers_tile = sits_cube(
-        source="BDC",
-        collection="CBERS-WFI-16D",
-        bands=("NDVI", "EVI"),
-        tiles=("007004", "007005"),
-        start_date="2018-09-01",
-        end_date="2019-08-28",
+#
+# Grid of the cube used to test indexing
+#
+CUBE_CRS = "EPSG:32720"
+CUBE_SIZE = 50
+CUBE_RESOLUTION = 10.0
+
+
+@pytest.fixture(scope="session")
+def cube_dir(tmp_path_factory):
+    """Create a directory with files of two tiles."""
+    # Create directory
+    data_dir = tmp_path_factory.mktemp("cube-tiles")
+
+    # Create a raster file for each tile
+    for index, tile in enumerate(CUBE_TILES):
+        # Transform matrix for the tile
+        transform = Affine(
+            a=CUBE_RESOLUTION,
+            b=0.0,
+            c=300000.0 + index * 100000.0,
+            d=0.0,
+            e=-CUBE_RESOLUTION,
+            f=8000000.0,
+        )
+
+        # Create a raster file for each date
+        for date in ("2020-01-01", "2020-01-16"):
+            # Create a raster file for the date
+            with rasterio.open(
+                fp=data_dir / f"SENTINEL-2_MSI_{tile}_B02_{date}.tif",
+                mode="w",
+                driver="GTiff",
+                height=CUBE_SIZE,
+                width=CUBE_SIZE,
+                count=1,
+                dtype="int16",
+                crs=CRS.from_string(CUBE_CRS),
+                transform=transform,
+                nodata=-9999,
+            ) as dataset:
+                dataset.write(np.full((CUBE_SIZE, CUBE_SIZE), index + 1, "int16"), 1)
+
+    return data_dir
+
+
+@pytest.fixture
+def cube(cube_dir):
+    """Create a cube with two tiles."""
+    return sits_cube(
+        source="AWS",
+        collection="SENTINEL-2-L2A",
+        data_dir=cube_dir.as_posix(),
+        parse_info=("X1", "X2", "tile", "band", "date"),
+        bands="B02",
+        progress=False,
     )
 
+
+def test_cube_indexing(cube):
+    """Test cube indexing."""
+    assert sorted(cube.tile) == list(CUBE_TILES)
+
     # Indexing tests
-    idx1 = cbers_tile[cbers_tile["tile"] == "007005"]
+    idx1 = cube[cube["tile"] == "20LLR"]
     assert idx1.shape[0] == 1  # noqa: PLR2004 - 1 row
-    assert idx1.tile.iloc[0] == "007005"
+    assert idx1.tile.iloc[0] == "20LLR"
     assert idx1._instance is not None
     assert isinstance(idx1, SITSCubeModel)
 
-    idx2 = cbers_tile.query("tile == '007004'")
+    idx2 = cube.query("tile == '20LLQ'")
     assert idx2.shape[0] == 1  # noqa: PLR2004 - 1 row
-    assert idx2.tile.iloc[0] == "007004"
+    assert idx2.tile.iloc[0] == "20LLQ"
     assert idx2._instance is not None
     assert isinstance(idx2, SITSCubeModel)
 
-    idx3 = cbers_tile.iloc[0]
+    idx3 = cube.iloc[0]
     assert idx3.shape[0] == 11  # noqa: PLR2004 - 11 columns
-    assert idx3.tile == "007004"
+    assert idx3.tile == "20LLQ"
     assert idx3._instance is not None
     assert isinstance(idx3, SITSCubeItemModel)
 
-    idx4 = cbers_tile.iloc[0:1,]
+    idx4 = cube.iloc[0:1,]
     assert idx4.shape[0] == 1  # noqa: PLR2004 - 1 row
-    assert idx4.tile.iloc[0] == "007004"
+    assert idx4.tile.iloc[0] == "20LLQ"
     assert idx4._instance is not None
     assert isinstance(idx4, SITSCubeModel)
 
-    idx5 = cbers_tile.iloc[0:1, 4]
+    idx5 = cube.iloc[0:1, 4]
     assert idx5.shape[0] == 1  # noqa: PLR2004 - 1 row
-    assert idx5.iloc[0] == "007004"
+    assert idx5.iloc[0] == "20LLQ"
     assert isinstance(idx5, PandasSeries)
 
-    idx6 = cbers_tile.loc[0]
+    idx6 = cube.loc[0]
     assert idx6.shape[0] == 11  # noqa: PLR2004 - 11 columns
-    assert idx6.tile == "007004"
+    assert idx6.tile == "20LLQ"
     assert idx6._instance is not None
     assert isinstance(idx6, SITSCubeItemModel)
 
-    idx7 = cbers_tile.loc[0:1,]
-    assert idx7.shape[0] == 2  # noqa: PLR2004 - 1 row
+    idx7 = cube.loc[0:1,]
+    assert idx7.shape[0] == 2  # noqa: PLR2004 - 2 rows
     assert idx7._instance is not None
     assert isinstance(idx7, SITSCubeModel)
 
-    idx8 = cbers_tile.loc[0, "tile"]
-    assert idx8 == "007004"
+    idx8 = cube.loc[0, "tile"]
+    assert idx8 == "20LLQ"
 
     cols = ["source", "collection", "tile"]
-    idx9 = cbers_tile[cols]
+    idx9 = cube[cols]
     assert [col in idx9.columns for col in cols]
+
+
+def test_cube_indexing_without_results(cube):
+    """Test cube indexing when no rows are selected."""
+    rows = (cube[cube["tile"] == "does-not-exist"], cube.query("tile == 'none'"))
+
+    for empty in rows:
+        # Test types
+        assert isinstance(empty, SITSCubeModel)
+        assert empty.shape[0] == 0
+
+        # Cube instances are empty
+        assert empty._instance is None
 
 
 def test_ts_indexing():
