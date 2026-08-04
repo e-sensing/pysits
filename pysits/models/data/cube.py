@@ -139,8 +139,12 @@ class SITSCubeModel(SITSFrame):
                 col in instance.columns for col in self.required_columns
             )
 
-            if has_required_columns:
+            # Selections can have no rows, which R can't represent as a cube
+            if has_required_columns and not instance.empty:
                 self._instance = pandas_cube_to_tibble(instance)
+
+            else:
+                self._instance = None
 
         else:
             self._instance = instance
@@ -169,6 +173,10 @@ class SITSCubeModel(SITSFrame):
     def _sync_instance(self):
         """Sync instance with R."""
         if not self._is_updated:
+            return
+
+        # Cubes with no rows are not available in R
+        if self._instance is None or self.empty:
             return
 
         # Save current classes

@@ -77,7 +77,10 @@ xarray = [
     "xarray>=2025.3.0",
     "dask>=2025.3.0",
     "rioxarray>=0.18.2",
-    "affine>=2.4.0"
+    "affine>=2.4.0",
+    "odc-stac>=0.5.3",
+    "pystac>=1.15.0",
+    "planetary-computer>=1.0.0"
 ]
 
 dev = [

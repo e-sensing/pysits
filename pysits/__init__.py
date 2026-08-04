@@ -31,6 +31,7 @@ from .sits.config import (
     sits_config,
     sits_config_show,
     sits_config_user_file,
+    sits_config_value,
     sits_parallel,
 )
 from .sits.context import (
@@ -167,6 +168,7 @@ __all__ = (
     "sits_config",
     "sits_config_show",
     "sits_config_user_file",
+    "sits_config_value",
     "sits_parallel",
     # Data management
     "sits_bands",

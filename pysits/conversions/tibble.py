@@ -667,7 +667,16 @@ def pandas_cube_to_tibble(data: PandasDataFrame) -> RDataFrame:
 
     Returns:
         rpy2.robjects.vectors.DataFrame: The converted R DataFrame.
+
+    Raises:
+        ValueError: When ``data`` has no rows, as a data cube must describe at
+            least one tile.
     """
+    if data.empty:
+        raise ValueError(
+            "A data cube must have at least one tile, but no rows are available."
+        )
+
     nested_columns = [
         "labels",
         "file_info",
