@@ -2,7 +2,7 @@
 
 Python wrapper for the [sits](https://github.com/e-sensing/sits) R package.
 
-## 📦 Installation
+## Installation
 
 To install `pysits` with pip:
 
@@ -18,7 +18,7 @@ pip install git+https://github.com/e-sensing/pysits.git
 
 > To use `pysits`, you must have [sits](https://github.com/e-sensing/sits) installed. For more information, refer to the [official sits documentation](https://e-sensing.github.io/sitsbook/setup.html).
 
-## 🛠 Development setup (for contributors)
+## Development setup (for contributors)
 
 To set up a local development environment:
 
@@ -42,7 +42,7 @@ source .venv/bin/activate  # or .venv\Scripts\activate on Windows
 uv pip install -e ".[dev]"
 ```
 
-### 🔍 Run tests
+### Run tests
 
 We use `pytest` for testing:
 
@@ -50,7 +50,7 @@ We use `pytest` for testing:
 pytest
 ```
 
-### 🧹 Code formatting
+### Code formatting
 
 To keep the codebase clean and consistent we use [ruff](https://github.com/astral-sh/ruff):
 
@@ -58,7 +58,7 @@ To keep the codebase clean and consistent we use [ruff](https://github.com/astra
 ruff format .
 ```
 
-### 🧪 Linting
+### Linting
 
 We use [ruff](https://github.com/astral-sh/ruff) for static analysis:
 
@@ -68,11 +68,11 @@ ruff check .
 
 > The `examples/` directory is excluded from linting.
 
-## 📚 Learn more
+## Learn more
 
 To learn all about `sits`, including its concepts, API, and real-world examples, we recommend accessing the [official sits book](https://e-sensing.github.io/sitsbook/). The book provides examples in both R and Python.
 
-## 🤝 Contributing
+## Contributing
 
 We welcome contributions! Please:
 
@@ -80,6 +80,6 @@ We welcome contributions! Please:
 - Create a feature branch
 - Submit a pull request with a clear description
 
-## 📄 License
+## License
 
 `pysits` is distributed under the GPL-2.0 license. See [LICENSE](./LICENSE) for more details.
