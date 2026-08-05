@@ -25,6 +25,7 @@ from pysits.conversions.common import (
     convert_dict_like_as_list_to_r,
     convert_dict_like_to_r,
     convert_list_like_to_r,
+    convert_to_python,
 )
 
 
@@ -163,3 +164,18 @@ def test_convert_dict_like_as_list_to_r():
     # Empty dictionary
     empty_result = convert_dict_like_as_list_to_r({})
     assert isinstance(empty_result, ro.vectors.ListVector)
+
+
+def test_convert_to_python_r_language():
+    """Test conversion of unevaluated R expressions."""
+    # R expression (e.g., as returned by ``sits_tuning`` hyper-parameters)
+    result = convert_to_python(ro.r("quote(c(256, 256, 256))"), as_type="float")
+
+    assert result == [256.0, 256.0, 256.0]
+
+    # R expression nested in a list (e.g., ``opt_hparams``)
+    nested_result = convert_to_python(
+        ro.r("list(lr = 0.001, betas = quote(c(0.9, 0.999)))"), as_type="float"
+    )
+
+    assert nested_result == [{"lr": [0.001]}, {"betas": [0.9, 0.999]}]

@@ -43,6 +43,9 @@ r_fnc_set_seed = load_function_from_package("base::set_seed")
 # Base - class (base)
 r_fnc_class = load_function_from_package("base::class")
 
+# Base - eval (base)
+r_fnc_eval = load_function_from_package("base::eval")
+
 # Base - as.data.frame (base)
 r_fnc_as_data_frame = load_function_from_package("base::as_data_frame")
 

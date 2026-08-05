@@ -25,8 +25,10 @@ from geopandas import GeoDataFrame as GeoPandasDataFrame
 from pandas import DataFrame as PandasDataFrame
 from rpy2.rinterface_lib.sexp import NULLType
 from rpy2.robjects import pandas2ri
+from rpy2.robjects.language import LangVector
 from rpy2.robjects.robject import RObjectMixin
 
+from pysits.backend.functions import r_fnc_eval
 from pysits.backend.pkgs import r_pkg_tibble
 from pysits.conversions.dsl.base import DSLObject
 from pysits.conversions.tibble import geopandas_to_tibble, pandas_to_tibble
@@ -179,6 +181,22 @@ def convert_to_r(obj):
     raise TypeError(f"Cannot convert object of type {obj_type} to R format")
 
 
+def eval_r_language(obj):
+    """Evaluate an unevaluated R expression.
+
+    Args:
+        obj: The R object to evaluate.
+
+    Returns:
+        The evaluated R object. Objects that are not R expressions are returned
+        unchanged.
+    """
+    if isinstance(obj, LangVector):
+        return r_fnc_eval(obj)
+
+    return obj
+
+
 def convert_to_python(obj, as_type="str"):
     """Convert an R object to a Python representation.
 
@@ -205,6 +223,9 @@ def convert_to_python(obj, as_type="str"):
 
     def _convert(value, type_):
         result = []
+
+        # R expressions must be evaluated to be converted
+        value = eval_r_language(value)
 
         if isinstance(value, ro.ListVector):
             for k, v in value.items():
