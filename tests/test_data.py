@@ -19,13 +19,17 @@
 
 from pathlib import Path
 
+import pytest
+from pandas import DataFrame as PandasDataFrame
+
 from pysits.models.data.cube import SITSCubeModel
 from pysits.models.data.ts import SITSTimeSeriesModel
-from pysits.sits.context import samples_l8_rondonia_2bands
+from pysits.sits.context import samples_l8_rondonia_2bands, samples_modis_ndvi
 from pysits.sits.cube import sits_cube, sits_regularize
 from pysits.sits.data import (
     sits_apply,
     sits_bands,
+    sits_labels,
     sits_merge,
     sits_reduce,
     sits_select,
@@ -216,3 +220,32 @@ def test_cube_reduce(tmp_path: Path):
     # Check cube properties
     assert "NDVIMEAN" in sits_bands(cube_reduced)
     assert len(sits_timeline(cube_reduced)) == 1  # noqa: PLR2004 - one date
+
+
+def test_frame_accessor_labels():
+    """Test labels accessor in a sits data frame."""
+    assert samples_modis_ndvi.sits.labels == sits_labels(samples_modis_ndvi)
+
+
+def test_frame_accessor_labels_setter():
+    """Test labels accessor setter in a sits data frame."""
+    samples = samples_modis_ndvi.copy()
+    new_labels = ["Class_1", "Class_2", "Class_3", "Class_4"]
+
+    samples.sits.labels = new_labels
+
+    assert samples.sits.labels == new_labels
+
+    # Original samples must not be changed
+    assert samples_modis_ndvi.sits.labels != new_labels
+
+
+def test_frame_accessor_invalid_data():
+    """Test labels accessor in a data frame without sits data."""
+    data = PandasDataFrame({"a": [1, 2]})
+
+    with pytest.raises(ValueError, match="not a SITS data frame"):
+        data.sits.labels
+
+    with pytest.raises(ValueError, match="not a SITS data frame"):
+        data.sits.labels = ["Class_1"]
