@@ -19,14 +19,31 @@
 
 from pathlib import Path
 
+import pytest
 from pandas import DataFrame as PandasDataFrame
 
 from pysits.conversions.dsl.mask import MaskValue
 from pysits.models.data.cube import SITSCubeModel
 from pysits.models.data.frame import SITSFrame
-from pysits.sits.cube import sits_cube, sits_reclassify
+from pysits.sits.cube import (
+    convert_reclassify_rules,
+    sits_cube,
+    sits_reclassify,
+    sits_texture,
+)
 from pysits.sits.data import sits_bands, sits_bbox, sits_labels, sits_timeline
 from pysits.sits.utils import r_package_dir
+
+
+@pytest.fixture(scope="module")
+def local_cube() -> SITSCubeModel:
+    """Cube created from local files."""
+    return sits_cube(
+        source="BDC",
+        collection="MOD13Q1-6.1",
+        data_dir=r_package_dir("extdata/raster/mod13q1", package="sits"),
+        progress=False,
+    )
 
 
 def test_sits_cube_data_structure():
@@ -141,7 +158,7 @@ def test_sits_cube_filter():
     assert not isinstance(cube_tile2._instance, PandasDataFrame)
 
 
-def s(tmp_path: Path):
+def test_cube_reclassify(tmp_path: Path):
     """Test reclassify of classified cube."""
     # Open mask map
     data_dir = r_package_dir("extdata/raster/prodes", package="sits")
@@ -248,8 +265,61 @@ def s(tmp_path: Path):
         multicores=2,
         output_dir=tmp_path,
         version="ex_reclassify",
+        progress=False,
     )
 
     assert isinstance(ro_mask, SITSCubeModel)
     assert ro_mask.shape[0] == 1  # noqa: PLR2004 - number of tiles
     assert len(sits_labels(ro_mask)) == 5  # noqa: PLR2004 - number of labels
+
+
+def test_cube_reclassify_invalid_rules():
+    """Test reclassify with rules defined in an invalid format."""
+    with pytest.raises(ValueError, match="rules must be a dictionary"):
+        convert_reclassify_rules(["Water_Mask"])
+
+
+def test_cube_texture(tmp_path: Path, local_cube):
+    """Test texture measures of a data cube."""
+    cube_texture = sits_texture(
+        local_cube,
+        NDVIVAR="glcm_variance(NDVI)",
+        window_size=5,
+        output_dir=tmp_path,
+        progress=False,
+    )
+
+    assert isinstance(cube_texture, SITSCubeModel)
+    assert sits_bands(cube_texture) == ["NDVI", "NDVIVAR"]
+
+
+def test_cube_sync_instance(local_cube):
+    """Test sync of a modified cube with R."""
+    cube = local_cube.copy()
+    classes = list(cube._instance.rclass)
+
+    # Changing the cube marks it to be synced with R
+    cube["source"] = "BDC"
+    assert cube._is_updated
+
+    # Using the cube in an operation syncs it, keeping its R classes
+    assert sits_bands(cube) == ["NDVI"]
+    assert list(cube._instance.rclass) == classes
+
+
+def test_cube_sync_instance_without_rows(local_cube):
+    """Test sync of a cube without rows."""
+    cube = local_cube.query("tile == 'unknown-tile'")
+    cube["source"] = "BDC"
+
+    cube._sync_instance()
+
+    assert cube._instance is None
+
+
+def test_cube_html_representation(local_cube):
+    """Test cube HTML representation."""
+    html = local_cube._repr_html_()
+
+    assert local_cube.tile.iloc[0] in html
+    assert local_cube.collection.iloc[0] in html
