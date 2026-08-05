@@ -264,6 +264,9 @@ def test_tibble_nested_to_pandas():
     assert isinstance(result["ts"][0], NestedFrame)
     assert result["ts"][0]["v"].tolist() == [1.0, 2.0]
 
+    # Nested frames are shown as a compact summary
+    assert repr(result["ts"][0]) == "NestedFrame(2 x 1)"
+
 
 def test_geopandas_to_tibble():
     """Test conversion of a GeoDataFrame to an R sf object."""
