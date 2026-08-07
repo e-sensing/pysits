@@ -18,13 +18,12 @@
 """Tuning data models."""
 
 from collections.abc import Callable
-from itertools import chain
 from typing import Any
 
 from rpy2.rinterface_lib.sexp import NULLType
 from rpy2.robjects.vectors import ListVector
 
-from pysits.conversions.common import convert_to_python
+from pysits.conversions.common import convert_to_python, eval_r_language
 from pysits.models.data.base import SITSData
 from pysits.models.data.matrix import SITSConfusionMatrix
 from pysits.models.data.ts import SITSTimeSeriesModel
@@ -217,11 +216,7 @@ class SITSTuningResults(SITSData):
         Returns:
             A list of strings representing the optimizer configurations.
         """
-        return list(
-            chain.from_iterable(
-                [[x.rclass[0] for x in self._instance.rx2("optimizer")]]
-            )
-        )
+        return [eval_r_language(x).rclass[0] for x in self._instance.rx2("optimizer")]
 
     @property
     def opt_hparams(self) -> list[dict[str, float]]:

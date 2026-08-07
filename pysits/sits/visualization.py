@@ -29,7 +29,7 @@ from pysits.models.data.ts import (
     SITSTimeSeriesModel,
     SITSTimeSeriesPatternsModel,
 )
-from pysits.models.ml import SITSMachineLearningMethod
+from pysits.models.ml import SITSMachineLearningMethod, SITSRepresentationLearningMethod
 from pysits.visualization import plot_base, plot_leaflet, plot_tmap
 
 
@@ -119,4 +119,11 @@ def _(data: SITSTimeSeriesPatternsModel, **kwargs) -> None:
 @rpy2_fix_type
 def _(data: SITSMachineLearningMethod, **kwargs) -> None:
     """Plot machine learning method."""
+    return plot_base(data, **kwargs)
+
+
+@sits_plot.register
+@rpy2_fix_type
+def _(data: SITSRepresentationLearningMethod, **kwargs) -> None:
+    """Plot representation learning method."""
     return plot_base(data, **kwargs)

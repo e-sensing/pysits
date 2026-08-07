@@ -32,6 +32,12 @@ from pysits.models.data.ts import SITSTimeSeriesModel, SITSTimeSeriesPatternsMod
 #
 # High-level operation
 #
+@function_call(r_pkg_sits.sits_encode, SITSTimeSeriesModel)
+@attach_doc("sits_encode")
+def sits_encode(*args, **kwargs) -> SITSTimeSeriesModel:
+    """Encode time series or data cubes."""
+
+
 @function_call(r_pkg_sits.sits_get_data, SITSTimeSeriesModel)
 @attach_doc("sits_get_data")
 def sits_get_data(*args, **kwargs) -> SITSTimeSeriesModel:
@@ -190,21 +196,6 @@ def sits_cluster_clean(*args, **kwargs) -> SITSTimeSeriesModel:
 @attach_doc("sits_patterns")
 def sits_patterns(*args, **kwargs) -> SITSTimeSeriesPatternsModel:
     """Find temporal patterns associated to a set of time series."""
-
-
-#
-# Filtering
-#
-@function_call(r_pkg_sits.sits_sgolay, SITSTimeSeriesModel)
-@attach_doc("sits_sgolay")
-def sits_sgolay(*args, **kwargs) -> SITSTimeSeriesModel:
-    """Apply Savitzky-Golay filter to time series."""
-
-
-@function_call(r_pkg_sits.sits_whittaker, SITSTimeSeriesModel)
-@attach_doc("sits_whittaker")
-def sits_whittaker(*args, **kwargs) -> SITSTimeSeriesModel:
-    """Apply Whittaker filter to time series."""
 
 
 #

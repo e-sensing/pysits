@@ -22,10 +22,9 @@ from pandas import DataFrame as PandasDataFrame
 from pandas import Series as PandasSeries
 from rpy2.robjects.vectors import DataFrame as RDataFrame
 
-from pysits.conversions.tibble import tibble_sits_to_pandas
-from pysits.conversions.tibble_arrow import (
-    pandas_sits_to_tibble_arrow,
-    tibble_sits_to_pandas_arrow,
+from pysits.conversions.tibble import (
+    pandas_sits_to_tibble,
+    tibble_sits_to_pandas,
 )
 from pysits.models.data.frame import SITSFrame, SITSFrameSF
 
@@ -63,7 +62,7 @@ class SITSTimeSeriesItemModel(PandasSeries):
                 ts_data = PandasDataFrame([data])
 
                 # Convert to R DataFrame
-                self._instance = pandas_sits_to_tibble_arrow(ts_data)
+                self._instance = pandas_sits_to_tibble(ts_data)
 
         # Initialize super class
         super().__init__(data=data, **kwargs)
@@ -77,7 +76,7 @@ class SITSTimeSeriesModel(SITSFrame):
         # If instance is a Pandas DataFrame, convert to R cube
         if isinstance(instance, PandasDataFrame):
             # Convert to R DataFrame
-            self._instance = pandas_sits_to_tibble_arrow(instance)
+            self._instance = pandas_sits_to_tibble(instance)
 
         else:
             self._instance = instance
@@ -106,7 +105,7 @@ class SITSTimeSeriesModel(SITSFrame):
         Args:
             instance (rpy2.robjects.vectors.DataFrame): Data instance.
         """
-        return tibble_sits_to_pandas_arrow(instance)
+        return tibble_sits_to_pandas(instance)
 
     #
     # Data management
@@ -120,7 +119,7 @@ class SITSTimeSeriesModel(SITSFrame):
         classes = self._instance.rclass
 
         # Update instance
-        self._instance = pandas_sits_to_tibble_arrow(self)
+        self._instance = pandas_sits_to_tibble(self)
 
         # Restore classes
         self._instance.rclass = classes

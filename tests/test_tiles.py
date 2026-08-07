@@ -17,26 +17,64 @@
 
 """Unit tests for tile-related operations."""
 
-from pysits import sits_cube, sits_mgrs_to_roi, sits_tiles_to_roi
+import pytest
+
+from pysits import sits_cube, sits_roi_to_tiles, sits_tiles_to_roi
 from pysits.models.data.cube import SITSCubeModel
+from pysits.models.data.frame import SITSFrameSF
 from pysits.models.data.vector import SITSNamedVector
 
 
-def test_tiles_to_roi():
+@pytest.mark.parametrize(
+    ("grid_system", "expected_tiles"),
+    [
+        ("MGRS", ["20LLQ", "20LMQ"]),
+        ("BDC_MD_V2", ["006007", "006008"]),
+    ],
+)
+def test_roi_to_tiles(grid_system: str, expected_tiles: list[str]):
+    """Test ROI to tiles."""
+    roi = dict(
+        lon_min=-64.037,
+        lat_min=-9.644,
+        lon_max=-63.886,
+        lat_max=-9.389,
+    )
+
+    tiles = sits_roi_to_tiles(roi, grid_system=grid_system)
+
+    # Test type
+    assert isinstance(tiles, SITSFrameSF)
+
+    # Columns
+    assert all(
+        x in tiles.columns for x in ["tile_id", "coverage_percentage", "geometry"]
+    )
+
+    # Expected tiles
+    assert sorted(tiles["tile_id"]) == expected_tiles
+
+
+@pytest.mark.parametrize(
+    ("grid_system", "tiles", "expected_roi"),
+    [
+        ("MGRS", "22KGA", (-49.067207, -22.683553, -47.985736, -21.676399)),
+        ("BDC_MD_V2", "006007", (-64.242845, -9.529926, -62.235677, -7.584190)),
+    ],
+)
+def test_tiles_to_roi(grid_system: str, tiles: str, expected_roi: tuple[float, ...]):
     """Test tiles to ROI."""
-    # Test new version
-    roi = sits_tiles_to_roi("22KGA")
+    roi = sits_tiles_to_roi(tiles, grid_system=grid_system)
 
-    assert roi.shape == (1, 4)
+    # Test type
     assert isinstance(roi, SITSNamedVector)
-    assert all(x in roi.columns for x in ["xmin", "xmax", "ymin", "ymax"])
 
-    # Test deprecated version
-    roi2 = sits_mgrs_to_roi("20LMM")
+    # Columns
+    assert roi.shape == (1, 4)
+    assert all(x in roi.columns for x in ["lon_min", "lat_min", "lon_max", "lat_max"])
 
-    assert roi2.shape == (1, 4)
-    assert isinstance(roi2, SITSNamedVector)
-    assert all(x in roi2.columns for x in ["xmin", "xmax", "ymin", "ymax"])
+    # Expected ROI
+    assert roi.iloc[0].tolist() == pytest.approx(expected_roi)
 
 
 def test_tiles_to_load_cube():
@@ -54,3 +92,30 @@ def test_tiles_to_load_cube():
 
     assert isinstance(cube, SITSCubeModel)
     assert cube.tile.iloc[0] == "013011"
+
+
+def test_roi_to_tiles_to_load_cube():
+    """Test ROI tiles to load cube."""
+    roi = dict(
+        lon_min=-64.037,
+        lat_min=-9.644,
+        lon_max=-63.886,
+        lat_max=-9.389,
+    )
+
+    # Find tiles of the ROI
+    tiles = sits_roi_to_tiles(roi, grid_system="MGRS")
+
+    # Load cube using the tiles found
+    cube = sits_cube(
+        source="AWS",
+        collection="SENTINEL-2-L2A",
+        tiles=tiles["tile_id"].tolist(),
+        bands=("B02",),
+        start_date="2020-01-01",
+        end_date="2020-02-01",
+        progress=False,
+    )
+
+    assert isinstance(cube, SITSCubeModel)
+    assert sorted(cube.tile) == ["20LLQ", "20LMQ"]

@@ -24,12 +24,6 @@ from pysits.models.data.frame import SITSFrameSF
 from pysits.models.data.vector import SITSNamedVector
 
 
-@function_call(r_pkg_sits.sits_mgrs_to_roi, SITSNamedVector)
-@attach_doc("sits_mgrs_to_roi")
-def sits_mgrs_to_roi(*args, **kwargs) -> SITSNamedVector:
-    """Convert MGRS to ROI."""
-
-
 @function_call(r_pkg_sits.sits_tiles_to_roi, SITSNamedVector)
 @attach_doc("sits_tiles_to_roi")
 def sits_tiles_to_roi(*args, **kwargs) -> SITSNamedVector:

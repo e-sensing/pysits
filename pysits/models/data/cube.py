@@ -22,9 +22,9 @@ from pandas import Series as PandasSeries
 from rpy2.robjects.vectors import DataFrame as RDataFrame
 
 from pysits.backend.functions import r_fnc_set_column
-from pysits.conversions.tibble_arrow import (
-    pandas_cube_to_tibble_arrow,
-    tibble_cube_to_pandas_arrow,
+from pysits.conversions.tibble import (
+    pandas_cube_to_tibble,
+    tibble_cube_to_pandas,
 )
 from pysits.models.data.frame import SITSFrame
 
@@ -88,7 +88,7 @@ class SITSCubeItemModel(PandasSeries):
                 cube_data = PandasDataFrame([data])
 
                 # Convert to R DataFrame
-                self._instance = pandas_cube_to_tibble_arrow(cube_data)
+                self._instance = pandas_cube_to_tibble(cube_data)
 
         # Initialize super class
         super().__init__(data=data, **kwargs)
@@ -139,8 +139,12 @@ class SITSCubeModel(SITSFrame):
                 col in instance.columns for col in self.required_columns
             )
 
-            if has_required_columns:
-                self._instance = pandas_cube_to_tibble_arrow(instance)
+            # Selections can have no rows, which R can't represent as a cube
+            if has_required_columns and not instance.empty:
+                self._instance = pandas_cube_to_tibble(instance)
+
+            else:
+                self._instance = None
 
         else:
             self._instance = instance
@@ -161,7 +165,7 @@ class SITSCubeModel(SITSFrame):
         Args:
             instance (rpy2.robjects.vectors.DataFrame): Data instance.
         """
-        return tibble_cube_to_pandas_arrow(instance)
+        return tibble_cube_to_pandas(instance)
 
     #
     # Data management
@@ -169,6 +173,10 @@ class SITSCubeModel(SITSFrame):
     def _sync_instance(self):
         """Sync instance with R."""
         if not self._is_updated:
+            return
+
+        # Cubes with no rows are not available in R
+        if self._instance is None or self.empty:
             return
 
         # Save current classes
@@ -179,12 +187,12 @@ class SITSCubeModel(SITSFrame):
 
         if "base_info" in self.columns:
             # Convert each dataframe in the series to R DataFrame
-            base_info = [pandas_cube_to_tibble_arrow(df) for df in self.base_info]
+            base_info = [pandas_cube_to_tibble(df) for df in self.base_info]
 
             # Drop base_info
             self.drop(columns=["base_info"], inplace=True)
 
-        self._instance = pandas_cube_to_tibble_arrow(self)
+        self._instance = pandas_cube_to_tibble(self)
 
         # Add base_info
         if base_info is not None:

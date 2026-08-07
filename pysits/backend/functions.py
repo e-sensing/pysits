@@ -17,7 +17,10 @@
 
 """backend functions."""
 
-from pysits.backend.loaders import load_function_from_package
+from pysits.backend.loaders import (
+    load_function_from_package,
+    load_internal_function_from_package,
+)
 
 # Base - plot
 r_fnc_plot = load_function_from_package("base::plot")
@@ -40,6 +43,9 @@ r_fnc_set_seed = load_function_from_package("base::set_seed")
 # Base - class (base)
 r_fnc_class = load_function_from_package("base::class")
 
+# Base - eval (base)
+r_fnc_eval = load_function_from_package("base::eval")
+
 # Base - as.data.frame (base)
 r_fnc_as_data_frame = load_function_from_package("base::as_data_frame")
 
@@ -48,3 +54,6 @@ r_fnc_colnames = load_function_from_package("base::colnames")
 
 # Base - rownames (base)
 r_fnc_rownames = load_function_from_package("base::rownames")
+
+# sits - configuration (internal)
+r_fnc_sits_conf = load_internal_function_from_package("sits:::.conf")

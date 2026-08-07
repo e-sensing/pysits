@@ -105,3 +105,42 @@ def load_function_from_package(name: str) -> Callable[..., Any]:
 
     # Return function
     return getattr(pkg, func_name)
+
+
+def load_internal_function_from_package(name: str) -> Callable[..., Any]:
+    """Load an internal R function from a specified package.
+
+    Internal functions are those not exported by a package. They are addressed
+    in R with the ``package:::function`` notation.
+
+    Args:
+        name (str): The fully qualified name of the R function in the format
+                    'package:::function'. For example, 'sits:::.conf'.
+
+    Returns:
+        Callable[..., Any]: A Python callable that wraps the R function.
+                            The exact signature depends on the underlying R function.
+
+    Raises:
+        ValueError: If the ``name`` doesn't follow the 'package:::function' format.
+
+        PackageNotFoundError: If the specified R package is not installed.
+
+    Examples:
+        >>> conf = load_internal_function_from_package('sits:::.conf')
+        >>> scale = conf('sources', 'BDC', 'collections', 'MOD13Q1-6.1')
+    """
+    # Parse package and function
+    package_name, _, func_name = name.partition(":::")
+
+    if not package_name or not func_name:
+        raise ValueError(
+            f"Invalid function name format: {name}. "
+            "Expected format: 'package:::function'"
+        )
+
+    # Import the package
+    importr(package_name, on_conflict="warn")
+
+    # Return function
+    return rpy2_r_interface(name)

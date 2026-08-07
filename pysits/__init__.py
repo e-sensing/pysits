@@ -27,7 +27,13 @@ from .sits.colors import (
     sits_colors_set,
     sits_colors_show,
 )
-from .sits.config import sits_config, sits_config_show, sits_config_user_file
+from .sits.config import (
+    sits_config,
+    sits_config_show,
+    sits_config_user_file,
+    sits_config_value,
+    sits_parallel,
+)
 from .sits.context import (
     cerrado_2classes,
     point_mt_6bands,
@@ -72,9 +78,10 @@ from .sits.impute import (
     impute_mean,
     impute_mean_window,
     impute_median,
-    sits_impute,
 )
 from .sits.ml import (
+    sits_barlow_twins,
+    sits_contrastive_learning,
     sits_formula_linear,
     sits_formula_logref,
     sits_kfold_validate,
@@ -82,8 +89,12 @@ from .sits.ml import (
     sits_lighttae,
     sits_mlp,
     sits_model_export,
+    sits_pre_train,
     sits_resnet,
     sits_rfor,
+    sits_ssl_lejepa,
+    sits_ssl_mae,
+    sits_ssl_vicreg,
     sits_svm,
     sits_tae,
     sits_tempcnn,
@@ -91,11 +102,12 @@ from .sits.ml import (
     sits_xgboost,
 )
 from .sits.segment import sits_segment, sits_slic, sits_snic
-from .sits.tiles import sits_mgrs_to_roi, sits_roi_to_tiles, sits_tiles_to_roi
+from .sits.tiles import sits_roi_to_tiles, sits_tiles_to_roi
 from .sits.ts import (
     sits_cluster_clean,
     sits_cluster_dendro,
     sits_cluster_frequency,
+    sits_encode,
     sits_geo_dist,
     sits_get_class,
     sits_get_data,
@@ -109,7 +121,6 @@ from .sits.ts import (
     sits_reduce_imbalance,
     sits_sample,
     sits_sampling_design,
-    sits_sgolay,
     sits_show_prediction,
     sits_som_clean_samples,
     sits_som_evaluate_cluster,
@@ -117,7 +128,6 @@ from .sits.ts import (
     sits_stats,
     sits_stratified_sampling,
     sits_validate,
-    sits_whittaker,
 )
 from .sits.tuning import sits_tuning, sits_tuning_hparams
 from .sits.utils import (
@@ -158,6 +168,8 @@ __all__ = (
     "sits_config",
     "sits_config_show",
     "sits_config_user_file",
+    "sits_config_value",
+    "sits_parallel",
     # Data management
     "sits_bands",
     "sits_timeline",
@@ -190,16 +202,19 @@ __all__ = (
     "sits_model_export",
     "sits_formula_linear",
     "sits_formula_logref",
+    "sits_ssl_mae",
+    "sits_ssl_lejepa",
+    "sits_ssl_vicreg",
+    "sits_barlow_twins",
+    "sits_contrastive_learning",
+    "sits_pre_train",
     # Impute
-    "sits_impute",
     "impute_linear",
     "impute_mean",
     "impute_median",
     "impute_mean_window",
     # Time-series
     "sits_show_prediction",
-    "sits_sgolay",
-    "sits_whittaker",
     "sits_get_data",
     "sits_get_class",
     "sits_get_probs",
@@ -219,8 +234,8 @@ __all__ = (
     "sits_reduce_imbalance",
     "sits_sampling_design",
     "sits_stratified_sampling",
+    "sits_encode",
     # Tiles
-    "sits_mgrs_to_roi",
     "sits_tiles_to_roi",
     "sits_roi_to_tiles",
     # Segments

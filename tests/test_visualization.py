@@ -19,7 +19,7 @@
 
 from pysits.sits.context import samples_l8_rondonia_2bands
 from pysits.sits.cube import sits_cube
-from pysits.sits.ml import sits_rfor, sits_train
+from pysits.sits.ml import sits_pre_train, sits_rfor, sits_ssl_mae, sits_train
 from pysits.sits.ts import sits_patterns, sits_som_map
 from pysits.sits.utils import r_package_dir
 from pysits.sits.visualization import sits_plot, sits_view
@@ -40,6 +40,12 @@ def test_machine_learning_visualization(no_plot_window):
     """Test machine learning visualization."""
     ml_model = sits_train(samples_l8_rondonia_2bands, sits_rfor())
     sits_plot(ml_model)
+
+
+def test_representation_learning_visualization(no_plot_window):
+    """Test representation learning visualization."""
+    rl_model = sits_pre_train(samples_l8_rondonia_2bands, sits_ssl_mae())
+    sits_plot(rl_model)
 
 
 def test_som_visualization(no_plot_window):
