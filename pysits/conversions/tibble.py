@@ -480,7 +480,8 @@ def geopandas_to_tibble(data: GeoPandasDataFrame) -> RDataFrame:
             f"Warning: Dropping columns with embedded DataFrames: {dropped_columns}"
         )
 
-    data_safe = data[safe_columns].copy()
+    # Geometries are transferred as WKT, so the result is a plain data frame
+    data_safe = PandasDataFrame(data[safe_columns].copy())
 
     if isinstance(data, GeoPandasDataFrame):
         geom_col = data.geometry.name

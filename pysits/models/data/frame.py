@@ -22,6 +22,7 @@ from pandas import DataFrame as PandasDataFrame
 from rpy2.robjects.vectors import DataFrame as RDataFrame
 
 from pysits.conversions.tibble import (
+    geopandas_to_tibble,
     pandas_to_tibble,
     tibble_nested_to_pandas,
     tibble_to_pandas,
@@ -115,6 +116,21 @@ class SITSFrameSF(SITSFrameBase, GeoPandasDataFrame):
 
         # Initialize super class
         GeoPandasDataFrame.__init__(self, data=instance, **kwargs)
+
+    #
+    # Data management
+    #
+    def _sync_instance(self):
+        """Sync instance with R."""
+        if not self._is_updated:
+            return
+
+        # ``sf`` objects require a geometry-based conversion. Otherwise the
+        # spatial classes are lost and R functions dispatch as plain data frames
+        self._instance = geopandas_to_tibble(self)
+
+        # Update flag
+        self._is_updated = False
 
 
 class SITSFrameNested(SITSFrame):
