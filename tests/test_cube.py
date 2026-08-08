@@ -24,7 +24,7 @@ from pandas import DataFrame as PandasDataFrame
 
 from pysits.conversions.dsl.mask import MaskValue
 from pysits.models.data.cube import SITSCubeModel
-from pysits.models.data.frame import SITSFrame
+from pysits.models.data.frame import SITSFrame, SITSFrameSF
 from pysits.sits.cube import (
     convert_reclassify_rules,
     sits_cube,
@@ -32,18 +32,8 @@ from pysits.sits.cube import (
     sits_texture,
 )
 from pysits.sits.data import sits_bands, sits_bbox, sits_labels, sits_timeline
+from pysits.sits.ts import sits_random_sampling
 from pysits.sits.utils import r_package_dir
-
-
-@pytest.fixture(scope="module")
-def local_cube() -> SITSCubeModel:
-    """Cube created from local files."""
-    return sits_cube(
-        source="BDC",
-        collection="MOD13Q1-6.1",
-        data_dir=r_package_dir("extdata/raster/mod13q1", package="sits"),
-        progress=False,
-    )
 
 
 def test_sits_cube_data_structure():
@@ -291,6 +281,26 @@ def test_cube_texture(tmp_path: Path, local_cube):
 
     assert isinstance(cube_texture, SITSCubeModel)
     assert sits_bands(cube_texture) == ["NDVI", "NDVIVAR"]
+
+
+def test_cube_random_sampling(local_cube):
+    """Test random sampling of a data cube."""
+    samples = sits_random_sampling(
+        cube=local_cube,
+        n_samples=100,
+        progress=False,
+    )
+
+    # Test type
+    assert isinstance(samples, SITSFrameSF)
+
+    # Columns
+    assert samples.geometry.name == "geometry"
+    assert samples.crs is not None
+
+    # Expected samples
+    assert samples.shape == (100, 1)  # number of samples requested
+    assert set(samples.geometry.geom_type) == {"Point"}
 
 
 def test_cube_sync_instance(local_cube):
