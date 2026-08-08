@@ -17,12 +17,45 @@
 
 """Unit tests for visualization operations."""
 
-from pysits.sits.context import samples_l8_rondonia_2bands
+import pytest
+from rpy2.rinterface_lib.embedded import RRuntimeError
+
+from pysits.sits.context import samples_l8_rondonia_2bands, samples_modis_ndvi
 from pysits.sits.cube import sits_cube
+from pysits.sits.data import sits_classify, sits_label_classification
 from pysits.sits.ml import sits_pre_train, sits_rfor, sits_ssl_mae, sits_train
 from pysits.sits.ts import sits_patterns, sits_som_map
-from pysits.sits.utils import r_package_dir
-from pysits.sits.visualization import sits_plot, sits_view
+from pysits.sits.utils import r_package_dir, r_set_seed
+from pysits.sits.visualization import sits_plot, sits_sankey, sits_view
+
+
+#
+# Fixtures
+#
+@pytest.fixture(scope="module")
+def class_cubes(local_cube, tmp_path_factory):
+    """Two single-step classified cubes."""
+    r_set_seed(42)
+    output_dir = tmp_path_factory.mktemp("sankey")
+
+    # Train a random forest model
+    rfor_model = sits_train(samples_modis_ndvi, sits_rfor())
+
+    # Classify the cube
+    probs_cube = sits_classify(
+        local_cube,
+        rfor_model,
+        output_dir=output_dir,
+        progress=False,
+    )
+
+    # Prepare cubes
+    return tuple(
+        sits_label_classification(
+            probs_cube, output_dir=output_dir, version=version, progress=False
+        )
+        for version in ("v2013", "v2014")
+    )
 
 
 def test_sits_visualization(no_plot_window):
@@ -97,3 +130,52 @@ def test_sits_visualization_leaflet(no_browser):
 def test_cube_visualization_leaflet(local_cube, no_browser):
     """Test cube visualization."""
     sits_view(local_cube)
+
+
+def test_sankey_visualization(class_cubes, no_plot_window):
+    """Test sankey visualization of class trajectories."""
+    class_2013, class_2014 = class_cubes
+
+    # The diagram is displayed, not returned
+    assert (
+        sits_sankey(
+            class_2013,
+            class_2014,
+            labels=["2013", "2014"],
+            multicores=1,
+            progress=False,
+        )
+        is None
+    )
+
+
+def test_sankey_visualization_cubes_argument(class_cubes, no_plot_window):
+    """Test sankey visualization using the ``cubes`` argument."""
+    class_2013, class_2014 = class_cubes
+
+    # Cubes can also be given as a list, instead of separate arguments
+    assert (
+        sits_sankey(
+            cubes=[class_2013, class_2014],
+            labels=["2013", "2014"],
+            title="Trajectories",
+            palette="Set2",
+            multicores=1,
+            progress=False,
+        )
+        is None
+    )
+
+
+def test_sankey_visualization_invalid_input(class_cubes):
+    """Test sankey visualization with cubes defined in an invalid format."""
+    class_2013, class_2014 = class_cubes
+
+    # Cubes must be given as separate arguments or via ``cubes``, not both
+    with pytest.raises(RRuntimeError, match="not both"):
+        sits_sankey(
+            class_2013,
+            cubes=[class_2013, class_2014],
+            multicores=1,
+            progress=False,
+        )
