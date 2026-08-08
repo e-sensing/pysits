@@ -1,8 +1,13 @@
-Train temporal convolutional neural network models
+Train a Long Short Term Memory Fully Convolutional Network
 
-Use a TempCNN algorithm to classify data, which has two stages: a 1D CNN and a
-multi-layer perceptron. Users can define the depth of the 1D network, as well
-as the number of perceptron layers.
+Uses a branched neural network consisting of a lstm (long short term memory)
+branch and a three-layer fully convolutional branch (FCN) followed by
+concatenation to classify time series data.
+This function is based on the paper by Fazle Karim, Somshubra Majumdar, and
+Houshang Darabi. If you use this method, please cite the original LSTM with FCN
+paper.
+The original python code is available at the website
+https://github.com/titu1994/LSTM-FCN. This code is licensed as GPL-3.
 
 Args:
     samples (SITSTimeSeriesModel): Time series with the training samples.
@@ -11,11 +16,8 @@ Args:
         provided, the `validation_split` parameter is ignored.
     cnn_layers (list[int]): Number of 1D convolutional filters per layer.
     cnn_kernels (list[int]): Size of the 1D convolutional kernels.
-    cnn_dropout_rates (list[float]): Dropout rates for 1D convolutional
-        filters.
-    dense_layer_nodes (int): Number of nodes in the dense layer.
-    dense_layer_dropout_rate (float): Dropout rate (0,1) for the dense
-        layer.
+    lstm_width (int): Number of neurons in the lstm hidden layer.
+    lstm_dropout (float): Dropout rate of the lstm layer.
     epochs (int): Number of iterations to train the model.
     batch_size (int): Number of samples per gradient update.
     validation_split (float): Fraction of training data to be used for
@@ -31,33 +33,20 @@ Args:
     min_delta (float): Minimum improvement in loss function to reset the
         patience counter.
     seed (int): Seed for random values.
-    verbose (bool): Verbosity mode. Default is False.
+    verbose (bool): Verbosity mode. Default is `False`.
 
 Returns:
     SITSMachineLearningMethod: A fitted model to be used for
         classification.
 
-Notes:
-    `sits` provides a set of default values for all classification models.
-    These settings have been chosen based on testing by the authors.
-    Nevertheless, users can control all parameters for each model. Novice users
-    can rely on the default values, while experienced ones can fine-tune deep
-    learning models using `sits_tuning`.
-    This function is based on the paper by Charlotte Pelletier referenced
-    below. If you use this method, please cite the original tempCNN paper.
-    The torch version is based on the code made available by the BreizhCrops
-    team: Marc Russwurm, Charlotte Pelletier, Marco Korner, Maximilian Zollner.
-    The original python code is available at the website
-    https://github.com/dl4sits/BreizhCrops. This code is licensed as GPL-3.
-
 Examples:
     from pysits import *
     import tempfile
 
-    # create a TempCNN model
+    # create an LSTM model
     torch_model = sits_train(
         samples_modis_ndvi,
-        sits_tempcnn(epochs=20, verbose=True)
+        sits_lstm_fcn(epochs=20, verbose=True)
     )
     # plot the model
     plot(torch_model)

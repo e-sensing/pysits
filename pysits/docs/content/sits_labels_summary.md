@@ -3,10 +3,10 @@ Inform label distribution of a set of time series
 Describes labels in a set of time series.
 
 Args:
-    data (SITSTimeSeriesModel): Valid time series.
+    data (SITSTimeSeriesModel): Set of time series.
 
 Returns:
-    SITSFrame: A table with the frequency of each label.
+    SITSFrame: The frequency of each label.
 
 Examples:
     from pysits import *

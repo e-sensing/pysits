@@ -1,112 +1,117 @@
 Plot sits objects.
 
-Unified plotting function that dispatches on the type of the object passed
-as `x`. It mirrors the many `plot` methods of the R `sits` package,
-covering data cubes (raster, SAR, DEM, vector, RGB), probability and
-uncertainty cubes, variance cubes, classified images, time series patterns
-and predictions, machine learning / deep learning models, clustering and
-self-organizing map (SOM) results, accuracy tables, and t-SNE / embedding
-visualizations. The set of accepted keyword arguments depends on the type
-of object being plotted.
+A single dispatching function that produces a plot appropriate to the type
+of the object passed as `x`. It covers data cubes (raster, SAR, DEM,
+vector), probability and uncertainty products, variance cubes, patterns,
+time-series predictions, embeddings, clustering and SOM outputs, accuracy
+tables, and trained models. Depending on the object type, the plot is
+rendered as a map, a chart, or a raster image.
+
+The accepted keyword arguments depend on the type of `x`. The sections
+below group the parameters by the kind of object being plotted.
 
 Args:
-    x (SITSCubeModel | SITSTimeSeriesModel | SITSTimeSeriesPatternsModel | SITSMachineLearningMethod | SITSConfusionMatrix): Object to be
-        plotted. Supported objects include classified raster images,
-        classified segments, digital elevation model cubes, multi-year
-        land use/cover embedding predictions, sample distances, class
-        temporal patterns, probability cubes, raster, SAR, and vector
-        data cubes, confusion matrices / accuracy metrics, dendrograms,
-        trained models, time series predictions, t-SNE projections, SOM
-        results, uncertainty cubes, and variance cubes.
+    x (SITSCubeModel | SITSTimeSeriesModel | SITSTimeSeriesPatternsModel | SITSMachineLearningMethod | SITSConfusionMatrix):
+        Object to be plotted. Supported kinds include raster, SAR, DEM,
+        and vector cubes; classified, probability, uncertainty, and
+        variance cubes; patterns; time-series and embedding predictions;
+        geographic distances; clustering and SOM outputs; accuracy
+        tables; t-SNE projections; and trained models.
     y: Ignored. Present for compatibility with the generic `plot`.
-    band (str): Band used for plotting a single-band (grey scale) image.
-        Applies to raster, SAR, DEM, and vector cubes, and to SOM maps.
-    red (str): Band assigned to the red channel of an RGB composite
-        (raster, SAR, and vector cubes).
-    green (str): Band assigned to the green channel of an RGB composite.
-    blue (str): Band assigned to the blue channel of an RGB composite.
-    tile (str): Tile to be plotted (data cubes, probability, uncertainty,
-        and variance cubes).
+    band (str): For raster, SAR, DEM, and vector cubes, the band used to
+        plot a grey (B/W) image. For SOM maps, the band to be plotted.
+    red (str): Band assigned to the red channel for RGB plots of raster,
+        SAR, and vector cubes.
+    green (str): Band assigned to the green channel for RGB plots.
+    blue (str): Band assigned to the blue channel for RGB plots.
+    tile (str): Tile to be plotted (for cube objects).
     dates (list[str]): Dates to be plotted (raster, SAR, and vector
         cubes).
-    roi (dict | geopandas.GeoDataFrame): Spatial extent (region of
-        interest) to plot, in WGS 84.
-    labels (list[str]): Labels to plot (probability and variance cubes).
-    bands (list[str]): Bands to be viewed (patterns and time series
-        predictions).
-    legend (dict): Associates labels to colors, or a legend specification
-        for SOM plots.
-    legend_position (str): Where to place the legend (typically "inside"
-        or "outside", with defaults varying by plot type).
-    legend_title (str): Title of the legend (probability and variance
+    roi (dict): Spatial extent (region of interest) to plot, in WGS 84.
+        See notes.
+    labels (list[str]): Labels to plot (probability, variance, and vector
         cubes).
-    palette (str): An RColorBrewer or "cols4all" (or HCL) palette used
-        for color mapping.
+    bands (list[str]): Bands to be viewed (for patterns and time-series
+        predictions).
+    legend (dict): Maps labels to colors (class cubes, SOM maps, and
+        cluster confusion plots).
+    legend_position (str): Where to place the legend. Typical default is
+        `"inside"` for RGB/grey plots and `"outside"` for classified and
+        probability maps.
+    legend_title (str): Title of the legend for probability and variance
+        cubes (for example `"probs"` or `"logvar"`).
+    palette (str): An `RColorBrewer` or `cols4all` palette. For
+        chart-based plots (predictions, embeddings, clusters, t-SNE), an
+        HCL palette name.
     rev (bool): Whether to reverse the color order in the palette.
-    scale (float): Relative scale of plot text and map (typically 0.4 to
-        1.0).
+    scale (float): Relative scale (roughly 0.4 to 1.0) of the plot text
+        and map.
     quantile (float): Minimum quantile to plot (probability and variance
         cubes).
-    first_quantile (float): First quantile for stretching images.
-    last_quantile (float): Last quantile for stretching images.
+    first_quantile (float): First quantile used for stretching images.
+    last_quantile (float): Last quantile used for stretching images.
     max_cog_size (int): Maximum size of COG (Cloud Optimized GeoTIFF)
-        overviews, in lines/columns or pixels.
-    seg_color (str): Color used to draw segment boundaries (vector cubes).
-    line_width (float): Line width used to draw segment boundaries
-        (vector cubes).
-    type (str): Type of plot; meaning depends on the object. For accuracy
-        objects it is "confusion_matrix" or "metrics"; for variance cubes
-        it is "map" or "hist"; for SOM maps it is "codes" or "mapping".
-    cluster: Cluster object produced by `sits_cluster_dendro`, used when
-        plotting a dendrogram.
-    cutree_height (float): Height at which to draw a dashed horizontal
-        line indicating where the dendrogram is cut.
-    name_cluster (str): Cluster to plot (SOM cluster evaluation).
-    title (str): Title of the plot (SOM cluster evaluation).
-    year_grid (bool): Whether to plot patterns as a grid of panels with
-        labels as columns and years as rows. Defaults to False.
-    tree_idx (int): Index of the tree to be plotted for an XGBoost model.
-    plot_embedding (str): For embedding predictions, either "none" (plot
-        only predicted class intervals) or "area" (overlay a smoothed
-        vertical embedding profile per year).
-    stretch (tuple[float, float]): For embedding plots, lower/upper
-        quantiles used to stretch embedding values before plotting.
-    class_alpha (float): Transparency of class polygons in embedding plots
-        (0-1).
-    area_alpha (float): Transparency of the embedding area in embedding
-        plots (0-1).
-    area_width (float): Horizontal width fraction of the embedding area.
-    area_spar (float): Smoothing parameter for the embedding area spline.
-    **kwargs (dict): Further specifications passed to the underlying plot.
+        overviews, in lines/columns (pixels).
+    seg_color (str): Color used for segment borders in vector cubes.
+    line_width (float): Line width used for segment borders in vector
+        cubes.
+    type (str): Type of plot. For accuracy objects, either
+        `"confusion_matrix"` or `"metrics"`. For variance cubes, `"map"`
+        or `"hist"`. For SOM maps, `"codes"` (neuron weight time series)
+        or `"mapping"` (number of samples per neuron).
+    year_grid (bool): For patterns, whether to plot a grid of panels
+        using labels as columns and years as rows (default `False`).
+    cluster: For clustering plots, the cluster object produced by
+        `sits_cluster_dendro`.
+    cutree_height (float): For clustering plots, the height at which to
+        draw a dashed horizontal line indicating where the dendrogram is
+        cut.
+    name_cluster (str): For SOM cluster evaluation, the cluster to plot.
+    title (str): For SOM cluster evaluation, the title of the plot.
+    tree_idx (int): For XGBoost models, the index of the tree to be
+        plotted.
+    plot_embedding (str): For embedding predictions, either `"none"` (plot
+        only the predicted class intervals) or `"area"` (overlay a
+        smoothed vertical embedding profile per year).
+    stretch (list[float]): For embedding predictions, the lower and upper
+        quantiles used to stretch embedding values before plotting
+        (default `[0.02, 0.98]`).
+    class_alpha (float): For embedding predictions, transparency of the
+        class polygons in `[0, 1]` (default `0.7`).
+    area_alpha (float): For embedding predictions, transparency of the
+        embedding area in `[0, 1]` (default `0.25`).
+    area_width (float): For embedding predictions, the horizontal width
+        fraction of the embedding area along the time axis.
+    area_spar (float): For embedding predictions, the smoothing parameter
+        passed to the spline fit (default `0.6`); higher values produce
+        smoother profiles.
+    **kwargs (dict): Further specifications for the plot. The keywords
+        understood depend on the type of `x` (see below).
 
 Returns:
-    None: A plot is produced. Depending on the input type this may be a
-    color map of classified pixels, an RGB or grey-scale image, a
-    probability or uncertainty map, a variance map (optionally with
-    segment overlays), a dendrogram, a confusion matrix, a SOM map, a
-    model diagnostic plot, or a plot for patterns, predictions,
-    embeddings, and t-SNE projections. Some methods are called only for
-    their side effect of drawing the plot.
+    None: A plot appropriate to the type of `x` is drawn. Maps of cubes
+        yield color or B/W raster images (optionally overlaid with segment
+        boundaries for vector cubes); probability, uncertainty, and
+        variance cubes yield per-class or per-pixel maps; classified cubes
+        yield color maps where each pixel is colored by its label.
+        Chart-based plots (patterns, predictions, embeddings, clusters,
+        t-SNE, model diagnostics) render the corresponding plot. Some
+        methods (accuracy tables, SOM diagnostics, model summaries) are
+        called only for their side effect of drawing the plot.
 
 Notes:
-    The `roi` argument can be defined as a `dict` giving the spatial
-    extent (for example with `lon_min`, `lon_max`, `lat_min`, `lat_max`),
-    a `geopandas.GeoDataFrame`, or another spatial specification accepted
-    by `sits`. Vector cube plots overlay the segments produced by
-    `sits_segment` on top of the raster image; their appearance is
-    controlled by `seg_color` and `line_width`.
+        The set of valid keyword arguments depends on the type of `x`;
+        passing arguments that do not apply to a given object type has no
+        effect. When a region of interest (`roi`) is supported, it defines
+        the spatial extent to plot in WGS 84.
 
 Examples:
     from pysits import *
 
-    # Plot a set of time series patterns
-    patterns = sits_patterns(cerrado_2classes)
+    # Plot a set of time-series patterns (one average pattern per label)
+    patterns = sits_patterns(samples_modis_ndvi)
     plot(patterns)
 
-    # Train a random forest model and plot variable importance
-    rfor_model = sits_train(samples_modis_ndvi, ml_method=sits_rfor())
-    plot(rfor_model)
-
-    # Plot a SOM map produced from a set of samples
-    som_map = sits_som_map(samples_modis_ndvi)
-    plot(som_map)
+    # Train a random forest model and plot its important variables
+    rf_model = sits_train(samples_modis_ndvi, ml_method=sits_rfor())
+    plot(rf_model)

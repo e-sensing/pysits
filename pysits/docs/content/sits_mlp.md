@@ -1,8 +1,8 @@
 Train multi-layer perceptron models using torch
 
-Use a multi-layer perceptron algorithm to classify data. This function uses
-the R "torch" and "luz" packages. Please refer to the documentation of those
-package for more details.
+Use a multi-layer perceptron algorithm to classify data. This function
+uses deep learning routines for training and classification. Please refer
+to the underlying documentation for more details.
 
 Args:
     samples (SITSTimeSeriesModel): Time series with the training samples.
@@ -12,25 +12,25 @@ Args:
     layers (list[int]): Number of hidden nodes in each layer.
     dropout_rates (list[float]): Dropout rates (0,1) for each layer.
     optimizer: Optimizer function to be used.
-    opt_hparams (dict): Hyperparameters for optimizer: lr : Learning rate
-        of the optimizer eps: Term added to the denominator to improve
-        numerical stability.. weight_decay: L2 regularization
+    opt_hparams (dict): Hyperparameters for optimizer: lr: Learning rate
+        of the optimizer; eps: Term added to the denominator to improve
+        numerical stability; weight_decay: L2 regularization.
     epochs (int): Number of iterations to train the model.
     batch_size (int): Number of samples per gradient update.
     validation_split (float): Number between 0 and 1. Fraction of the
         training data for validation. The model will set apart this
-        fraction and will evaluate the loss and any model metrics on this
-        data at the end of each epoch.
+        fraction and will evaluate the loss and any model metrics on
+        this data at the end of each epoch.
     patience (int): Number of epochs without improvements until training
         stops.
     min_delta (float): Minimum improvement in loss function to reset the
         patience counter.
     seed (int): Seed for random values.
-    verbose (bool): Verbosity mode (True/False). Default is False.
+    verbose (bool): Verbosity mode. Default is `False`.
 
 Returns:
-    SITSMachineLearningMethod: A torch mlp model to be used for
-        classification.
+    SITSMachineLearningMethod: An MLP model to be used for
+    classification.
 
 Notes:
     `sits` provides a set of default values for all classification models.
@@ -38,15 +38,15 @@ Notes:
     Nevertheless, users can control all parameters for each model. Novice
     users can rely on the default values, while experienced ones can
     fine-tune deep learning models using `sits_tuning`.
-    The default parameters for the MLP have been chosen based on the work by
-    Wang et al. 2017 that takes multilayer perceptrons as the baseline for
-    time series classifications: (a) Three layers with 512 neurons each,
-    specified by the parameter `layers`; (b) dropout rates of 10 (c) the
-    "optimizer_adam" as optimizer (default value); (d) a number of training
-    steps (`epochs`) of 100; (e) a `batch_size` of 64, which indicates how
-    many time series are used for input at a given steps; (f) a validation
-    percentage of 20 will be randomly set side for validation. (g) The
-    "relu" activation function.
+    The default parameters for the MLP have been chosen based on the work
+    by Wang et al. 2017 that takes multilayer perceptrons as the baseline
+    for time series classifications: (a) Three layers with 512 neurons
+    each, specified by the parameter `layers`; (b) dropout rates of 10 (c)
+    the "optimizer_adam" as optimizer (default value); (d) a number of
+    training steps (`epochs`) of 100; (e) a `batch_size` of 64, which
+    indicates how many time series are used for input at a given steps;
+    (f) a validation percentage of 20 will be randomly set side for
+    validation. (g) The "relu" activation function.
 
 Examples:
     from pysits import *

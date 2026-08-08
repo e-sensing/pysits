@@ -13,49 +13,52 @@ Args:
         `"lon_max"`, `"lat_max"`) in WGS84; 4. A `dict` (`"xmin"`,
         `"xmax"`, `"ymin"`, `"ymax"`) with XY coordinates in the
         projection of the input cube.
-    res (int): Output spatial resolution of the images. Default is None.
+    res (int): Output spatial resolution of the images. Default is
+        `None`.
     crs (str): The Coordinate Reference System (CRS) of the roi. (see
         details below).
-    n_tries (int): Number of attempts to download the same image. Default
-        is 3.
+    n_tries (int): Number of attempts to download the same image.
+        Default is 3.
     multicores (int): Number of cores for parallel downloading (min = 1,
         max = 2048).
-    output_dir (str | pathlib.Path): Output directory where images will be
-        saved.
+    output_dir (str | pathlib.Path): Output directory where images will
+        be saved.
     progress (bool): Show progress bar?
-    **kwargs (dict): Additional arguments.
+    **kwargs (dict): Additional parameters.
 
 Returns:
     SITSCubeModel: Copy of input data cube.
     The main `sits` classification workflow has the following steps:
-    1. `sits_cube`: selects a ARD image collection from a cloud provider.
+    1. `sits_cube`: selects a ARD image collection from a cloud
+       provider.
     2. `sits_cube_copy`: copies an ARD image collection from a cloud
        provider to a local directory for faster processing.
     3. `sits_regularize`: create a regular data cube from an ARD image
        collection.
     4. `sits_apply`: create new indices by combining bands of a regular
        data cube (optional).
-    5. `sits_get_data`: extract time series from a regular data cube based
-       on user-provided labelled samples.
+    5. `sits_get_data`: extract time series from a regular data cube
+       based on user-provided labelled samples.
     6. `sits_train`: train a machine learning model based on image time
        series.
     7. `sits_classify`: classify a data cube using a machine learning
        model and obtain a probability cube.
     8. `sits_smooth`: post-process a probability cube using a spatial
        smoother to remove outliers and increase spatial consistency.
-    9. `sits_label_classification`: produce a classified map by selecting
-       the label with the highest probability from a smoothed cube.
+    9. `sits_label_classification`: produce a classified map by
+       selecting the label with the highest probability from a smoothed
+       cube.
     The `roi` parameter is used to crop cube images. To define a `roi`
     use one of:
     - A path to a shapefile with polygons;
     - A `geopandas.GeoDataFrame`;
-    - A spatial extent object;
+    - A `SpatExtent` object;
     - A `dict` (`"lon_min"`, `"lat_min"`, `"lon_max"`, `"lat_max"`) in
       WGS84;
     - A `dict` (`"xmin"`, `"xmax"`, `"ymin"`, `"ymax"`) with XY
       coordinates.
-    Defining a region of interest using a spatial extent or XY values not
-    in WGS84 requires the `crs` parameter to be specified.
+    Defining a region of interest using `SpatExtent` or XY values not in
+    WGS84 requires the `crs` parameter to be specified.
 
 Examples:
     from pysits import *

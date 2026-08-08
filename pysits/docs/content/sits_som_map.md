@@ -7,31 +7,30 @@ Args:
     data (SITSTimeSeriesModel): samples to be clustered.
     grid_xdim (int): X dimension of the SOM grid (default = 25).
     grid_ydim (int): Y dimension of the SOM grid.
-    alpha (float): Starting learning rate (decreases according to number
-        of iterations).
+    alpha (float): Starting learning rate (decreases according to number of
+        iterations).
     rlen (int): Number of iterations to produce the SOM.
-    distance (str): The type of similarity measure (distance). The
-        following similarity measurements are supported: `"euclidean"`,
-        `"dtw"`, and `"cosine"`. The default similarity measure is
-        `"dtw"`. For single-timestep samples (e.g. embeddings), all bands
-        are treated as one feature vector. `"dtw"` is not applicable and
-        falls back to `"euclidean"`, while `"cosine"` compares the angle
-        between the full embedding vectors.
+    distance (str): The type of similarity measure (distance). The following
+        similarity measurements are supported: `"euclidean"`, `"dtw"`, and
+        `"cosine"`. The default similarity measure is `"dtw"`. For single-
+        timestep samples (e.g. embeddings), all bands are treated as one
+        feature vector. `"dtw"` is not applicable and falls back to
+        `"euclidean"`, while `"cosine"` compares the angle between the full
+        embedding vectors.
     som_radius (float): Radius of SOM neighborhood.
-    mode (str): Type of learning algorithm. The following learning
-        algorithm are available: `"online"`, `"batch"`, and `"pbatch"`.
-        The default learning algorithm is `"online"`.
+    mode (str): Type of learning algorithm. The following learning algorithm
+        are available: `"online"`, `"batch"`, and `"pbatch"`. The default
+        learning algorithm is `"online"`.
 
 Returns:
-    SITStructureData: a structure with three members: (1) the samples,
-    with one additional column indicating to which neuron each sample has
-    been mapped; (2) the Kohonen map, used for plotting and cluster
-    quality measures; (3) the labelled neurons, where each class of each
-    neuron is associated to two values: (a) the prior probability that
-    this class belongs to a cluster based on the frequency of samples of
-    this class allocated to the neuron; (b) the posterior probability
-    that this class belongs to a cluster, using data for the neighbours
-    on the SOM map.
+    SITStructureData: produces a structure with three members: (1) the samples,
+    with one additional column indicating to which neuron each sample has been
+    mapped; (2) the Kohonen map, used for plotting and cluster quality
+    measures; (3) the labelled neurons, where each class of each neuron is
+    associated to two values: (a) the prior probability that this class belongs
+    to a cluster based on the frequency of samples of this class allocated to
+    the neuron; (b) the posterior probability that this class belongs to a
+    cluster, using data for the neighbours on the SOM map.
 
 Notes:
     `sits_som_map` creates a SOM map, where high-dimensional data is mapped

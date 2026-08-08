@@ -38,10 +38,11 @@ Notes:
 
 Examples:
     from pysits import *
+    import os
     import tempfile
 
     # create a data cube from local files
-    data_dir = r_package_dir("extdata/raster/mod13q1", package="sits")
+    data_dir = os.path.join(r_package_dir("extdata/raster/mod13q1", package="sits"))
     cube = sits_cube(
         source="BDC",
         collection="MOD13Q1-6.1",

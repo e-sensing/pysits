@@ -10,4 +10,4 @@ Args:
     samples (SITSTimeSeriesModel): Time series samples.
 
 Returns:
-    SITSFrame: The predictors for the sample, with one row per sample.
+    SITSFrame: The predictors for the samples, with one row per sample.

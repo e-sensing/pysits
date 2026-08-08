@@ -6,8 +6,8 @@ Users should pass the possible values for hyper-parameters as constants or by
 calling the following random functions:
 - `uniform(min = 0, max = 1, n = 1)`: returns random numbers from a uniform
   distribution with parameters min and max.
-- `choice(..., replace = TRUE, n = 1)`: returns random objects passed to `...`
-  with replacement or not (parameter `replace`).
+- `choice(..., replace = True, n = 1)`: returns random objects passed to
+  `**kwargs` with replacement or not (parameter `replace`).
 - `randint(min, max, n = 1)`: returns random integers from a uniform
   distribution with parameters min and max.
 - `normal(mean = 0, sd = 1, n = 1)`: returns random numbers from a normal

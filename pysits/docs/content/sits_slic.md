@@ -11,24 +11,24 @@ following Achanta et al. (2012). This SLIC variant is deprecated and will be
 removed in a future release. See references for more details.
 
 Args:
-    data (SITSMatrix): time series values.
-    step (int): distance (in number of cells) between initial supercells'
+    data (pandas.DataFrame): Time series values.
+    step (int): Distance (in number of cells) between initial supercells'
         centers.
-    compactness (float): compactness value. Larger values cause clusters to
-        be more compact/even (square).
-    dist_fun (str): distance function. Currently implemented: `euclidean,
+    compactness (float): Larger values cause clusters to be more
+        compact/even (square).
+    dist_fun (str): Distance function. Currently implemented: `euclidean,
         jsd, dtw`, and any distance function from the `philentropy` package.
         See `philentropy::getDistMethods()`.
-    avg_fun (str): averaging function to calculate the values of the
-        supercells' centers. Accepts any fitting function (e.g., mean or
-        median) or one of internally implemented "mean" and "median".
-        Default: "median".
-    iter (int): number of iterations to create the output.
-    minarea (int): minimal size of a supercell (in cells).
-    verbose (bool): show the progress bar?
+    avg_fun (str): Averaging function to calculate the values of the
+        supercells' centers. Accepts any fitting R function (e.g.,
+        base::mean() or stats::median()) or one of internally implemented
+        "mean" and "median". Default: "median".
+    iter (int): Number of iterations to create the output.
+    minarea (int): Specifies the minimal size of a supercell (in cells).
+    verbose (bool): Show the progress bar?
 
 Returns:
-    R: set of segments for a single tile.
+    R: Set of segments for a single tile.
 
 Examples:
     from pysits import *

@@ -18,19 +18,21 @@ on. If more than one angle is provided, we compute their average.
 
 Args:
     cube (SITSCubeModel): Valid data cube.
-    window_size (int): An odd number representing the size of the sliding
-        window.
-    angles (list[float]): The direction angles in radians related to the
-        central pixel and its neighbor (See details). Default is 0.
+    window_size (int): An odd number representing the size of the
+        sliding window.
+    angles (float | list[float]): The direction angles in radians
+        related to the central pixel and its neighbor (see details).
+        Default is 0.
     memsize (int): Memory available for classification (in GB).
     multicores (int): Number of cores to be used for classification.
-    output_dir (str | pathlib.Path): Directory where files will be saved.
+    output_dir (str | pathlib.Path): Directory where files will be
+        saved.
     progress (bool): Show progress bar?
     **kwargs (dict): GLCM function (see details).
 
 Returns:
-    SITSCubeModel: A data cube with new bands, produced according to the
-        requested measure.
+    SITSCubeModel: A data cube with new bands, produced according to
+        the requested measure.
 
 Examples:
     from pysits import *

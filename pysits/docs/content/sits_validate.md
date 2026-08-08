@@ -13,10 +13,10 @@ This function returns the confusion matrix, and Kappa values.
 
 Args:
     samples (SITSTimeSeriesModel): Time series to be validated.
-    samples_validation (SITSTimeSeriesModel): Optional time series used for
+    samples_validation (SITSTimeSeriesModel): Optional; time series used for
         validation.
-    validation_split (float): Percent of original time series set to be
-        used for validation if `samples_validation` is `None`.
+    validation_split (float): Percent of original time series set to be used
+        for validation if `samples_validation` is `None`.
     ml_method (SITSMachineLearningMethod): Machine learning method.
     gpu_memory (int): Memory available in GPU in GB (default = 4).
     batch_size (int): Batch size for GPU classification.

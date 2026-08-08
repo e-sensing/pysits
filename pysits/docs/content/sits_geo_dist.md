@@ -12,7 +12,8 @@ Args:
     crs (str): CRS of the `samples`.
 
 Returns:
-    SITSFrame: sample-to-sample and sample-to-prediction distances.
+    SITSFrame: A table with sample-to-sample and sample-to-prediction
+    distances.
 
 Notes:
     As pointed out by Meyer and Pebesma, many classifications using machine
@@ -31,7 +32,7 @@ Examples:
 
     # read a shapefile for the state of Mato Grosso, Brazil
     mt_shp = r_package_dir("extdata/shapefiles/mato_grosso/mt.shp", package="sits")
-    # convert to a geopandas object
+    # convert to a GeoDataFrame
     mt_sf = gpd.read_file(mt_shp)
     # calculate sample-to-sample and sample-to-prediction distances
     distances = sits_geo_dist(

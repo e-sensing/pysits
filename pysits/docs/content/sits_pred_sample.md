@@ -7,7 +7,7 @@ fraction of the predictors to serve as test values for the deep learning
 algorithm.
 
 Args:
-    pred (pandas.DataFrame): X-Y predictors, one row per sample.
+    pred (pandas.DataFrame): X-Y predictors with one row per sample.
     frac (float): Fraction of the X-Y predictors to be extracted.
 
 Returns:

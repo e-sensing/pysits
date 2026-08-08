@@ -28,15 +28,15 @@ simpler and more theoretically grounded method with a single trade-off
 hyperparameter.
 
 Args:
-    samples (SITSTimeSeriesModel): Samples object. If `None` (default),
+    samples (SITSTimeSeriesModel): samples object. If `None` (default),
         returns a training function. If provided, triggers immediate
         training.
     embedding_dim (int): Dimensionality of the encoder embedding. Default:
         64.
     proj_dim (int): Dimensionality of the projector head used only during
         pre-training. Default: 128.
-    lambda (float): Value in (0, 1). Trade-off between invariance
-        (`1 - lambda`) and SIGReg (`lambda`). Default: 0.02.
+    lambda (float): Trade-off in (0, 1) between invariance (`1 - lambda`)
+        and SIGReg (`lambda`). Default: 0.02.
     num_knots (int): Number of quadrature knots for the SIGReg
         characteristic function test. Default: 17.
     num_slices (int): Number of random projection directions for SIGReg.
@@ -48,8 +48,8 @@ Args:
         `sits_tempcnn()`.
     epochs (int): Maximum number of training epochs.
     batch_size (int): Batch size for training. Default: 512.
-    validation_split (float): Value in (0, 1). Fraction of samples held out
-        for validation loss monitoring.
+    validation_split (float): Fraction in (0, 1) of samples held out for
+        validation loss monitoring.
     optimizer: A `torch` optimizer constructor (default:
         `torch::optim_adamw`).
     opt_hparams (dict): Optimizer hyperparameters.
@@ -62,7 +62,7 @@ Args:
 
 Returns:
     R: If `samples = None`, a training function. If `samples` is provided, a
-        pretrained encoder.
+        pretrained encoder closure.
 
 Examples:
     from pysits import *

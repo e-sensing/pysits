@@ -9,14 +9,13 @@ Args:
     ml_method (SITSMachineLearningMethod): Machine learning method.
     impute_fn: Imputation function to remove NA.
     multicores (int): Number of cores to process in parallel.
-    gpu_memory (int): Memory available in GPU in GB (default = 4).
+    gpu_memory (int): Memory available in GPU in GB (default = 4)
     batch_size (int): Batch size for GPU classification.
     progress (bool): Show progress bar?
-    **kwargs (dict): Additional arguments.
 
 Returns:
-    resolve_and_invoke_accuracy_class: A confusion matrix object to be used
-        for validation assessment.
+    resolve_and_invoke_accuracy_class: A confusion matrix to be used for
+        validation assessment.
 
 Notes:
     Cross-validation is a technique for assessing how the results of a
@@ -36,12 +35,13 @@ Notes:
 Examples:
     from pysits import *
     import tempfile
+    import os
 
     # A dataset containing a tibble with time series samples
     # for the Mato Grosso state in Brasil
     # create a list to store the results
     results = []
-    # accuracy assessment random forest
+    # accuracy assessment lightTAE
     acc_rfor = sits_kfold_validate(
         samples_modis_ndvi,
         folds=5,
@@ -52,7 +52,8 @@ Examples:
     # put the result in a list
     results.append(acc_rfor)
     # save to xlsx file
+    output_file = os.path.join(tempfile.gettempdir(), "accuracy_mato_grosso_dl_.xlsx")
     sits_to_xlsx(
         results,
-        file=tempfile.NamedTemporaryFile(prefix="accuracy_mato_grosso_dl_", suffix=".xlsx").name
+        file=output_file
     )

@@ -1,11 +1,11 @@
 Define a loglinear formula for classification models
 
-A function to be used as a symbolic description of some fitting models such
-as svm and random forest. This function tells the models to do a log
+A function to be used as a symbolic description of some fitting models such as
+svm and random forest. This function tells the models to do a log
 transformation of the inputs. The `predictors_index` parameter informs the
-positions of `tb` fields corresponding to formula independent variables. If
-no value is given, the default is `None`, a value indicating that all fields
-will be used as predictors.
+positions of `tb` fields corresponding to formula independent variables. If no
+value is given, the default is `None`, a value indicating that all fields will
+be used as predictors.
 
 Args:
     predictors_index (list[int]): Index of the valid columns to compose

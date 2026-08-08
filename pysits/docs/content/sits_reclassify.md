@@ -1,57 +1,53 @@
 Reclassify a classified cube
 
 Reclassify a classification cube using a set of named expressions.
-For classified cubes, expressions relabel pixels based on logical
-conditions that may combine information from the classified cube and
-an optional mask cube.
-For probability cubes and probability vector cubes, expressions are
-used to group input labels into new labels by aggregating
-probabilities (summing probabilities of the selected input labels).
+For classified label cubes, expressions relabel pixels based on logical
+conditions that may combine information from the classified cube and an
+optional mask cube.
+For probability cubes and probability vector cubes, expressions are used
+to group input labels into new labels by aggregating probabilities
+(summing probabilities of the selected input labels).
 
 Args:
-    cube (SITSCubeModel): Image cube to be reclassified (a classified
+    cube (SITSCubeModel): Image cube to be reclassified (classified label
         cube, probability cube, or probability vector cube).
     mask (SITSCubeModel): Image cube with additional information to be
-        used in expressions. Used only for classified cube
-        reclassification.
-    rules (dict): Expressions to be evaluated. For classified cubes,
-        expressions must evaluate to a boolean and may refer to `cube`
-        and `mask`. For probability cubes and probability vector
-        cubes, each named rule selects one or more input labels (for
-        example using `cube %in% c(...)`). The probabilities of the
-        selected labels are summed to produce the new label given by
-        the rule name.
-    exclude_mask_na (bool): Should cube pixels be set to `None` when
-        `None` values are found in mask pixels? (default `True`).
-        Used only for classified cubes.
-    memsize (int): Memory available for processing in GB (min = 1,
-        max = 16384).
-    multicores (int): Number of cores to be used for processing
-        (min = 1, max = 2048).
-    output_dir (str | pathlib.Path): Directory where files will be
-        saved.
+        used in expressions. Used only for classified label cubes.
+    rules (dict): Expressions to be evaluated. For classified label cubes,
+        expressions must evaluate to `bool` and may refer to `cube` and
+        `mask`. For probability cubes and probability vector cubes, each
+        named rule selects one or more input labels (for example using
+        `cube %in% c(...)`). The probabilities of the selected labels are
+        summed to produce the new label given by the rule name.
+    exclude_mask_na (bool): Should cube pixels be set to `None` when `None`
+        values are found in mask pixels? (default `True`). Used only for
+        classified label cubes.
+    memsize (int): Memory available for processing in GB (min = 1, max =
+        16384).
+    multicores (int): Number of cores to be used for processing (min = 1,
+        max = 2048).
+    output_dir (str | pathlib.Path): Directory where files will be saved.
     version (str): Version of resulting image.
     progress (bool): Show progress bar?
     **kwargs (dict): Other parameters for specific methods.
 
 Returns:
     SITSCubeModel: An object of the same type as `cube`: a classified
-        cube for label cubes, or a probability cube and probability
-        vector cube for probability cubes and probability vector
-        cubes, respectively.
+        label cube for label cubes, or a probability cube and probability
+        vector cube for probability cubes and probability vector cubes,
+        respectively.
 
 Notes:
-    For classified cubes, reclassification changes the class assigned
-    to each pixel based on user-defined rules. Users should refer to
-    `cube` and `mask` to construct logical expressions. Expressions
-    are evaluated sequentially on the original classified values;
-    later rules override earlier ones.
-    For probability cubes and probability vector cubes,
-    reclassification is intended to group classes by combining
-    probabilities. Each named rule defines a new output label. For
-    each pixel, the probabilities of the selected input labels are
-    summed and assigned to the corresponding output label. Rules are
-    evaluated on the original probability layers.
+    For classified label cubes, reclassification changes the class assigned
+    to each pixel based on user-defined rules. Users should refer to `cube`
+    and `mask` to construct logical expressions. Expressions are evaluated
+    sequentially on the original classified values; later rules override
+    earlier ones.
+    For probability cubes and probability vector cubes, reclassification is
+    intended to group classes by combining probabilities. Each named rule
+    defines a new output label. For each pixel, the probabilities of the
+    selected input labels are summed and assigned to the corresponding
+    output label. Rules are evaluated on the original probability layers.
 
 Examples:
     from pysits import *
@@ -117,7 +113,6 @@ Examples:
         },
         progress=False
     )
-
     # Open classification map
     data_dir = r_package_dir("extdata/raster/classif", package="sits")
     ro_class = sits_cube(
@@ -135,7 +130,6 @@ Examples:
         },
         progress=False
     )
-
     # Reclassify cube
     ro_mask = sits_reclassify(
         cube=ro_class,

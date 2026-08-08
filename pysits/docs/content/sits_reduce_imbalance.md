@@ -3,7 +3,7 @@ Reduce imbalance in a set of samples
 Takes a set of samples with different labels and returns a new set. Deals
 with class imbalance using the synthetic minority oversampling technique
 (SMOTE) for oversampling. Undersampling is done using the SOM methods
-available in the `sits` package.
+available in the sits package.
 
 Args:
     samples (SITSTimeSeriesModel): Sample set to rebalance.
@@ -15,7 +15,7 @@ Args:
     multicores (int): Number of cores to process the data (default 2).
 
 Returns:
-    SITSTimeSeriesModel: A set of samples with reduced imbalance.
+    SITSTimeSeriesModel: samples with reduced imbalance.
 
 Notes:
     Many training samples for Earth observation data analysis are

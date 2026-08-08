@@ -3,9 +3,9 @@ View data cubes and samples in leaflet
 Uses leaflet to visualize time series, raster cube and classified images.
 
 Args:
-    x (SITSTimeSeriesModel | SITSCubeModel | pandas.DataFrame): time
-        series samples, SOM map, raster cube, probability cube, vector
-        cube, or classified cube.
+    x (SITSTimeSeriesModel | pandas.DataFrame | SITSCubeModel): time
+        series, SOM map, raster cube, probability cube, vector cube, or
+        classified cube to be visualized.
     legend (dict): associates labels to colors.
     palette (str): color palette from RColorBrewer.
     radius (float): radius of circle markers.
@@ -15,27 +15,24 @@ Args:
     red (str): band for red color.
     green (str): band for green color.
     blue (str): band for blue color.
-    tiles (list[str]): tiles to be plotted (in case of a multi-tile
-        cube).
+    tiles (list[str]): tiles to be plotted (in case of a multi-tile cube).
     dates (list[str]): dates to be plotted.
     rev (bool): revert color palette?
-    opacity (float): opacity of segment fill or class cube.
-    max_cog_size (int): maximum size of COG overviews (lines or
-        columns).
+    opacity (float): opacity of segment fill or classified cube.
+    max_cog_size (int): maximum size of COG overviews (lines or columns).
     first_quantile (float): first quantile for stretching images.
     last_quantile (float): last quantile for stretching images.
     leaflet_megabytes (float): maximum size for leaflet (in MB).
     version (str): version name (to compare different classifications).
-    labels (list[str]): labels to be plotted (in case of probs and
+    labels (list[str]): labels to be plotted (in case of probability and
         variance cubes).
     seg_color (str): color for segment boundaries.
     line_width (float): line width for segments (in pixels).
     **kwargs (dict): further specifications for sits_view.
 
 Returns:
-    None: a leaflet object containing either samples or data cubes
-        embedded in a global map that can be visualized directly in a
-        viewer.
+    None: a leaflet object containing either samples or data cubes embedded
+        in a global map that can be visualized directly in a viewer.
 
 Notes:
     To show a false color image, use "band" to chose one of the bands, "tiles"

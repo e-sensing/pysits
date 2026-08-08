@@ -8,22 +8,18 @@ coverage constraint, and each is resampled back to the original length. No
 labels are required.
 Both views are passed through a shared encoder and projector. The VICReg loss
 combines three objectives:
-1. Invariance: MSE between the projected representations of the two views 
-
-ce loss combines three objectives:
-1. Invariance: MSE between the projected representations of the two views 
+1. Invariance: MSE between the projected representations of the two views \u2014
    pulls paired embeddings together.
 2. Variance: a hinge loss that keeps the standard deviation of each embedding
-   feature above a threshold of 1 across the batch 
-   prevents informational collapse.
+   feature above a threshold of 1 across the batch \u2014 prevents informational
+   collapse.
 3. Covariance: penalizes off-diagonal entries of the embedding covariance
-   matrix 
-   decorrelates features.
+   matrix \u2014 decorrelates features.
 The function can be used in two ways:
 - If `samples` is provided, it trains immediately and returns an encoder-ready
-  model object (see Returns).
-- If `samples` is `None`, it returns a training function that can be passed to
-  `sits_pre_train` or called later.
+  model object (see Value).
+- If `samples = None`, it returns a training function with signature
+  `function(samples)` that can be passed to `sits_pre_train` or called later.
 
 The augmentation strategy creates two views of each sample using the resampling
 method of Saget et al. (2025). The original time series (length `T`) is
@@ -36,30 +32,28 @@ while differing in fine-grained detail. Because the subsampling is random,
 views differ at every epoch.
 
 Args:
-    samples (SITSTimeSeriesModel): Samples object. If `None` (default),
-        returns a training function. If provided, triggers immediate
-        training. Base data samples are not supported.
+    samples (SITSTimeSeriesModel): A set of sample time series. If `None`
+        (default), returns a training function. If provided, triggers immediate
+        training. Base data samples (e.g., `sits_base`) are not supported.
     embedding_dim (int): Dimensionality of the encoder embedding (exported
         features). Default: 64.
     proj_dim (int): Dimensionality of the projector head used only during
         pre-training. Default: 128.
-    sim_coeff (float): Weight of the invariance (MSE) term in the VICReg
-        loss. Default: 25.0.
-    std_coeff (float): Weight of the variance (hinge) term in the VICReg
-        loss. Default: 25.0.
+    sim_coeff (float): Weight of the invariance (MSE) term in the VICReg loss.
+        Default: 25.0.
+    std_coeff (float): Weight of the variance (hinge) term in the VICReg loss.
+        Default: 25.0.
     cov_coeff (float): Weight of the covariance (off-diagonal) term in the
         VICReg loss. Default: 1.0.
-    encoder_model (SITSMachineLearningMethod): Deep learning method that
-        takes time series as input and produces latent representations that
-        are used to compute the loss function (suggested options:
-        `sits_tempcnn()`, `sits_lighttae()`, `sits_resnet()`). Default:
-        `sits_tempcnn()`.
+    encoder_model (SITSMachineLearningMethod): Deep learning method that takes
+        time series as input and produces latent representations that are used
+        to compute the loss function (suggested options: `sits_tempcnn()`,
+        `sits_lighttae()`, `sits_resnet()`). Default: `sits_tempcnn()`.
     epochs (int): Maximum number of training epochs.
     batch_size (int): Batch size for training. Default: 128.
-    validation_split (float): Fraction of samples held out for validation
-        loss monitoring, in (0, 1).
-    optimizer: A `torch` optimizer constructor (default:
-        `torch::optim_adamw`).
+    validation_split (float): Fraction in (0, 1) of samples held out for
+        validation loss monitoring.
+    optimizer: A `torch` optimizer constructor (default: `torch::optim_adamw`).
     opt_hparams (dict): Optimizer hyperparameters. Common entries: `lr`,
         `eps`, `weight_decay`.
     lr_decay_epochs (int): Step size (in epochs) for LR decay.
@@ -71,9 +65,10 @@ Args:
     seed (int): Random seed for reproducibility.
 
 Returns:
-    R: If `samples` is `None`, a training function that trains a VICReg model
-    and returns a pretrained encoder. If `samples` is provided, the result of
-    applying the training function to `samples` directly.
+    R: If `samples = None`, a training function with signature
+    `function(samples)` that trains a VICReg model and returns a pretrained
+    encoder. If `samples` is provided, the result of applying the training
+    function to `samples` directly.
 
 Examples:
     from pysits import *

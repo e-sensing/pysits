@@ -6,14 +6,14 @@ returns them as a `geopandas.GeoDataFrame`.
 Args:
     roi (dict | str | pathlib.Path | geopandas.GeoDataFrame): Region of
         interest (see notes below).
-    crs (str): Coordinate Reference System (CRS) of the roi. (see details
+    crs (str): Coordinate Reference System (CRS) of the roi (see details
         below).
     grid_system (str): Grid system to be used for the output images.
         (Default is "MGRS")
 
 Returns:
-    SITSFrameSF: A `geopandas.GeoDataFrame` with the intersect tiles with
-        three columns tile_id, epsg, and the percentage of coverage area.
+    SITSFrameSF: Intersected tiles with three columns tile_id, epsg, and
+        the percentage of coverage area.
 
 Notes:
     To define a `roi` use one of:
@@ -23,8 +23,8 @@ Notes:
       WGS84;
     - A named `dict` (`"xmin"`, `"xmax"`, `"ymin"`, `"ymax"`) with XY
       coordinates.
-    Defining a region of interest using XY values not in WGS84
-    requires the `crs` parameter to be specified.
+    Defining a region of interest using XY values not in WGS84 requires the
+    `crs` parameter to be specified.
     The `grid_system` parameter allows the user to reproject the files to a
     grid system which is different from that used in the ARD image collection
     of the could provider. Currently, the package supports the use of MGRS grid

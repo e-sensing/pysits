@@ -8,7 +8,7 @@ additional vector file in "geopackage" format.
 Args:
     cube (SITSCubeModel): Regular data cube.
     seg_fn: Function to apply the segmentation.
-    roi (dict | str | pathlib.Path | geopandas.GeoDataFrame): Region of
+    roi (dict | geopandas.GeoDataFrame | str | pathlib.Path): Region of
         interest (see below).
     impute_fn: Imputation function to remove NA values.
     start_date (str): Start date for the segmentation.
@@ -18,7 +18,6 @@ Args:
     output_dir (str | pathlib.Path): Directory for output file.
     version (str): Version of the output (for multiple segmentations).
     progress (bool): Show progress bar?
-    **kwargs (dict): Additional arguments.
 
 Returns:
     SITSCubeModel: The segmentation as a vector data cube.
@@ -47,9 +46,9 @@ Notes:
     Clustering (SLIC) algorithm as adapted by Nowosad and Stepinski for
     multispectral and multitemporal imagery, remains available but is now
     deprecated and will be removed in a future release. SLIC clusters pixels
-    using spectral similarity and spatial–temporal proximity to produce nearly
-    uniform superpixels, but its iterative nature makes it less efficient for
-    large-scale Earth observation workflows.
+    using spectral similarity and spatial\\uniform superpixels, but its
+    iterative nature makes it less efficient for large-scale Earth observation
+    workflows.
     The result of `sits_segment` is a data cube with an additional vector file
     in the `geopackage` format. The location of the vector file is included in
     the data cube in a new column, called `vector_info`.

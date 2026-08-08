@@ -1,14 +1,14 @@
 Export classification models
 
 Given a trained machine learning or deep learning model, exports the
-model as an object for further exploration outside the `sits` package.
+model as an object for further exploration outside the package.
 
 Args:
     ml_model (SITSMachineLearningMethod): A trained machine learning
-        model.
+            model.
 
 Returns:
-    None: The model in the original format of the machine learning or
+    None: the model in the original format of the machine learning or
         deep learning package.
 
 Examples:
