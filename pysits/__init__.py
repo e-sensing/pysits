@@ -20,7 +20,6 @@
 from .conversions.dsl.mask import MaskValue
 from .conversions.dsl.tuning import hparam
 from .settings import __version__
-from .sits.classification import sits_classify, sits_label_classification, sits_smooth
 from .sits.colors import (
     sits_colors,
     sits_colors_reset,
@@ -62,6 +61,9 @@ from .sits.data import (
     sits_apply,
     sits_bands,
     sits_bbox,
+    sits_classify,
+    sits_encode,
+    sits_label_classification,
     sits_labels,
     sits_labels_summary,
     sits_list_collections,
@@ -69,10 +71,17 @@ from .sits.data import (
     sits_mixture_model,
     sits_reduce,
     sits_select,
+    sits_smooth,
     sits_timeline,
 )
 from .sits.data import sits_summary as summary
-from .sits.exporters import sits_as_geopandas, sits_as_xarray, sits_to_csv, sits_to_xlsx
+from .sits.exporters import (
+    sits_as_geopandas,
+    sits_as_xarray,
+    sits_timeseries_to_csv,
+    sits_to_csv,
+    sits_to_xlsx,
+)
 from .sits.impute import (
     impute_linear,
     impute_mean,
@@ -87,6 +96,7 @@ from .sits.ml import (
     sits_kfold_validate,
     sits_lightgbm,
     sits_lighttae,
+    sits_lstm_fcn,
     sits_mlp,
     sits_model_export,
     sits_pre_train,
@@ -107,7 +117,6 @@ from .sits.ts import (
     sits_cluster_clean,
     sits_cluster_dendro,
     sits_cluster_frequency,
-    sits_encode,
     sits_geo_dist,
     sits_get_class,
     sits_get_data,
@@ -118,6 +127,7 @@ from .sits.ts import (
     sits_pred_references,
     sits_pred_sample,
     sits_predictors,
+    sits_random_sampling,
     sits_reduce_imbalance,
     sits_sample,
     sits_sampling_design,
@@ -144,6 +154,14 @@ __all__ = (
     "sits_classify",
     "sits_smooth",
     "sits_label_classification",
+    # Embeddings
+    "sits_pre_train",
+    "sits_encode",
+    "sits_ssl_mae",
+    "sits_ssl_lejepa",
+    "sits_ssl_vicreg",
+    "sits_barlow_twins",
+    "sits_contrastive_learning",
     # Cube
     "sits_cube",
     "sits_clean",
@@ -170,7 +188,7 @@ __all__ = (
     "sits_config_user_file",
     "sits_config_value",
     "sits_parallel",
-    # Data management
+    # Data
     "sits_bands",
     "sits_timeline",
     "sits_labels",
@@ -194,6 +212,7 @@ __all__ = (
     "sits_resnet",
     "sits_tempcnn",
     "sits_lighttae",
+    "sits_lstm_fcn",
     "sits_svm",
     "sits_xgboost",
     "sits_lightgbm",
@@ -202,12 +221,6 @@ __all__ = (
     "sits_model_export",
     "sits_formula_linear",
     "sits_formula_logref",
-    "sits_ssl_mae",
-    "sits_ssl_lejepa",
-    "sits_ssl_vicreg",
-    "sits_barlow_twins",
-    "sits_contrastive_learning",
-    "sits_pre_train",
     # Impute
     "impute_linear",
     "impute_mean",
@@ -234,7 +247,7 @@ __all__ = (
     "sits_reduce_imbalance",
     "sits_sampling_design",
     "sits_stratified_sampling",
-    "sits_encode",
+    "sits_random_sampling",
     # Tiles
     "sits_tiles_to_roi",
     "sits_roi_to_tiles",
@@ -249,6 +262,7 @@ __all__ = (
     "sits_as_xarray",
     "sits_as_geopandas",
     "sits_to_xlsx",
+    "sits_timeseries_to_csv",
     # Tuning
     "sits_tuning_hparams",
     "sits_tuning",

@@ -32,12 +32,6 @@ from pysits.models.data.ts import SITSTimeSeriesModel, SITSTimeSeriesPatternsMod
 #
 # High-level operation
 #
-@function_call(r_pkg_sits.sits_encode, SITSTimeSeriesModel)
-@attach_doc("sits_encode")
-def sits_encode(*args, **kwargs) -> SITSTimeSeriesModel:
-    """Encode time series or data cubes."""
-
-
 @function_call(r_pkg_sits.sits_get_data, SITSTimeSeriesModel)
 @attach_doc("sits_get_data")
 def sits_get_data(*args, **kwargs) -> SITSTimeSeriesModel:
@@ -64,6 +58,12 @@ def sits_stats(*args, **kwargs) -> SITStructureData:
     ToDo:
         - Enhance result type to a Dict-like object.
     """
+
+
+@function_call(r_pkg_sits.sits_random_sampling, SITSFrameSF)
+@attach_doc("sits_random_sampling")
+def sits_random_sampling(*args, **kwargs) -> SITSFrameSF:
+    """Sampling random points in a data cube."""
 
 
 #

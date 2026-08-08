@@ -17,7 +17,7 @@
 
 """Exporters module."""
 
-from .files import sits_to_csv, sits_to_xlsx
+from .files import sits_timeseries_to_csv, sits_to_csv, sits_to_xlsx
 from .sf import sits_as_geopandas
 from .xarray import sits_as_xarray
 
@@ -26,4 +26,5 @@ __all__ = (
     "sits_as_xarray",
     "sits_to_csv",
     "sits_to_xlsx",
+    "sits_timeseries_to_csv",
 )

@@ -15,7 +15,7 @@
 # along with this program; if not, see <https://www.gnu.org/licenses/>.
 #
 
-"""Data management operations."""
+"""Data operations."""
 
 from datetime import date
 
@@ -28,7 +28,9 @@ from pysits.conversions.common import convert_to_python
 from pysits.conversions.decorators import function_call, rpy2_fix_type
 from pysits.docs import attach_doc
 from pysits.models.data.base import SITSData
+from pysits.models.data.cube import SITSCubeModel
 from pysits.models.data.frame import SITSFrame
+from pysits.models.data.ts import SITSTimeSeriesModel
 from pysits.models.resolver import (
     resolve_and_invoke_accuracy_class,
     resolve_and_invoke_content_class,
@@ -109,6 +111,33 @@ def sits_accuracy(*args, **kwargs) -> SITSData:
 @attach_doc("sits_accuracy_summary")
 def sits_accuracy_summary(*args, **kwargs) -> SITSData:
     """Print accuracy summary."""
+
+
+@function_call(r_pkg_sits.sits_encode, resolve_and_invoke_content_class)
+@attach_doc("sits_encode")
+def sits_encode(*args, **kwargs) -> SITSTimeSeriesModel | SITSCubeModel:
+    """Encode time series or data cubes."""
+
+
+#
+# Classification
+#
+@function_call(r_pkg_sits.sits_classify, resolve_and_invoke_content_class)
+@attach_doc("sits_classify")
+def sits_classify(*args, **kwargs) -> SITSCubeModel | SITSTimeSeriesModel:
+    """Classify data."""
+
+
+@function_call(r_pkg_sits.sits_smooth, SITSCubeModel)
+@attach_doc("sits_smooth")
+def sits_smooth(*args, **kwargs) -> SITSCubeModel:
+    """Smooth classification data."""
+
+
+@function_call(r_pkg_sits.sits_label_classification, SITSCubeModel)
+@attach_doc("sits_label_classification")
+def sits_label_classification(*args, **kwargs) -> SITSCubeModel:
+    """Label probabilities data."""
 
 
 #
