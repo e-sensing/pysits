@@ -72,7 +72,10 @@ def encoder():
     """Encoder pre-trained with the MODIS NDVI samples."""
     return sits_pre_train(
         samples=samples_modis_ndvi,
-        rl_method=sits_ssl_vicreg(embedding_dim=EMBEDDING_DIM, epochs=1),
+        rl_method=sits_ssl_vicreg(
+            embedding_dim=EMBEDDING_DIM,
+            epochs=1,
+        ),
     )
 
 
