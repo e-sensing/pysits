@@ -35,7 +35,6 @@ from pysits.sits.data import (
     sits_select,
     sits_timeline,
 )
-from pysits.sits.utils import r_package_dir
 
 
 def test_cube_select():
@@ -167,21 +166,13 @@ def test_sits_apply():
     assert all(band in sits_bands(points_nonnorm) for band in ["NDVI", "NDVI_nonnorm"])
 
 
-def test_cube_apply(tmp_path: Path):
+def test_cube_apply(tmp_path: Path, local_cube):
     """Test cube apply."""
-    data_dir = r_package_dir(
-        "extdata/raster/mod13q1",
-        package="sits",
-    )
-    cube = sits_cube(
-        source="BDC",
-        collection="MOD13Q1-6.1",
-        data_dir=data_dir,
-    )
-
-    # Generate a texture images with variance in NDVI images
     cube_texture = sits_apply(
-        data=cube, NDVITEXTURE="w_median(NDVI)", window_size=5, output_dir=tmp_path
+        data=local_cube,
+        NDVITEXTURE="w_median(NDVI)",
+        window_size=5,
+        output_dir=tmp_path,
     )
 
     assert all(band in sits_bands(cube_texture) for band in ["NDVI", "NDVITEXTURE"])
@@ -196,21 +187,10 @@ def test_sits_reduce():
     assert len(sits_timeline(points_reduced)) == 1  # noqa: PLR2004 - one date
 
 
-def test_cube_reduce(tmp_path: Path):
+def test_cube_reduce(tmp_path: Path, local_cube):
     """Test reduce in cube."""
-    data_dir = r_package_dir(
-        "extdata/raster/mod13q1",
-        package="sits",
-    )
-    cube = sits_cube(
-        source="BDC",
-        collection="MOD13Q1-6.1",
-        data_dir=data_dir,
-    )
-
-    # Reduce the cube
     cube_reduced = sits_reduce(
-        cube,
+        local_cube,
         NDVIMEAN="t_mean(NDVI)",
         output_dir=tmp_path,
         progress=False,

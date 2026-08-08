@@ -63,16 +63,6 @@ COG_DATES = ("2020-01-01", "2020-01-16")
 #
 # Auxiliary functions
 #
-def _mod13q1_cube():
-    """Create a cube from the local MOD13Q1 files."""
-    return sits_cube(
-        source="BDC",
-        collection="MOD13Q1-6.1",
-        data_dir=r_package_dir("extdata/raster/mod13q1", package="sits"),
-        progress=False,
-    )
-
-
 def _class_cube():
     """Create a cube from the local classification files."""
     return sits_cube(
@@ -194,9 +184,9 @@ def cog_cube(cog_cube_dir):
 #
 # Data cubes
 #
-def test_xarray_cube_dimensions():
+def test_xarray_cube_dimensions(local_cube):
     """Test cube conversion dimensions and coordinates."""
-    data = sits_as_xarray(_mod13q1_cube())
+    data = sits_as_xarray(local_cube)
 
     assert isinstance(data, xr.DataArray)
     assert data.dims == ("band", "time", "y", "x")
@@ -214,12 +204,11 @@ def test_xarray_cube_dimensions():
     assert "spatial_ref" in data.coords
 
 
-def test_xarray_cube_values():
+def test_xarray_cube_values(local_cube):
     """Test cube conversion values, against the values in the files."""
-    cube = _mod13q1_cube()
-    data = sits_as_xarray(cube)
+    data = sits_as_xarray(local_cube)
 
-    with rasterio.open(_first_cube_file(cube)) as dataset:
+    with rasterio.open(_first_cube_file(local_cube)) as dataset:
         expected = dataset.read(1).astype("float32")
         expected_transform = dataset.transform
 
@@ -241,12 +230,11 @@ def test_xarray_cube_values():
     assert data.rio.transform().f == pytest.approx(expected_transform.f)
 
 
-def test_xarray_cube_without_scale():
+def test_xarray_cube_without_scale(local_cube):
     """Test cube conversion without scaling."""
-    cube = _mod13q1_cube()
-    data = sits_as_xarray(cube, scale=False)
+    data = sits_as_xarray(local_cube, scale=False)
 
-    with rasterio.open(_first_cube_file(cube)) as dataset:
+    with rasterio.open(_first_cube_file(local_cube)) as dataset:
         expected = dataset.read(1)
 
     # Test with NDVI
@@ -257,15 +245,14 @@ def test_xarray_cube_without_scale():
     assert np.array_equal(values.values, expected)
 
 
-def test_xarray_cube_bands():
+def test_xarray_cube_bands(local_cube):
     """Test cube conversion with band selection."""
-    cube = _mod13q1_cube()
-    data = sits_as_xarray(cube, bands=["NDVI"])
+    data = sits_as_xarray(local_cube, bands=["NDVI"])
 
     assert list(data["band"].values) == ["NDVI"]
 
     with pytest.raises(ValueError, match="Bands not available"):
-        sits_as_xarray(cube, bands=["EVI"])
+        sits_as_xarray(local_cube, bands=["EVI"])
 
 
 #
@@ -332,8 +319,8 @@ def test_xarray_cube_chunks(cog_cube):
 #
 def test_xarray_class_cube():
     """Test class cube conversion."""
-    cube = _class_cube()
-    data = sits_as_xarray(cube)
+    local_cube = _class_cube()
+    data = sits_as_xarray(local_cube)
 
     # Test metadata
     assert isinstance(data, xr.DataArray)
@@ -349,7 +336,7 @@ def test_xarray_class_cube():
     }
 
     # Load data
-    with rasterio.open(_first_cube_file(cube)) as dataset:
+    with rasterio.open(_first_cube_file(local_cube)) as dataset:
         expected = dataset.read(1)
 
     # Values must be the same

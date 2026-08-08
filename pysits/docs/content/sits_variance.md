@@ -1,16 +1,16 @@
 Calculate the variance of a probability cube
 
-Takes a probability data cube (either a raster or a segmented
-vector cube) and estimates the variance of the logit of the
-probability. For a standard raster cube, this is a local sliding-window
-variance. For a vector/segmented cube, it calculates the variance of all
-pixels inside each segment. This supports the choice of parameters for
-Bayesian smoothing.
+Takes a probability cube (either a raster or a segmented probability
+cube) and estimates the variance of the logit of the probability. For a
+standard raster cube, this is a local sliding-window variance. For a
+vector/segmented cube, it calculates the variance of all pixels inside
+each segment. This supports the choice of parameters for Bayesian
+smoothing.
 
 Args:
     cube (SITSCubeModel): Probability data cube.
     window_size (int): Size of the neighborhood (odd integer). Not used
-        for a segmented vector cube.
+        for segmented probability cubes.
     neigh_fraction (float): Fraction of neighbors with highest
         probability for Bayesian inference (from 0.0 to 1.0).
     memsize (int): Maximum overall memory (in GB) to run the smoothing

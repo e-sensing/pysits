@@ -1,9 +1,9 @@
 Segment an image using SNIC
 
-Apply a segmentation on a data cube based on the `snic` package. This is
-an adaptation and extension to remote sensing data of the SNIC
-superpixels algorithm proposed by Achanta and S\u00fcsstrunk (2017). See
-reference for more details.
+Apply a segmentation on a data cube based on the `snic` package. This is an
+adaptation and extension to remote sensing data of the SNIC superpixels
+algorithm proposed by Achanta and S\u00fcsstrunk (2017). See reference for more
+details.
 
 Args:
     data (pandas.DataFrame): Time series.
@@ -11,13 +11,13 @@ Args:
         "diamond", "hexagonal", "random").
     spacing (int): Distance (in number of cells) between initial
         supercells' centers.
-    compactness (float): A compactness value. Larger values cause
-        clusters to be more compact/even (square).
-    padding (int): Distance (in pixels) from the image borders within
-        which no seeds are placed.
+    compactness (float): A compactness value. Larger values cause clusters
+        to be more compact/even (square).
+    padding (int): Distance (in pixels) from the image borders within which
+        no seeds are placed.
 
 Returns:
-    R: The segmentation function to be applied to a data cube.
+    R: Segmentation function to be used with `sits_segment`.
 
 Examples:
     from pysits import *

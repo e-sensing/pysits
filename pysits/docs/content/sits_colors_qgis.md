@@ -12,6 +12,8 @@ Returns:
 
 Examples:
     from pysits import *
+    import os
+    import tempfile
 
     data_dir = r_package_dir("extdata/raster/classif", package="sits")
     ro_class = sits_cube(
@@ -30,5 +32,5 @@ Examples:
             "4": "Forest"
         }
     )
-    qml_file = "/tmp/qgis.qml"
+    qml_file = os.path.join(tempfile.gettempdir(), "qgis.qml")
     sits_colors_qgis(ro_class, qml_file)

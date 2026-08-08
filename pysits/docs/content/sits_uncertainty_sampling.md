@@ -24,17 +24,19 @@ Args:
         Default is Inf (no upper limit).
     sampling_window (int): Window size for collecting points (in pixels).
         The minimum window size is 10.
-    multicores (int): Number of workers for parallel processing (min = 1,
-        max = 2048).
+    multicores (int): Number of workers for parallel processing
+        (min = 1, max = 2048).
     memsize (int): Maximum overall memory (in GB) to run the function.
     progress (bool): Whether to show progress bars.
+    **kwargs (dict): Additional arguments.
 
 Returns:
-    SITSFrame: Longitude and latitude in WGS84 with locations which have
+    SITSFrame: Locations with longitude and latitude in WGS84 which have
         high uncertainty and meet the minimum distance criteria.
 
 Examples:
     from pysits import *
+    import tempfile
 
     # create a data cube
     data_dir = r_package_dir("extdata/raster/mod13q1", package="sits")
@@ -47,12 +49,12 @@ Examples:
     rfor_model = sits_train(samples_modis_ndvi, ml_method=sits_rfor())
     # classify the cube
     probs_cube = sits_classify(
-        data=cube, ml_model=rfor_model, output_dir=tempdir()
+        data=cube, ml_model=rfor_model, output_dir=tempfile.mkdtemp()
     )
     # create an uncertainty cube
     uncert_cube = sits_uncertainty(probs_cube,
         type="entropy",
-        output_dir=tempdir()
+        output_dir=tempfile.mkdtemp()
     )
     # obtain a new set of samples for active learning
     # the samples are located in uncertain places

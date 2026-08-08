@@ -35,3 +35,9 @@ def sits_to_csv(*args, **kwargs) -> SITSFrame:
 def sits_to_xlsx(*args, **kwargs) -> None:
     """Save accuracy assessments as Excel files."""
     ...
+
+
+@function_call(r_pkg_sits.sits_timeseries_to_csv, lambda x: None)
+@attach_doc("sits_timeseries_to_csv")
+def sits_timeseries_to_csv(*args, **kwargs) -> None:
+    """Export a full sits timeseries to CSV format."""

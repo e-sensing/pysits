@@ -1,7 +1,7 @@
 Retrieval of sample locations by strata for a classified cube
 
 This function can be used in two ways: (a) When the parameter
-"sampling_design" is available, it takes the cube with different labels
+"sampling_design" is available, its takes the cube with different labels
 and a column for the sampling design table with a number of samples per
 class and allocates a set of locations for each class.
 (b) When the parameter "sampling_design" is not provided, the method
@@ -12,20 +12,21 @@ the same value is used to retrieve the samples for all classes.
 
 Args:
     cube (SITSCubeModel): Classified cube.
-    sampling_design (pandas.DataFrame): Result of `sits_sampling_design`.
+    sampling_design (pandas.DataFrame): Result of sits_sampling_design.
     alloc (str): Allocation method chosen.
     samples_per_class (int | dict): Number of samples per class (in case
-        `sampling_design` is `None`). Either a single integer (applied to
-        all classes) or a `dict` keyed by class label. When keyed, keys
-        must be valid class labels of the cube but do not need to cover
-        all classes — only the listed classes will be sampled.
-    overhead (float): Additional percentage to account for border points.
+        sampling_design is None). Either a single integer (applied to
+        all classes) or a `dict` keyed by class label. When a `dict`,
+        keys must be valid class labels of the cube but do not need to
+        cover all classes \u2014 only the listed classes will be sampled.
+    overhead (float): Additional percentage to account for border
+        points.
     multicores (int): Number of cores that will be used to sample the
         images in parallel.
     memsize (int): Memory available for sampling.
     shp_file (str | pathlib.Path): Name of shapefile to be saved
         (optional).
-    progress (bool): Show progress bar? Default is `True`.
+    progress (bool): Show progress bar? Default is True.
 
 Returns:
     SITSFrameSF: Point object with required samples and label.

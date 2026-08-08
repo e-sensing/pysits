@@ -12,7 +12,7 @@ which is also described in the reference paper.
 Args:
     data (SITSTimeSeriesModel): Time series.
     freq (int): Interval in days for estimates.
-    formula: Formula to be applied in the estimate.
+    formula (str): Formula to be applied in the estimate.
     **kwargs (dict): Any additional parameters.
 
 Returns:

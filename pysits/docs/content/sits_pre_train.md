@@ -30,14 +30,14 @@ Args:
     rl_method (SITSRepresentationLearningMethod): A pre-training
         representation learning method used to build an encoder that
         generates embeddings (e.g., `sits_ssl_lejepa()` or
-        `sits_contrastive_learning()`). It must be a function that
-        takes `samples` and returns an encoder.
+        `sits_contrastive_learning()`). It must be a function that takes
+        `samples` and returns an encoder.
 
 Returns:
     SITSRepresentationLearningMethod: A pre-trained deep learning
-    encoder and the metadata required for subsequent encoding (e.g.,
-    band order, feature naming, and normalization statistics, when
-    applicable).
+    encoder containing the metadata required for subsequent encoding
+    (e.g., band order, feature naming, and normalization statistics,
+    when applicable).
 
 Examples:
     from pysits import *

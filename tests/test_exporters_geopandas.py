@@ -15,33 +15,19 @@
 # along with this program; if not, see <https://www.gnu.org/licenses/>.
 #
 
-"""Unit tests for geopandas operations."""
+"""Unit tests for geopandas export operations."""
 
 from geopandas import GeoDataFrame as GeoPandasDataFrame
 
 from pysits.models.data.frame import SITSFrameSF
 from pysits.models.data.ts import SITSTimeSeriesSFModel
 from pysits.sits.context import samples_l8_rondonia_2bands
-from pysits.sits.cube import sits_cube
 from pysits.sits.exporters import sits_as_geopandas
-from pysits.sits.utils import r_package_dir
 
 
-def test_cube_geopandas_export():
+def test_cube_geopandas_export(local_cube):
     """Test cube as geopandas."""
-    # Load cube
-    data_dir = r_package_dir(
-        "extdata/raster/mod13q1",
-        package="sits",
-    )
-    cube = sits_cube(
-        source="BDC",
-        collection="MOD13Q1-6.1",
-        data_dir=data_dir,
-    )
-
-    # Export data
-    cube_gdf = sits_as_geopandas(cube)
+    cube_gdf = sits_as_geopandas(local_cube)
 
     # Check properties
     assert cube_gdf.crs is not None

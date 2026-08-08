@@ -5,18 +5,18 @@ projection coordinates in the case of cubes)
 
 Args:
     data (SITSTimeSeriesModel | SITSCubeModel): samples or data cube.
-    crs (str): CRS of the time series.
-    as_crs (str): CRS to project the resulting bounding box.
+    crs (CRS): CRS of the time series.
+    as_crs (CRS): CRS to project the resulting bounding box.
     **kwargs (dict): parameters for specific types.
 
 Returns:
     SITSFrame: the bounding box.
 
 Notes:
-    Time series in `sits` are associated with lat/long values in WGS84,
-    while each data cube is associated to a cartographic projection. To
-    obtain the bounding box of a data cube in a different projection than
-    the original, use the `as_crs` parameter.
+    Time series are associated with lat/long values in WGS84, while
+    each data cube is associated to a cartographic projection. To
+    obtain the bounding box of a data cube in a different projection
+    than the original, use the `as_crs` parameter.
 
 Examples:
     from pysits import *

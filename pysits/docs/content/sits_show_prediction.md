@@ -4,7 +4,7 @@ This function takes a classified time series produced by a machine
 learning method and displays the result.
 
 Args:
-    class (SITSTimeSeriesModel): A time series that has been classified.
+    class (SITSTimeSeriesModel): A classified time series.
 
 Returns:
     SITSFrame: Table with the columns "from", "to", "class".

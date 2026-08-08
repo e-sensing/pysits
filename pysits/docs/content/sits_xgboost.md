@@ -15,22 +15,22 @@ Args:
         partition of a leaf. Default: 1.
     max_depth (int): Maximum depth of a tree. Increasing this value makes
         the model more complex and more likely to overfit. Default: 5.
-    min_child_weight (float): If the leaf node has a minimum sum of
-        instance weights lower than min_child_weight, tree splitting stops.
-        The larger min_child_weight is, the more conservative the algorithm
-        is. Default: 1.
+    min_child_weight (float): If the leaf node has a minimum sum of instance
+        weights lower than min_child_weight, tree splitting stops. The
+        larger min_child_weight is, the more conservative the algorithm is.
+        Default: 1.
     max_delta_step (float): Maximum delta step we allow each leaf output to
         be. If the value is set to 0, there is no constraint. If it is set
         to a positive value, it can help making the update step more
         conservative. Default: 1.
-    subsample (float): Percentage of samples supplied to a tree. Default:
-        0.8.
+    subsample (float): Percentage of samples supplied to a tree.
+        Default: 0.8.
     nfold (int): Number of the subsamples for the cross-validation.
     nrounds (int): Number of rounds to iterate the cross-validation
         (default: 100)
     nthread (int): Number of threads (default = 6)
-    early_stopping_rounds (int): Training with a validation set will stop
-        if the performance doesn't improve for k rounds.
+    early_stopping_rounds (int): Training with a validation set will stop if
+        the performance doesn't improve for k rounds.
     verbose (bool): Print information on statistics during the process
 
 Returns:

@@ -7,15 +7,13 @@ providing five allocation strategies.
 Args:
     cube (SITSCubeModel): Classified data cube.
     expected_ua (dict): Expected values of user's accuracy.
-    alloc_options (list[float]): Fixed sample allocation for rare
-        classes.
+    alloc_options (list[float]): Fixed sample allocation for rare classes.
     std_err (float): Standard error we would like to achieve.
     rare_class_prop (float): Proportional area limit for rare classes.
 
 Returns:
-    SITSMatrix: options to decide allocation of sample size to each
-        class. This uses the same format as Table 5 of
-        Olofsson et al.(2014).
+    SITSMatrix: Options to decide allocation of sample size to each class.
+        This uses the same format as Table 5 of Olofsson et al.(2014).
 
 Examples:
     from pysits import *

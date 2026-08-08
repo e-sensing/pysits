@@ -14,7 +14,7 @@ After pre-training, the projection head is discarded and only the encoder is
 kept for downstream use via `sits_encode`.
 The function can be used in two ways:
 - If `samples` is provided, it trains immediately and returns an encoder-ready
-  model object (see Value).
+  model object (see Returns).
 - If `samples = None`, it returns a training function with signature
   `function(samples)` that can be passed to `sits_pre_train` or called later.
 
@@ -33,9 +33,10 @@ et al. (2020). Larger batches also help, since they expose more positives and
 negatives per anchor and yield a stronger contrastive signal.
 
 Args:
-    samples (SITSTimeSeriesModel): Samples object. If `None` (default),
-        returns a training function. If provided, triggers immediate
-        training. Base data samples are not supported.
+    samples (SITSTimeSeriesModel | None): Sample time series. If `None`
+        (default), returns a training function. If provided, triggers
+        immediate training. Base data samples (e.g., `sits_base`) are not
+        supported.
     embedding_dim (int): Dimensionality of the encoder embedding (exported
         features). Default: 64.
     proj_dim (int): Dimensionality of the projection head output used only
@@ -44,16 +45,15 @@ Args:
         the similarity distribution. Default: 0.07.
     num_pairs (int | None): Total number of pairs to form. When `None`
         (default), one pair is formed per sample.
-    encoder_model (SITSMachineLearningMethod): Deep learning method that
-        takes time series as input and produces latent representations that
-        are used to compute the loss function (suggested options:
-        `sits_tempcnn()`, `sits_lighttae()`, `sits_resnet()`). Default:
-        `sits_tempcnn()`.
+    encoder_model (SITSMachineLearningMethod): Deep learning method that takes
+        time series as input and produces latent representations that are used
+        to compute the loss function (suggested options: `sits_tempcnn()`,
+        `sits_lighttae()`, `sits_resnet()`). Default: `sits_tempcnn()`.
     epochs (int): Maximum number of training epochs.
     batch_size (int): Batch size for training. Larger batches provide more
         positives/negatives per sample. Default: 128.
-    validation_split (float): Fraction of samples held out for validation
-        loss monitoring, in the range (0, 1).
+    validation_split (float): Fraction of samples in (0, 1) held out for
+        validation loss monitoring.
     optimizer: A `torch` optimizer constructor (default:
         `torch::optim_adamw`).
     opt_hparams (dict): Optimizer hyperparameters. Common entries: `lr`,

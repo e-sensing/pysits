@@ -5,10 +5,10 @@ Takes a list of tiles from a given grid system and produces a ROI
 
 Args:
     tiles (list[str]): Names of tiles from the selected `grid_system`.
-    grid_system (str): Grid system that the `tiles` belong to.
-        Currently supported grid systems are the MGRS grid
-        (`"MGRS"`, default) and those used by the Brazil Data Cube
-        (`"BDC_LG_V2"`, `"BDC_MD_V2"` and `"BDC_SM_V2"`).
+    grid_system (str): Grid system that the `tiles` belong to. Currently
+        supported grid systems are the MGRS grid (`"MGRS"`, default) and
+        those used by the Brazil Data Cube (`"BDC_LG_V2"`, `"BDC_MD_V2"`
+        and `"BDC_SM_V2"`).
 
 Returns:
     SITSNamedVector: Valid ROI to use in other SITS functions.

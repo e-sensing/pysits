@@ -15,4 +15,4 @@ Examples:
 
     clusters = sits_cluster_dendro(cerrado_2classes)
     freq = sits_cluster_frequency(clusters)
-    print(freq)
+    freq

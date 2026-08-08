@@ -1,7 +1,7 @@
 Smooth probability cubes with spatial predictors
 
-Takes a set of classified raster layers with probabilities and applies a
-Bayesian smoothing function.
+Takes a set of classified raster layers with probabilities, whose metadata
+is created by `sits_cube`, and applies a Bayesian smoothing function.
 
 Args:
     cube (SITSCubeModel): Probability data cube.
@@ -43,7 +43,7 @@ Notes:
     9. `sits_label_classification`: produce a classified map by selecting the
        label with the highest probability from a smoothed cube.
     Machine learning algorithms rely on training samples that are derived from
-    \--picked by users to represent the desired output
+    \h-picpicked by users to represent the desired output
     classes. Given the presence of mixed pixels in images regardless of
     resolution, and the considerable data variability within each class, these
     classifiers often produce results with misclassified pixels.

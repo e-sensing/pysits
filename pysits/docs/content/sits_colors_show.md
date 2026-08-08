@@ -10,5 +10,7 @@ Returns:
     None: called for side effects.
 
 Examples:
+    from pysits import *
+
     # show the colors supported by SITS
     sits_colors_show()

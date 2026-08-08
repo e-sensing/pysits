@@ -57,6 +57,7 @@ dl_converters = {
     "opt_hparams": convert_opt_hparams,
 }
 
+
 #
 # DL Methods
 #
@@ -65,6 +66,7 @@ sits_tempcnn = closure_factory("sits_tempcnn", converters=dl_converters)
 sits_lighttae = closure_factory("sits_lighttae", converters=dl_converters)
 sits_mlp = closure_factory("sits_mlp", converters=dl_converters)
 sits_resnet = closure_factory("sits_resnet", converters=dl_converters)
+sits_lstm_fcn = closure_factory("sits_lstm_fcn", converters=dl_converters)
 
 
 #
@@ -77,14 +79,16 @@ sits_lightgbm = closure_factory("sits_lightgbm")
 
 
 #
-# Encoder Methods
+# Representation Learning methods
 #
-sits_ssl_mae = closure_factory("sits_ssl_mae")
-sits_ssl_lejepa = closure_factory("sits_ssl_lejepa")
-sits_ssl_vicreg = closure_factory("sits_ssl_vicreg")
+sits_ssl_mae = closure_factory("sits_ssl_mae", converters=dl_converters)
+sits_ssl_lejepa = closure_factory("sits_ssl_lejepa", converters=dl_converters)
+sits_ssl_vicreg = closure_factory("sits_ssl_vicreg", converters=dl_converters)
 
-sits_barlow_twins = closure_factory("sits_barlow_twins")
-sits_contrastive_learning = closure_factory("sits_contrastive_learning")
+sits_barlow_twins = closure_factory("sits_barlow_twins", converters=dl_converters)
+sits_contrastive_learning = closure_factory(
+    "sits_contrastive_learning", converters=dl_converters
+)
 
 
 #

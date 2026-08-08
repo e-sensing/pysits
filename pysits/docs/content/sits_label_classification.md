@@ -11,26 +11,25 @@ class label in the output raster. A GPKG file with segment summaries
 (including a `class` column) is written automatically.
 
 Args:
-    cube (SITSCubeModel): Classified probability data cube (pixel-based or
+    cube (SITSCubeModel): classified probability data cube (pixel-based or
         segment-based).
-    memsize (int): Maximum overall memory (in GB) to label the
+    memsize (int): maximum overall memory (in GB) to label the
         classification.
-    multicores (int): Number of workers to label the classification in
+    multicores (int): number of workers to label the classification in
         parallel.
-    output_dir (str | pathlib.Path): Output directory for classified files.
-    version (str): Version of resulting image (in the case of multiple
-        runs).
-    progress (bool): Show progress bar?
-    label_method (str): Decision method for segment-based labeling. One of
+    output_dir (str | pathlib.Path): output directory for classified files.
+    version (str): version of resulting image (in the case of multiple runs).
+    progress (bool): show progress bar?
+    label_method (str): decision method for segment-based labeling. One of
         "mean" (default), "median", or "majority". Only used when input is a
         segment-based probability cube.
-    **kwargs (dict): Configuration parameters for exact extraction of
-        segment values.
+    **kwargs (dict): configuration parameters for
+        `exactextractr::exact_extract`.
 
 Returns:
-    SITSCubeModel: A data cube with an image with the classified map. When
-        input is a segment-based probability cube, the output preserves
-        vector information.
+    SITSCubeModel: a data cube with an image with the classified map. When
+        input is a segment-based probability cube, the output is a
+        segment-based classified cube with vector information preserved.
 
 Notes:
     The main `sits` classification workflow has the following steps:
@@ -51,7 +50,7 @@ Notes:
     9. `sits_label_classification`: produce a classified map by selecting the
        label with the highest probability from a smoothed cube.
     The OBIA workflow adds segmentation before classification:
-    1. `sits_segment`: segment the raster cube to produce a vector_cube.
+    1. `sits_segment`: segment the raster cube to produce a vector cube.
     2. `sits_classify`: classify pixel-level probabilities, preserving vector
        support.
     3. `sits_label_classification`: aggregate probabilities per segment and

@@ -30,9 +30,9 @@ Args:
     validation_split (float): Fraction of training data to be used as
         validation data.
     optimizer: Optimizer function to be used.
-    opt_hparams (dict): Hyperparameters for optimizer: lr : Learning rate
-        of the optimizer eps: Term added to the denominator to improve
-        numerical stability. weight_decay: L2 regularization
+    opt_hparams (dict): Hyperparameters for optimizer: lr: Learning rate
+        of the optimizer; eps: Term added to the denominator to improve
+        numerical stability; weight_decay: L2 regularization.
     lr_decay_epochs (int): Number of epochs to reduce learning rate.
     lr_decay_rate (float): Decay factor for reducing learning rate.
     patience (int): Number of epochs without improvements until training
@@ -43,7 +43,7 @@ Args:
     verbose (bool): Verbosity mode. Default is `False`.
 
 Returns:
-    SITSMachineLearningMethod: A fitted model to be used for classification.
+    R: A fitted model to be used for classification.
 
 Examples:
     from pysits import *

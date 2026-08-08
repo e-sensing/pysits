@@ -22,9 +22,11 @@ from pathlib import Path
 import pytest
 from pandas import DataFrame as PandasDataFrame
 
+from pysits.conversions.common import convert_to_r
 from pysits.conversions.dsl.mask import MaskValue
 from pysits.models.data.cube import SITSCubeModel
-from pysits.models.data.frame import SITSFrame
+from pysits.models.data.frame import SITSFrame, SITSFrameSF
+from pysits.models.data.ts import SITSTimeSeriesModel
 from pysits.sits.cube import (
     convert_reclassify_rules,
     sits_cube,
@@ -32,18 +34,8 @@ from pysits.sits.cube import (
     sits_texture,
 )
 from pysits.sits.data import sits_bands, sits_bbox, sits_labels, sits_timeline
+from pysits.sits.ts import sits_get_data, sits_random_sampling
 from pysits.sits.utils import r_package_dir
-
-
-@pytest.fixture(scope="module")
-def local_cube() -> SITSCubeModel:
-    """Cube created from local files."""
-    return sits_cube(
-        source="BDC",
-        collection="MOD13Q1-6.1",
-        data_dir=r_package_dir("extdata/raster/mod13q1", package="sits"),
-        progress=False,
-    )
 
 
 def test_sits_cube_data_structure():
@@ -291,6 +283,59 @@ def test_cube_texture(tmp_path: Path, local_cube):
 
     assert isinstance(cube_texture, SITSCubeModel)
     assert sits_bands(cube_texture) == ["NDVI", "NDVIVAR"]
+
+
+def test_cube_random_sampling(local_cube):
+    """Test random sampling of a data cube."""
+    samples = sits_random_sampling(
+        cube=local_cube,
+        n_samples=100,
+        progress=False,
+    )
+
+    # Test type
+    assert isinstance(samples, SITSFrameSF)
+
+    # Columns
+    assert samples.geometry.name == "geometry"
+    assert samples.crs is not None
+
+    # Expected samples
+    assert samples.shape == (100, 1)  # number of samples requested
+    assert set(samples.geometry.geom_type) == {"Point"}
+
+    # The samples must be usable in R as an ``sf`` object
+    assert "sf" in list(convert_to_r(samples).rclass)
+
+
+def test_cube_random_sampling_get_data(local_cube):
+    """Test time series extraction using random samples from a data cube."""
+    samples = sits_random_sampling(
+        cube=local_cube,
+        n_samples=5,
+        progress=False,
+    )
+
+    # get sample time-series
+    samples_ts = sits_get_data(
+        cube=local_cube,
+        samples=samples,
+        multicores=1,
+        progress=False,
+    )
+
+    # Test type
+    assert isinstance(samples_ts, SITSTimeSeriesModel)
+
+    # One time series is extracted for each sampled point
+    assert samples_ts.shape[0] == samples.shape[0]
+
+    # Points without a label are extracted as ``NoClass``
+    assert sits_labels(samples_ts) == ["NoClass"]
+
+    # The cube bands and timeline are preserved
+    assert sits_bands(samples_ts) == sits_bands(local_cube)
+    assert len(sits_timeline(samples_ts)) == len(sits_timeline(local_cube))
 
 
 def test_cube_sync_instance(local_cube):

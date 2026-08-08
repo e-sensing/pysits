@@ -14,5 +14,5 @@ Returns:
 Examples:
     from pysits import *
 
-    # show the names of the collections supported by SITS
+    # show the names of the colors supported by SITS
     sits_list_collections()

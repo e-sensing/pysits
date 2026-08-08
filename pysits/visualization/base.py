@@ -80,7 +80,14 @@ def _base_plot(
 
     # Handle plots
     if multiple:
-        for i, plot in enumerate(plots):
+        # A single plot object (e.g., a ``ggplot``) is not iterable
+        try:
+            figure_groups = list(plots)
+
+        except TypeError:
+            figure_groups = [plots]
+
+        for i, plot in enumerate(figure_groups):
             try:
                 figures = list(plot)
 

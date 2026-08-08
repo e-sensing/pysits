@@ -18,6 +18,7 @@
 """Unit tests for representation learning models."""
 
 import pytest
+from conftest import r_class, r_closure_value, r_identical, r_opt_hparams
 
 from pysits.models.ml import SITSRepresentationLearningMethod
 from pysits.sits.context import samples_modis_ndvi
@@ -79,3 +80,38 @@ def test_model_pre_training_with_encoder_model(model_fn):
     )
 
     assert isinstance(model, SITSRepresentationLearningMethod)
+
+    # The model was pre-trained with the encoder defined by the user
+    # (`model_ltae`), and not with the default one (`model_tcnn`)
+    assert "model_ltae" in r_class(r_closure_value(model._instance, "encoder"))
+
+
+#
+# Test encoder methods parameters
+#
+@pytest.mark.parametrize("model_fn", ALL_ENCODER_METHODS)
+def test_encoder_method_encoder_model(model_fn):
+    """Test encoder model defined by the user is used as is."""
+    encoder_model = sits_lighttae(opt_hparams={"lr": 0.02})
+    rl_method = model_fn(encoder_model=encoder_model)
+
+    # The encoder model is passed to R untouched
+    assert r_identical(r_closure_value(rl_method, "encoder_model"), encoder_model)
+
+    # Including its own converted parameters
+    assert r_opt_hparams(encoder_model) == {"lr": 0.02}
+
+
+@pytest.mark.parametrize("model_fn", ALL_ENCODER_METHODS)
+def test_encoder_method_converters(model_fn):
+    """Test conversion of dl-specific parameters."""
+    rl_method = model_fn(
+        optimizer="torch::optim_adam",
+        opt_hparams={"lr": 0.01, "eps": 1e-07},
+    )
+
+    # The optimizer is loaded from R (`optim_adam` is not the default optimizer)
+    assert "optim_adam" in r_class(r_closure_value(rl_method, "optimizer"))
+
+    # The hyperparameters are converted to an R list
+    assert r_opt_hparams(rl_method) == {"lr": 0.01, "eps": 1e-07}

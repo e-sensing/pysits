@@ -11,20 +11,21 @@ Please refer to the documentation in that package for more details.
 
 Args:
     samples (SITSTimeSeriesModel): Time series with the training samples.
-    formula: Symbolic description of the model to be fit. (default:
-        sits_formula_linear).
-    scale (list[bool]): Indicates the variables to be scaled.
-    cachesize (float): Cache memory in MB (default = 1000).
-    kernel (str): Kernel used in training and predicting. options:
-        "linear", "polynomial", "radial", "sigmoid" (default: "radial").
+    formula (SITSMachineLearningMethod): Symbolic description of the
+        model to be fit (default: sits_formula_linear).
+    scale (bool): Indicates whether the variables should be scaled.
+    cachesize (int): Cache memory in MB (default = 1000).
+    kernel (str): Kernel used in training and predicting. Options:
+        "linear", "polynomial", "radial", "sigmoid" (default:
+        "radial").
     degree (int): Exponential of polynomial type kernel (default: 3).
     coef0 (float): Parameter needed for kernels of type polynomial and
         sigmoid (default: 0).
     cost (float): Cost of constraints violation (default: 10).
-    tolerance (float): Tolerance of termination criterion
-        (default: 0.001).
-    epsilon (float): Epsilon in the insensitive-loss function
-        (default: 0.1).
+    tolerance (float): Tolerance of termination criterion (default:
+        0.001).
+    epsilon (float): Epsilon in the insensitive-loss function (default:
+        0.1).
     cross (int): Number of cross validation folds applied to assess the
         quality of the model (default: 10).
     **kwargs (dict): Other parameters to be passed to e1071::svm

@@ -8,7 +8,7 @@ sensor, resolution, bounding box, timeline, and have different bands.
 
 Args:
     cube1 (SITSCubeModel): Data cube.
-    cube2 (SITSCubeModel): Data cube with base information.
+    cube2 (SITSCubeModel): Base data cube (e.g., DEM).
 
 Returns:
     SITSCubeModel: a merged data cube with the inclusion of base

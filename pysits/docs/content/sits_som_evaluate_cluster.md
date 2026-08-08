@@ -5,8 +5,7 @@ found by the SOM map. For each cluster, it provides the percentage of
 classes inside it.
 
 Args:
-    som_map (SITSFrame): A SOM map produced by the `sits_som_map()`
-        function.
+    som_map: A SOM map produced by the `sits_som_map()` function.
 
 Returns:
     SITSFrame: The purity for each cluster.

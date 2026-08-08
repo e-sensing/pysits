@@ -11,9 +11,9 @@ Args:
     endmembers (pandas.DataFrame | str | pathlib.Path): Reference spectral
         endmembers (see details below).
     rmse_band (bool): Whether the error associated with the linear model
-        should be generated. If `True`, a new band with errors for each
-        pixel is generated using the root mean square measure (RMSE).
-        Default is `True`.
+        should be generated. If `True`, a new band with errors for each pixel
+        is generated using the root mean square measure (RMSE). Default is
+        `True`.
     multicores (int): Number of cores to be used for generate the mixture
         model.
     progress (bool): Show progress bar? Default is `True`.
@@ -23,10 +23,10 @@ Args:
 
 Returns:
     SITSFrame: In case of a cube, a data cube with the fractions of each
-        endmember. The sum of all fractions is restricted to 1 (scaled from
-        0 to 10000), corresponding to the abundance of the endmembers in the
-        pixels. In case of a set of sample time series, the time series with
-        the values corresponding to each fraction.
+        endmember. The sum of all fractions is restricted to 1 (scaled from 0
+        to 10000), corresponding to the abundance of the endmembers in the
+        pixels. In case of sample time series, the time series is returned
+        with the values corresponding to each fraction.
 
 Notes:
     Many pixels in images of medium-resolution satellites such as Landsat or
@@ -49,8 +49,8 @@ Notes:
 Examples:
     from pysits import *
     import pandas as pd
-    import tempfile
     import os
+    import tempfile
 
     # Create a sentinel-2 cube
     s2_cube = sits_cube(

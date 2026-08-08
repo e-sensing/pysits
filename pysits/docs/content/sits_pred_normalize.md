@@ -3,12 +3,12 @@ Normalize predictor values
 Most machine learning algorithms require data to be normalized. This
 applies to the "SVM" method and to all deep learning ones. To normalize
 the predictors, it is required that the statistics per band for each
-sample have been obtained by the `sits_stats` function.
+sample have been obtained by the "sits_stats" function.
 
 Args:
     pred (pandas.DataFrame): X-Y predictors, with one row per sample.
-    stats (dict): Values of time series for Q02 and Q98 of the data
-        (two elements).
+    stats (dict): Values of time series for Q02 and Q98 of the data,
+        with two elements.
 
 Returns:
     SITSFrame: Normalized predictor values.

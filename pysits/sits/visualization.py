@@ -127,3 +127,12 @@ def _(data: SITSMachineLearningMethod, **kwargs) -> None:
 def _(data: SITSRepresentationLearningMethod, **kwargs) -> None:
     """Plot representation learning method."""
     return plot_base(data, **kwargs)
+
+
+#
+# Sankey plot
+#
+@rpy2_fix_type
+def sits_sankey(*args, **kwargs) -> None:
+    """Plot class trajectories from multi-temporal classified cubes."""
+    return plot_base(r_pkg_sits.sits_sankey(*args, **kwargs))

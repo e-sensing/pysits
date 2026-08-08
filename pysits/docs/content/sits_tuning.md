@@ -1,8 +1,8 @@
 Tuning machine learning models hyper-parameters
 
 This function performs a random search on values of selected hyperparameters,
-and produces a data frame with the accuracy and kappa values produced by a
-validation procedure. The result allows users to select appropriate
+and produces a `pandas.DataFrame` with the accuracy and kappa values produced
+by a validation procedure. The result allows users to select appropriate
 hyperparameters for deep learning models.
 
 Args:

@@ -13,7 +13,6 @@ Returns:
 Examples:
     from pysits import *
     import tempfile
-    import os
 
-    user_file = os.path.join(tempfile.gettempdir(), "my_config_file.yml")
+    user_file = tempfile.gettempdir() + "/my_config_file.yml"
     sits_config_user_file(user_file)

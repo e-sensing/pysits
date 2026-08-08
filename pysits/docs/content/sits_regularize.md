@@ -19,10 +19,10 @@ Args:
     output_dir (str | pathlib.Path): Valid directory for storing regularized
         images.
     timeline (list[str]): User-defined timeline for regularized cube.
-    roi (dict | geopandas.GeoDataFrame | str | pathlib.Path): Region of
+    roi (dict | str | pathlib.Path | geopandas.GeoDataFrame): Region of
         interest (see notes below).
-    crs (str | int): Coordinate Reference System (CRS) of the roi. (see
-        details below).
+    crs (str): Coordinate Reference System (CRS) of the roi. (see details
+        below).
     tiles (list[str]): Tiles to be produced.
     grid_system (str): Grid system to be used for the output images.
     multicores (int): Number of cores used for regularization; used for
@@ -72,16 +72,16 @@ Notes:
     To define a `roi` use one of:
     - A path to a shapefile with polygons;
     - A `geopandas.GeoDataFrame`;
-    - A `SpatExtent` object from `terra` package;
+    - A spatial extent object;
     - A `dict` (`"lon_min"`, `"lat_min"`, `"lon_max"`, `"lat_max"`) in
       WGS84;
     - A `dict` (`"xmin"`, `"xmax"`, `"ymin"`, `"ymax"`) with XY
       coordinates.
-    Defining a region of interest using `SpatExtent` or XY values not in WGS84
-    requires the `crs` parameter to be specified. `sits_regularize()` function
-    will crop the images that contain the region of interest(). NOTE: Make sure
-    to inform `roi` with valid geometries. `sits` will drop the use of `roi` if
-    it contains invalid geometries.
+    Defining a region of interest using a spatial extent or XY values not in
+    WGS84 requires the `crs` parameter to be specified. `sits_regularize()`
+    function will crop the images that contain the region of interest(). NOTE:
+    Make sure to inform `roi` with valid geometries. `sits` will drop the use
+    of `roi` if it contains invalid geometries.
     The optional `tiles` parameter indicates which tiles of the input cube will
     be used for regularization. When `grid_system` is informed, `tiles` may be
     combined with `roi` to further restrict which target grid tiles are
@@ -112,7 +112,7 @@ Examples:
         period="P16D",
         res=60,
         multicores=2,
-        output_dir=tempfile.gettempdir()
+        output_dir=tempfile.mkdtemp()
     )
 
     ## Sentinel-1 SAR
@@ -136,5 +136,5 @@ Examples:
         res=60,
         roi=roi,
         multicores=2,
-        output_dir=tempfile.gettempdir()
+        output_dir=tempfile.mkdtemp()
     )
