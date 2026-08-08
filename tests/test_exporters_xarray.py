@@ -317,8 +317,9 @@ def test_xarray_cube_chunks(cog_cube):
 #
 # Derived cubes
 #
-def test_xarray_class_cube(local_cube):
+def test_xarray_class_cube():
     """Test class cube conversion."""
+    local_cube = _class_cube()
     data = sits_as_xarray(local_cube)
 
     # Test metadata
