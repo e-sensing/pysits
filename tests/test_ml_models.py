@@ -19,20 +19,21 @@
 
 import cloudpickle
 import pytest
+from conftest import r_class, r_closure_value, r_opt_hparams
 
 from pysits.models.ml import SITSMachineLearningMethod
-from pysits.sits.classification import sits_classify
 from pysits.sits.context import (
     point_mt_6bands,
     samples_l8_rondonia_2bands,
     samples_modis_ndvi,
 )
-from pysits.sits.data import sits_labels, sits_select
+from pysits.sits.data import sits_classify, sits_labels, sits_select
 from pysits.sits.ml import (
     sits_formula_linear,
     sits_formula_logref,
     sits_lightgbm,
     sits_lighttae,
+    sits_lstm_fcn,
     sits_mlp,
     sits_model_export,
     sits_resnet,
@@ -57,6 +58,19 @@ ALL_MODELS = [
     sits_svm,
     sits_xgboost,
     sits_lightgbm,
+    sits_lstm_fcn,
+]
+
+#
+# Models with dl-specific converters
+#
+DL_MODELS = [
+    sits_tae,
+    sits_tempcnn,
+    sits_lighttae,
+    sits_mlp,
+    sits_resnet,
+    sits_lstm_fcn,
 ]
 
 
@@ -127,6 +141,31 @@ def test_model_svm_params():
 
     assert isinstance(model_linear, SITSMachineLearningMethod)
     assert isinstance(model_logref, SITSMachineLearningMethod)
+
+
+#
+# Test dl-specific converters
+#
+@pytest.mark.parametrize("model_fn", DL_MODELS)
+def test_model_converters(model_fn):
+    """Test conversion of dl-specific parameters."""
+    ml_method = model_fn(
+        optimizer="torch::optim_adam",
+        opt_hparams={"lr": 0.01, "eps": 1e-07},
+    )
+
+    # The optimizer is loaded from R (`optim_adam` is not the default optimizer)
+    assert "optim_adam" in r_class(r_closure_value(ml_method, "optimizer"))
+
+    # The hyperparameters are converted to an R list
+    assert r_opt_hparams(ml_method) == {"lr": 0.01, "eps": 1e-07}
+
+
+@pytest.mark.parametrize("model_fn", DL_MODELS)
+def test_model_converters_invalid_optimizer(model_fn):
+    """Test conversion of an optimizer defined in an invalid format."""
+    with pytest.raises(ValueError, match="Invalid optimizer format"):
+        model_fn(optimizer=sits_formula_linear)
 
 
 #
