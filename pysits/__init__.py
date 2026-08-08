@@ -135,6 +135,7 @@ from .sits.ts import (
     sits_som_clean_samples,
     sits_som_evaluate_cluster,
     sits_som_map,
+    sits_som_remove_samples,
     sits_stats,
     sits_stratified_sampling,
     sits_validate,
@@ -147,7 +148,7 @@ from .sits.utils import (
     read_rds,
 )
 from .sits.visualization import sits_plot as plot
-from .sits.visualization import sits_view
+from .sits.visualization import sits_sankey, sits_view
 
 __all__ = (
     # Classification
@@ -241,6 +242,7 @@ __all__ = (
     "sits_som_map",
     "sits_som_evaluate_cluster",
     "sits_som_clean_samples",
+    "sits_som_remove_samples",
     "sits_geo_dist",
     "sits_patterns",
     "sits_sample",
@@ -269,6 +271,7 @@ __all__ = (
     # Visualization
     "plot",
     "sits_view",
+    "sits_sankey",
     # DSL Variables
     "MaskValue",
     "hparam",
