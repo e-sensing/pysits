@@ -164,6 +164,12 @@ def sits_som_clean_samples(*args, **kwargs) -> SITSTimeSeriesModel:
     """Cleans the samples based on SOM map information."""
 
 
+@function_call(r_pkg_sits.sits_som_remove_samples, SITSTimeSeriesModel)
+@attach_doc("sits_som_remove_samples")
+def sits_som_remove_samples(*args, **kwargs) -> SITSTimeSeriesModel:
+    """Remove samples confused with a different class in the SOM map."""
+
+
 #
 # Dendrogram
 #
