@@ -54,15 +54,9 @@ def test_som_visualization(no_plot_window):
     sits_plot(som)
 
 
-def test_cube_visualization(no_plot_window):
+def test_cube_visualization(local_cube, no_plot_window):
     """Test cube visualization."""
-    cube = sits_cube(
-        source="BDC",
-        collection="MOD13Q1-6.1",
-        data_dir=r_package_dir("extdata/raster/mod13q1", package="sits"),
-    )
-
-    sits_plot(cube)
+    sits_plot(local_cube)
 
 
 def test_classified_cube_visualization(no_plot_window):
@@ -100,14 +94,6 @@ def test_sits_visualization_leaflet(no_browser):
     sits_view(samples_l8_rondonia_2bands)
 
 
-def test_cube_visualization_leaflet(no_browser):
+def test_cube_visualization_leaflet(local_cube, no_browser):
     """Test cube visualization."""
-    # Create a cube
-    cube = sits_cube(
-        source="BDC",
-        collection="MOD13Q1-6.1",
-        data_dir=r_package_dir("extdata/raster/mod13q1", package="sits"),
-    )
-
-    # Plot the cube
-    sits_view(cube)
+    sits_view(local_cube)
