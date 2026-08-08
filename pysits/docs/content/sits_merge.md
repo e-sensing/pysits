@@ -1,0 +1,44 @@
+Merge two data sets (time series or cubes)
+
+To merge two series, we consider that they contain different attributes but
+refer to the same data cube and spatiotemporal location. This function is
+useful for merging different bands of the same location. For example, one may
+want to put the raw and smoothed bands for the same set of locations in the
+same data set.
+In the case of data cubes, the function merges the images based on the
+following conditions:
+1. If the two cubes have different bands but compatible timelines, the bands
+   are combined, and the timeline is adjusted to overlap. To create the
+   overlap, we align the timelines like a "zipper": for each interval defined
+   by a pair of consecutive dates in the first timeline, we include matching
+   dates from the second timeline. If the second timeline has multiple dates in
+   the same interval, only the minimum date is kept. This ensures the final
+   timeline avoids duplicates and is consistent. This is useful when merging
+   data from different sensors (e.g., Sentinel-1 with Sentinel-2).
+2. If the bands are the same, the cube will have the combined timeline of both
+   cubes. This is useful for merging data from the same sensors from different
+   satellites (e.g., Sentinel-2A with Sentinel-2B).
+3. otherwise, the function will produce an error.
+
+Args:
+    data1 (SITSTimeSeriesModel | SITSCubeModel): Time series or data cube.
+    data2 (SITSTimeSeriesModel | SITSCubeModel): Time series or data cube.
+    suffix (list[str]): If data1 and data2 have duplicate bands, this
+        suffix will be added.
+    **kwargs (dict): Additional parameters.
+
+Returns:
+    SITSFrame: merged data sets (time series or data cube).
+
+Examples:
+    from pysits import *
+
+    # Retrieve a time series with values of NDVI
+    point_ndvi = sits_select(point_mt_6bands, bands="NDVI")
+    point_evi = sits_select(point_mt_6bands, bands="EVI")
+
+    # Merge time series
+    point_ndvi_evi = sits_merge(point_ndvi, point_evi)
+
+    # Plot the two points to see the smoothing effect
+    plot(point_ndvi_evi)
