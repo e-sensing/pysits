@@ -1,16 +1,6 @@
 name: Tests
 
 on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
-
-  # Run every Saturday at 3:00 AM
-  schedule:
-    # * is a special character in YAML so you have to quote this string
-    - cron:  '0 3 * * 6'
-
   workflow_dispatch:
     inputs:
       reason:
