@@ -17,6 +17,10 @@
 
 """pysits module."""
 
+# Importing `backend.arrow` first selects the libarrow allocator, which must
+# happen before anything imports `pyarrow` or loads the R `arrow` package.
+# Keep this import above the others. See `pysits.backend.arrow`.
+from .backend import arrow as _arrow  # noqa: F401
 from .conversions.dsl.mask import MaskValue
 from .conversions.dsl.tuning import hparam
 from .settings import __version__

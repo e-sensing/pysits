@@ -17,6 +17,7 @@
 
 """backend packages."""
 
+from pysits.backend.arrow import check_arrow_memory_pool
 from pysits.backend.loaders import load_package
 from pysits.settings import __sitsver__
 
@@ -33,4 +34,9 @@ r_pkg_leaflet = load_package("leaflet")
 r_pkg_kohonen = load_package("kohonen")
 r_pkg_sf = load_package("sf")
 r_pkg_htmlwidgets = load_package("htmlwidgets")
+
+# `arrow` brings a second libarrow build into the process, so the allocator has
+# to be compatible before it is loaded. See `pysits.backend.arrow`.
+check_arrow_memory_pool()
+
 r_pkg_arrow = load_package("arrow")
