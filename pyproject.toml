@@ -60,6 +60,9 @@ classifiers = [
 dependencies = [
     "rpy2>=3.5.17,<4.0.0",
     "pandas>=2.2.3",
+    # pandas ships no wheels for Python 3.14 before 3.0. Without this floor pip
+    # builds pandas from source there, and the result segfaults on basic calls.
+    "pandas>=3.0.0; python_version>='3.14'",
     "pillow>=11.1.0",
     "matplotlib>=3.10.1",
     "geopandas>=1.1.0",
@@ -90,6 +93,9 @@ dev = [
     "pytest-cov>=6.1.1",
     "pytest-randomly>=3.16.0",
     "cloudpickle>=3.1.1",
+    # The test suite covers the xarray exporters and reads rasters directly
+    "pysits[xarray]",
+    "rasterio>=1.3.0",
 ]
 
 [tool.ruff]

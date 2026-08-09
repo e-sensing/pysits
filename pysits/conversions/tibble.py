@@ -36,6 +36,7 @@ from rpy2.robjects.conversion import localconverter
 from rpy2.robjects.vectors import DataFrame as RDataFrame
 from shapely import wkt
 
+from pysits.backend.arrow import PROBE_COLUMN, PROBE_VALUES, arrow_interop_error
 from pysits.backend.functions import r_fnc_class, r_fnc_set_column
 from pysits.backend.pkgs import r_pkg_base, r_pkg_sf, r_pkg_sits
 from pysits.models.frame import NestedFrame
@@ -90,6 +91,39 @@ def _sf_to_shapely(sf_object: RDataFrame) -> list:
 #
 # Arrow IPC helpers
 #
+def _check_arrow_interop() -> None:
+    """Verify that Arrow data is not corrupted once R's libarrow is loaded.
+
+    R libarrow only initializes on first use, so a probe is sent through R to
+    force it, and ``pyarrow`` is then re-tested. A mismatched pair of libarrow
+    builds corrupts the conversion of Python objects to Arrow arrays, returning
+    zeros instead of raising, which would silently damage every nested column.
+
+    Raises:
+        RuntimeError: If either transfer loses data.
+    """
+    probe = PandasDataFrame({PROBE_COLUMN: PROBE_VALUES})
+
+    # Forces R libarrow to initialize, and checks the Python -> R direction
+    r_probe = rpy2_globalenv["pysits_read_ipc_raw"](
+        robjects.vectors.ByteVector(_dataframe_to_ipc_bytes(probe))
+    )
+
+    # Load content from R
+    observed = list(r_probe.rx2(PROBE_COLUMN))
+
+    # If it is different, then given an error
+    if observed != PROBE_VALUES:
+        raise arrow_interop_error(observed)
+
+    # Both libarrow builds are live now: check the conversion of Python objects
+    # to Arrow arrays, which is the path nested columns depend on.
+    observed = pa.array(PROBE_VALUES).to_pylist()
+
+    if observed != PROBE_VALUES:
+        raise arrow_interop_error(observed)
+
+
 def _ensure_r_ipc_functions():
     """Define R-side IPC reader/writer/unnester functions once."""
     if "pysits_write_ipc_raw" in rpy2_globalenv:
@@ -161,6 +195,8 @@ def _ensure_r_ipc_functions():
             })
         }
     """)
+
+    _check_arrow_interop()
 
 
 def _dataframe_to_ipc_bytes(df: PandasDataFrame) -> bytes:
