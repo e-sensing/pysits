@@ -1,0 +1,96 @@
+name: Tests
+
+on:
+  workflow_dispatch:
+    inputs:
+      reason:
+        required: false
+        description: 'Reason'
+        default: 'Manual trigger'
+
+jobs:
+  test:
+    name: Python ${{ matrix.python-version }}
+    runs-on: ubuntu-latest
+
+    strategy:
+      # Report every version, so a single break does not hide the others.
+      fail-fast: false
+      matrix:
+        python-version: ['3.10', '3.11', '3.12', '3.13', '3.14']
+
+    env:
+      # Fail the build on R warnings that would otherwise pass unnoticed
+      R_KEEP_PKG_SOURCE: yes
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up R
+        uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+
+      - name: Install R dependencies
+        uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          # `arrow` and `kohonen` are required by pysits but are not part of a
+          # default `install.packages("sits")`, so they are listed explicitly.
+          packages: |
+            any::sits
+            any::arrow
+            any::kohonen
+            any::jsonlite
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Create a clean virtual environment
+        # Mirrors how users install pysits, so a broken dependency resolution
+        # is caught here rather than by them.
+        run: python -m venv .venv
+
+      - name: Install pysits
+        # `--only-binary` makes pip fail instead of falling back to a source
+        # build when no wheel matches this interpreter. Those builds have
+        # shipped binaries that segfault. Only pysits itself is built here.
+        run: |
+          .venv/bin/python -m pip install --upgrade pip
+          .venv/bin/python -m pip install \
+            --only-binary=:all: --no-binary pysits \
+            ".[dev]"
+
+      - name: Report resolved dependency versions
+        run: .venv/bin/python -m pip list
+
+      - name: Verify Arrow interoperability between R and Python
+        # pyarrow and R arrow package each bundle libarrow. If they stop
+        # sharing an allocator, transfers are silently corrupted rather than
+        # failing, so this asserts a known value survives a round-trip.
+        run: |
+          .venv/bin/python - <<'EOF'
+          import pyarrow as pa
+
+          import pysits
+          from pysits.conversions.tibble import (
+              pandas_sits_to_tibble,
+              tibble_sits_to_pandas,
+          )
+
+          probe = [0.5, 1.5, 2.5]
+          assert pa.array(probe).to_pylist() == probe, "pyarrow returns corrupted data"
+
+          samples = pysits.samples_modis_ndvi
+          expected = samples["time_series"][0]["NDVI"].tolist()
+          actual = tibble_sits_to_pandas(pandas_sits_to_tibble(samples.head(1)))
+          actual = actual["time_series"][0]["NDVI"].tolist()
+
+          assert actual == expected, f"round-trip corrupted data: {actual} != {expected}"
+          print("Arrow round-trip is lossless.")
+          EOF
+
+      - name: Run tests
+        run: .venv/bin/python -m pytest
