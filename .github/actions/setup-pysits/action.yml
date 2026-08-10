@@ -1,0 +1,43 @@
+name: Set up pysits
+description: R with the sits stack, and uv-managed Python
+
+inputs:
+  python-version:
+    description: Python version to run pysits on
+    required: true
+
+runs:
+  using: composite
+
+  steps:
+    - uses: r-lib/actions/setup-r@v2
+      with:
+        Ncpus: '4'
+
+    # R is installed under `/opt/R`, which the dynamic loader does not search.
+    # `rpy2` links against `libR.so` at import, so without this it falls back
+    # to ABI mode and then fails to load R's own base packages
+    - name: Put libR on the loader path
+      shell: bash
+      run: |
+        echo "LD_LIBRARY_PATH=$(R RHOME)/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}" >> "$GITHUB_ENV"
+
+    - uses: r-lib/actions/setup-r-dependencies@v2
+      with:
+        packages: |
+          github::e-sensing/sits@dev
+          any::arrow
+          any::earthdatalogin
+
+    # The `torch` R package ships without libtorch, and pysits disables the
+    # implicit download (`TORCH_INSTALL=0`), so without this operation
+    # the deep learning models would fail only once a test train one
+    - name: Install libtorch
+      shell: bash
+      run: Rscript -e 'torch::install_torch()'
+
+    # After R: `rpy2` has no Linux wheel and is compiled against it
+    - uses: astral-sh/setup-uv@v9.0.0
+      with:
+        python-version: ${{ inputs.python-version }}
+        enable-cache: true
