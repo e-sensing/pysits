@@ -17,26 +17,24 @@
 
 """Pytest configuration file."""
 
+import os
+
+# Some tests drive `pyplot` to check how figures are handed to a host.
+# Pinning the backend before matplotlib is imported keeps that from
+# selecting a windowing backend on a machine without a display.
+os.environ.setdefault("MPLBACKEND", "Agg")
+
 import webbrowser
 from typing import Any
 
 import matplotlib
-
-#
-# Set the backend to avoid plot windows
-#
-matplotlib.use("Agg")
-
-#
-# Import after setting visualization backend
-#
-import matplotlib.pyplot as plt
 import pytest
 import rpy2.robjects as ro
 
 from pysits.models.data.cube import SITSCubeModel
 from pysits.sits.cube import sits_cube
 from pysits.sits.utils import r_package_dir
+from pysits.visualization.options import reset_plot_options
 
 
 #
@@ -64,6 +62,13 @@ def r_identical(x: Any, y: Any) -> bool:
     return bool(ro.r["identical"](x, y)[0])
 
 
+def r_open_devices() -> int:
+    """Count the R graphics devices currently open."""
+    devices = ro.r["dev.list"]()
+
+    return 0 if devices == ro.NULL else len(devices)
+
+
 #
 # Fixtures
 #
@@ -78,14 +83,20 @@ def local_cube() -> SITSCubeModel:
     )
 
 
-@pytest.fixture
-def no_plot_window(monkeypatch):
-    """Fixture to prevent matplotlib plot windows from showing during tests."""
-    monkeypatch.setattr(plt, "show", lambda: None)
+@pytest.fixture(autouse=True)
+def clean_plot_state():
+    """Fixture to keep plot state from leaking between tests.
 
+    Figures are rendered on R graphics devices, which live in the R session
+    and would otherwise outlive the test that opened them. The rendering
+    geometry is process-wide for the same reason.
+    """
     yield
 
-    plt.close("all")
+    reset_plot_options()
+    matplotlib.rcParams.update(matplotlib.rcParamsDefault)
+
+    assert r_open_devices() == 0, "test left an R graphics device open"
 
 
 @pytest.fixture

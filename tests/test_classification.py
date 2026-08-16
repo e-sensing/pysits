@@ -32,7 +32,7 @@ from pysits.sits.utils import r_set_seed
 from pysits.sits.visualization import sits_plot
 
 
-def test_basic_cube_classification(tmp_path: Path, local_cube, no_plot_window):
+def test_basic_cube_classification(tmp_path: Path, local_cube):
     """Test basic classification."""
     r_set_seed(42)
 
@@ -61,7 +61,7 @@ def test_basic_cube_classification(tmp_path: Path, local_cube, no_plot_window):
     sits_plot(label_cube)
 
 
-def test_basic_ts_classification(tmp_path: Path, no_plot_window):
+def test_basic_ts_classification(tmp_path: Path):
     """Test basic classification."""
     # Set seed
     r_set_seed(42)
