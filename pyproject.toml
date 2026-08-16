@@ -98,6 +98,9 @@ dev = [
     # The test suite covers the xarray exporters and reads rasters directly
     "pysits[xarray]",
     "rasterio>=1.3.0",
+    # Used to render Quarto documents to check that figures reach a
+    # document with the geometry the document asked for
+    "ipykernel>=6.29.0",
 ]
 
 [tool.ruff]
