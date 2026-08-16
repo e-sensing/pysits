@@ -18,7 +18,15 @@
 """Plot module."""
 
 from .base import plot_base
+from .host import display_figures
 from .leaflet import plot_leaflet
-from .tmap import plot_tmap
+from .options import get_plot_options, reset_plot_options, set_plot_options
 
-__all__ = ("plot_tmap", "plot_base", "plot_leaflet")
+__all__ = (
+    "plot_base",
+    "plot_leaflet",
+    "display_figures",
+    "get_plot_options",
+    "reset_plot_options",
+    "set_plot_options",
+)
