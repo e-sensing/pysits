@@ -20,7 +20,8 @@
 from functools import singledispatch
 
 from pysits.backend.pkgs import r_pkg_sits
-from pysits.conversions.decorators import rpy2_fix_type
+from pysits.conversions.decorators import rpy2_fix_type, rpy2_fix_type_except
+from pysits.docs import attach_doc
 from pysits.models.data.base import SITStructureData
 from pysits.models.data.cube import SITSCubeItemModel, SITSCubeModel
 from pysits.models.data.frame import SITSFrame
@@ -30,13 +31,20 @@ from pysits.models.data.ts import (
     SITSTimeSeriesPatternsModel,
 )
 from pysits.models.ml import SITSMachineLearningMethod, SITSRepresentationLearningMethod
-from pysits.visualization import plot_base, plot_leaflet, plot_tmap
+from pysits.models.visual import ImageArgs, SITSPlot, SITSPlotList
+from pysits.visualization import plot_base, plot_leaflet
+
+#
+# Type aliases
+#
+SITSPlotResult = SITSPlot | SITSPlotList
 
 
 #
 # Interactive plot
 #
 @rpy2_fix_type
+@attach_doc("sits_view")
 def sits_view(data: object, **kwargs) -> None:
     """sits view as dispatch."""
     return plot_leaflet(data, **kwargs)
@@ -46,85 +54,73 @@ def sits_view(data: object, **kwargs) -> None:
 # Static plot (dispatch chain)
 #
 @singledispatch
-@rpy2_fix_type
-def sits_plot(data: object, **kwargs) -> None:
+@rpy2_fix_type_except("image_args")
+@attach_doc("plot")
+def sits_plot(data: object, **kwargs) -> SITSPlotResult:
     """sits plot as dispatch."""
     # Assuming data is a "raw rpy2" object
     return plot_base(data, **kwargs)
 
 
 @sits_plot.register
-@rpy2_fix_type
-def _(data: SITSFrame, **kwargs) -> None:
+@rpy2_fix_type_except("image_args")
+def _(data: SITSFrame, **kwargs) -> SITSPlotResult:
     """Plot Frame data."""
     return plot_base(data, **kwargs)
 
 
 @sits_plot.register
-@rpy2_fix_type
-def _(data: SITStructureData, **kwargs) -> None:
+@rpy2_fix_type_except("image_args")
+def _(data: SITStructureData, **kwargs) -> SITSPlotResult:
     """Plot Structure data."""
     return plot_base(data, **kwargs)
 
 
 @sits_plot.register
-@rpy2_fix_type
-def _(data: SITSCubeModel, **kwargs) -> None:
+@rpy2_fix_type_except("image_args")
+def _(data: SITSCubeModel, **kwargs) -> SITSPlotResult:
     """Plot cube."""
-    return plot_tmap(data, **kwargs)
+    return plot_base(data, **kwargs)
 
 
 @sits_plot.register
-@rpy2_fix_type
-def _(data: SITSCubeItemModel, **kwargs) -> None:
+@rpy2_fix_type_except("image_args")
+def _(data: SITSCubeItemModel, **kwargs) -> SITSPlotResult:
     """Plot cube."""
-    return plot_tmap(data, **kwargs)
+    return plot_base(data, **kwargs)
 
 
 @sits_plot.register
-@rpy2_fix_type
-def _(data: SITSTimeSeriesModel, **kwargs) -> None:
+@rpy2_fix_type_except("image_args")
+def _(data: SITSTimeSeriesModel, **kwargs) -> SITSPlotResult:
     """Plot time-series."""
-    # Check if the time-series has multiple bands or labels
-    is_multiple_1 = len(r_pkg_sits.sits_bands(data)) > 1
-    is_multiple_2 = len(r_pkg_sits.sits_labels(data)) > 1
-
-    # Define if is multiple
-    is_multiple = data.nrow > 1 and (is_multiple_1 or is_multiple_2)
-
-    # Special case: SOM clean samples
-    if "som_clean_samples" in data.rclass:
-        is_multiple = False
-
-    # Plot the time-series
-    return plot_base(data, multiple=is_multiple, **kwargs)
+    return plot_base(data, **kwargs)
 
 
 @sits_plot.register
-@rpy2_fix_type
-def _(data: SITSTimeSeriesClassificationModel, **kwargs) -> None:
+@rpy2_fix_type_except("image_args")
+def _(data: SITSTimeSeriesClassificationModel, **kwargs) -> SITSPlotResult:
     """Plot time-series classification."""
-    is_multiple = data.nrow > 1
-    return plot_base(data, multiple=is_multiple, **kwargs)
+    return plot_base(data, **kwargs)
 
 
 @sits_plot.register
-@rpy2_fix_type
-def _(data: SITSTimeSeriesPatternsModel, **kwargs) -> None:
+@rpy2_fix_type_except("image_args")
+def _(data: SITSTimeSeriesPatternsModel, **kwargs) -> SITSPlotResult:
     """Plot patterns."""
-    return plot_base(data, multiple=False, **kwargs)
+    return plot_base(data, **kwargs)
 
 
 @sits_plot.register
-@rpy2_fix_type
-def _(data: SITSMachineLearningMethod, **kwargs) -> None:
+@rpy2_fix_type_except("image_args")
+def _(data: SITSMachineLearningMethod, **kwargs) -> SITSPlotResult:
     """Plot machine learning method."""
     return plot_base(data, **kwargs)
 
 
 @sits_plot.register
-@rpy2_fix_type
-def _(data: SITSRepresentationLearningMethod, **kwargs) -> None:
+@rpy2_fix_type_except("image_args")
+def _(data: SITSRepresentationLearningMethod, **kwargs) -> SITSPlotResult:
     """Plot representation learning method."""
     return plot_base(data, **kwargs)
 
@@ -132,7 +128,11 @@ def _(data: SITSRepresentationLearningMethod, **kwargs) -> None:
 #
 # Sankey plot
 #
-@rpy2_fix_type
-def sits_sankey(*args, **kwargs) -> None:
+@rpy2_fix_type_except("image_args")
+@attach_doc("sits_sankey")
+def sits_sankey(*args, image_args: ImageArgs | None = None, **kwargs) -> SITSPlotResult:
     """Plot class trajectories from multi-temporal classified cubes."""
-    return plot_base(r_pkg_sits.sits_sankey(*args, **kwargs))
+    return plot_base(
+        instance=r_pkg_sits.sits_sankey(*args, **kwargs),
+        image_args=image_args,
+    )
