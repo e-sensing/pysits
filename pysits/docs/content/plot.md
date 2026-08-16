@@ -85,19 +85,34 @@ Args:
     area_spar (float): For embedding predictions, the smoothing parameter
         passed to the spline fit (default `0.6`); higher values produce
         smoother profiles.
+    image_args (dict): Geometry to render the figure with, with any of the
+        keys `width` and `height` (in inches), and `res` (in dots per
+        inch). See the notes on figure size below.
     **kwargs (dict): Further specifications for the plot. The keywords
         understood depend on the type of `x` (see below).
 
 Returns:
-    None: A plot appropriate to the type of `x` is drawn. Maps of cubes
-        yield color or B/W raster images (optionally overlaid with segment
-        boundaries for vector cubes); probability, uncertainty, and
-        variance cubes yield per-class or per-pixel maps; classified cubes
-        yield color maps where each pixel is colored by its label.
-        Chart-based plots (patterns, predictions, embeddings, clusters,
-        t-SNE, model diagnostics) render the corresponding plot. Some
-        methods (accuracy tables, SOM diagnostics, model summaries) are
-        called only for their side effect of drawing the plot.
+    SITSPlot | SITSPlotList: The rendered figure. Objects that produce
+        several figures, samples with more than one band or label, for
+        example, return a `SITSPlotList`, which behaves as a sequence of
+        `SITSPlot`.
+
+        Maps of cubes yield color or B/W raster images (optionally
+        overlaid with segment boundaries for vector cubes). Probability,
+        uncertainty, and variance cubes yield per-class or per-pixel maps.
+        Classified cubes yield color maps where each pixel is colored by
+        its label. Chart-based plots (patterns, predictions, embeddings,
+        clusters, t-SNE, model diagnostics) render the corresponding plot.
+
+        How the figure reaches the page depends on where the code runs.
+        In a notebook, or a Quarto document using the `jupyter` engine,
+        the returned figure is rendered as the result of the cell. In
+        RStudio, or a Quarto document using the `knitr` engine, the
+        figures are handed to `knitr` as it renders the chunk, so each
+        one becomes a document figure of its own, with its own caption,
+        cross-reference, and layout. Everywhere else plotting displays
+        nothing by itself: use `save` to write the figure to a file, or
+        `show` to open it in an image viewer.
 
 Notes:
         The set of valid keyword arguments depends on the type of `x`;
@@ -115,3 +130,14 @@ Examples:
     # Train a random forest model and plot its important variables
     rf_model = sits_train(samples_modis_ndvi, ml_method=sits_rfor())
     plot(rf_model)
+
+    # Render a larger figure, and write it to a file
+    figure = plot(rf_model, image_args={"width": 12, "height": 8})
+    figure.save("model.png")
+
+    # Set the size of every figure that follows
+    set_plot_options(width=8, height=5, dpi=150)
+
+    # Objects with several bands or labels produce one figure each
+    figures = plot(samples_l8_rondonia_2bands)
+    figures[0].save("first.png")
