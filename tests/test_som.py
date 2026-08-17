@@ -18,6 +18,7 @@
 """Unit tests for SOM operations."""
 
 import pytest
+from rpy2.rinterface_lib.embedded import RRuntimeError
 
 from pysits.models.data.ts import SITSTimeSeriesModel
 from pysits.sits.context import samples_modis_ndvi
@@ -92,12 +93,10 @@ def test_som_remove_samples_unknown_label(som_data):
     """Test removal of samples using a label not available in the samples."""
     som_map, som_eval = som_data
 
-    new_samples = sits_som_remove_samples(
-        som_map,
-        som_eval,
-        "Pasture",
-        "NotALabel",
-    )
-
-    # No samples are removed
-    assert len(new_samples) == len(samples_modis_ndvi)
+    with pytest.raises(RRuntimeError, match="invalid class_remove parameter"):
+        sits_som_remove_samples(
+            som_map,
+            som_eval,
+            "Pasture",
+            "NotALabel",
+        )

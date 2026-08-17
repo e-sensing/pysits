@@ -21,6 +21,7 @@ from pysits.backend.pkgs import r_pkg_sits
 from pysits.conversions.decorators import function_call, rpy2_fix_type
 from pysits.docs import attach_doc
 from pysits.models.data.frame import SITSFrame
+from pysits.models.visual import SITSPlot, SITSPlotList
 from pysits.sits.visualization import sits_plot
 
 
@@ -44,7 +45,8 @@ def sits_colors_set(*args, **kwargs) -> SITSFrame:
 
 @rpy2_fix_type
 @attach_doc("sits_colors_show")
-def sits_colors_show(*args, **kwargs) -> None:
+def sits_colors_show(*args, **kwargs) -> SITSPlot | SITSPlotList:
     """Plot color table."""
     result = r_pkg_sits.sits_colors_show(*args, **kwargs)
-    sits_plot(result)
+
+    return sits_plot(result)

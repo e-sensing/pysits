@@ -226,12 +226,12 @@ def test_encode_invalid_encoder():
         {"mode": "tsne", "perplexity": 30},
     ],
 )
-def test_encode_time_series_plot(embeddings, plot_args, no_plot_window):
+def test_encode_time_series_plot(embeddings, plot_args):
     """Test visualization of encoded time series."""
     sits_plot(embeddings, **plot_args)
 
 
-def test_encode_time_series_plot_by_label(embeddings, no_plot_window):
+def test_encode_time_series_plot_by_label(embeddings):
     """Test visualization of encoded time series from a single label."""
     label = sits_labels(embeddings)[0]
 
@@ -246,6 +246,6 @@ def test_encode_time_series_plot_by_label(embeddings, no_plot_window):
         {"red": "EMB04", "green": "EMB02", "blue": "EMB03"},
     ],
 )
-def test_encode_cube_plot(embeddings_cube, plot_args, no_plot_window):
+def test_encode_cube_plot(embeddings_cube, plot_args):
     """Test visualization of an embeddings cube."""
     sits_plot(embeddings_cube, **plot_args)

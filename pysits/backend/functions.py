@@ -25,6 +25,9 @@ from pysits.backend.loaders import (
 # Base - plot
 r_fnc_plot = load_function_from_package("base::plot")
 
+# Base - print
+r_fnc_print = load_function_from_package("base::print")
+
 # Base - set column
 r_fnc_set_column = load_function_from_package("base::$<-")
 

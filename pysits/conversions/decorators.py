@@ -94,6 +94,7 @@ def rpy2_fix_type_custom(
             for i, arg in enumerate(args):
                 if i < len(param_names) and param_names[i] in converters:
                     converted_args.append(converters[param_names[i]](arg))
+
                 else:
                     converted_args.append(arg)
 
@@ -102,10 +103,52 @@ def rpy2_fix_type_custom(
             for k, v in kwargs.items():
                 if k in converters:
                     converted_kwargs[k] = converters[k](v)
+
                 else:
                     converted_kwargs[k] = v
 
             return func(*converted_args, **converted_kwargs)
+
+        return wrapper
+
+    return decorator
+
+
+def rpy2_fix_type_except(
+    *names: str,
+) -> Callable[[Callable[P, R]], Callable[P, R]]:
+    """Convert arguments to R-compatible objects, keeping some untouched.
+
+    Behaves like `rpy2_fix_type`, except for the named keyword arguments,
+    which reach the wrapped function exactly as they were given. This is
+    for arguments that configure pysits itself instead of the R call.
+    Converting those to R objects would strip them of the Python interface
+    the wrapped function needs.
+
+    Args:
+        *names (str): Names of the keyword arguments to leave untouched.
+
+    Returns:
+        Callable: A decorator that wraps a function to convert its
+                  arguments, minus the named ones.
+
+    Example:
+        >>> @rpy2_fix_type_except("image_args")
+        ... def my_function(data, image_args=None, **kwargs):
+        ...     # `data` and `kwargs` are R objects, `image_args` is a dict
+        ...     pass
+    """
+
+    def decorator(func: Callable[P, R]) -> Callable[P, R]:
+        @functools.wraps(func)
+        def wrapper(*args: Any, **kwargs: Any) -> Any:
+            kept = {name: kwargs.pop(name) for name in names if name in kwargs}
+
+            kwargs = fix_reserved_words_parameters(**kwargs)
+            converted_args = [convert_to_r(arg) for arg in args]
+            converted_kwargs = {k: convert_to_r(v) for k, v in kwargs.items()}
+
+            return func(*converted_args, **converted_kwargs, **kept)
 
         return wrapper
 
