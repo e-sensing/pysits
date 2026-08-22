@@ -93,6 +93,7 @@
 <div class="sits-accordion">
     {# Assuming number of accuracy is the same as number of runs #}
     {% set n_runs = tuning_obj.accuracy|length if tuning_obj.accuracy else 0 %}
+    {% set hparams = tuning_obj.hparams %}
     {% for i in range(n_runs) %}
     <div class="sits-accordion-item">
         <div class="sits-accordion-header" onclick="toggleAccordion(this)">
@@ -109,73 +110,12 @@
                     <th>Value</th>
                 </tr>
 
-                {% if tuning_obj.cnn_layers %}
+                {% for name, values in hparams.items() %}
                 <tr>
-                    <td>CNN Layers</td>
-                    {{ render_list_value(tuning_obj.cnn_layers[i]) }}
+                    <td>{{ name }}</td>
+                    {{ render_list_value(values[i]) }}
                 </tr>
-                <tr>
-                    <td>CNN Kernels</td>
-                    {{ render_list_value(tuning_obj.cnn_kernels[i]) }}
-                </tr>
-                <tr>
-                    <td>CNN Dropout Rates</td>
-                    {{ render_list_value(tuning_obj.cnn_dropout_rates[i]) }}
-                </tr>
-                {% endif %}
-
-                {% if tuning_obj.dense_layer_nodes %}
-                <tr>
-                    <td>Dense Layer Nodes</td>
-                    {{ render_list_value(tuning_obj.dense_layer_nodes[i]) }}
-                </tr>
-                <tr>
-                    <td>Dense Layer Dropout Rate</td>
-                    {{ render_list_value(tuning_obj.dense_layer_dropout_rate[i]) }}
-                </tr>
-                {% endif %}
-
-                <tr>
-                    <td>Epochs</td>
-                    <td>{{ tuning_obj.epochs[i] }}</td>
-                </tr>
-                <tr>
-                    <td>Batch Size</td>
-                    <td>{{ tuning_obj.batch_size[i] }}</td>
-                </tr>
-                <tr>
-                    <td>Validation Split</td>
-                    <td>{{ tuning_obj.validation_split[i] }}</td>
-                </tr>
-
-                {% if tuning_obj.optimizer %}
-                <tr>
-                    <td>Optimizer</td>
-                    <td>{{ tuning_obj.optimizer[i] }}</td>
-                </tr>
-                {% endif %}
-
-                {% if tuning_obj.lr_decay_epochs %}
-                <tr>
-                    <td>Learning Rate Decay Epochs</td>
-                    {{ render_list_value(tuning_obj.lr_decay_epochs[i]) }}
-                </tr>
-                <tr>
-                    <td>Learning Rate Decay Rate</td>
-                    {{ render_list_value(tuning_obj.lr_decay_rate[i]) }}
-                </tr>
-                {% endif %}
-
-                {% if tuning_obj.patience %}
-                <tr>
-                    <td>Patience</td>
-                    <td>{{ tuning_obj.patience[i] }}</td>
-                </tr>
-                <tr>
-                    <td>Minimum Delta</td>
-                    <td>{{ tuning_obj.min_delta[i] }}</td>
-                </tr>
-                {% endif %}
+                {% endfor %}
             </table>
         </div>
     </div>
