@@ -59,6 +59,12 @@ EPOCH_START = date(1970, 1, 1)
 
 
 #
+# Prefixes of R expressions deparsed as text
+#
+R_DEPARSED_PREFIXES = ("c(", "list(")
+
+
+#
 # Base utilities
 #
 def _is_numeric(x: int | float) -> bool:
@@ -193,6 +199,27 @@ def eval_r_language(obj):
     """
     if isinstance(obj, LangVector):
         return r_fnc_eval(obj)
+
+    return obj
+
+
+def eval_r_deparsed(obj):
+    """Evaluate a deparsed R expression.
+
+    Args:
+        obj: The R object to evaluate.
+
+    Returns:
+        The evaluated R object. Objects that are not deparsed R expressions are
+        returned unchanged.
+    """
+    value = obj
+
+    if isinstance(value, ro.StrVector) and len(value) == 1:
+        value = value[0]
+
+    if isinstance(value, str) and value.startswith(R_DEPARSED_PREFIXES):
+        return ro.r(value)
 
     return obj
 

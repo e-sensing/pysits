@@ -29,6 +29,7 @@ from pysits.conversions.common import (
     convert_dict_like_to_r,
     convert_list_like_to_r,
     convert_to_python,
+    eval_r_deparsed,
 )
 from pysits.conversions.tibble import (
     _column_to_datetime,
@@ -330,3 +331,21 @@ def test_pandas_cube_to_tibble_empty():
     """Test conversion of a cube pandas DataFrame without tiles."""
     with pytest.raises(ValueError, match="at least one tile"):
         pandas_cube_to_tibble(PandasDataFrame())
+
+
+def test_eval_r_deparsed():
+    """Test evaluation of deparsed R expressions."""
+    # Deparsed expression (e.g., as returned by ``sits_tuning`` hyper-parameters)
+    result = eval_r_deparsed("c(128, 128, 128)")
+    assert convert_to_python(result, as_type="float") == [128.0, 128.0, 128.0]
+
+    # Deparsed expression stored in a character vector
+    result = eval_r_deparsed(ro.StrVector(["c(0.9, 0.999)"]))
+    assert convert_to_python(result, as_type="float") == [0.9, 0.999]
+
+    # Values that are not deparsed expressions are returned unchanged
+    assert eval_r_deparsed("radial") == "radial"
+
+    values = ro.FloatVector([0.2])
+
+    assert eval_r_deparsed(values) is values
