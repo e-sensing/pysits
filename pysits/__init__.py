@@ -21,6 +21,11 @@
 # happen before anything imports `pyarrow` or loads the R `arrow` package.
 # Keep this import above the others. See `pysits.backend.arrow`.
 from .backend import arrow as _arrow  # noqa: F401
+
+# Importing `backend.rinterface` first silences the notice `rpy2` logs while it
+# is being imported, when it falls back from API to ABI mode. Keep this import
+# above anything that imports `rpy2`
+from .backend.rinterface import r_interface_mode
 from .conversions.dsl.mask import MaskValue
 from .conversions.dsl.tuning import hparam
 from .settings import __version__
@@ -288,6 +293,7 @@ __all__ = (
     "read_rds",
     "r_package_dir",
     "r_set_seed",
+    "r_interface_mode",
     "load_samples",
     # Package settings
     "__version__",
