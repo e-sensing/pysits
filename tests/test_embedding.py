@@ -41,6 +41,7 @@ from pysits.sits.ml import (
     sits_rfor,
     sits_ssl_lejepa,
     sits_ssl_mae,
+    sits_ssl_barlow_twins,
     sits_ssl_vicreg,
     sits_train,
 )
@@ -59,6 +60,7 @@ ALL_ENCODER_METHODS = [
     sits_ssl_mae,
     sits_ssl_lejepa,
     sits_ssl_vicreg,
+    sits_ssl_barlow_twins,
     sits_contrastive_learning,
     sits_barlow_twins,
 ]

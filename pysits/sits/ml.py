@@ -84,6 +84,7 @@ sits_lightgbm = closure_factory("sits_lightgbm")
 sits_ssl_mae = closure_factory("sits_ssl_mae", converters=dl_converters)
 sits_ssl_lejepa = closure_factory("sits_ssl_lejepa", converters=dl_converters)
 sits_ssl_vicreg = closure_factory("sits_ssl_vicreg", converters=dl_converters)
+sits_ssl_barlow_twins = closure_factory("sits_ssl_barlow_twins", converters=dl_converters)
 
 sits_barlow_twins = closure_factory("sits_barlow_twins", converters=dl_converters)
 sits_contrastive_learning = closure_factory(
