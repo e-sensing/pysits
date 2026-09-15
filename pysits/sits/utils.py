@@ -27,6 +27,7 @@ from pysits.models.resolver import (
     resolve_and_invoke_accuracy_class,
     resolve_and_invoke_content_class,
 )
+from pysits.network import fetch_to_tempfile, is_remote
 
 #
 # Data class resolver
@@ -56,19 +57,41 @@ def read_rds(file: str | Path) -> SITSFrame:
     """Read RDS file compatible with SITS.
 
     Args:
-        file (str | Path): RDS file.
+        file (str | Path): RDS file. It can be a local path or an HTTP(S) URL.
 
     Returns:
         SITSFrame: SITS Data instance (can be a ``cube`` or a ``time-series`` object).
+
+    Raises:
+        FileNotFoundError: If a local RDS file does not exist. A missing
+                           remote file is reported by ``httpx2`` instead,
+                           as an ``HTTPStatusError``.
+
+        httpx2.HTTPError: If a remote RDS file cannot be downloaded.
+
+        ValueError: If the RDS file has an object not supported by sits.
     """
-    file = Path(file)
+    # If is remote file, we download it
+    if is_remote(file):
+        # Remote files are downloaded before being read. In R, it is possible
+        # to read RDS straight from an ``url`` connection, but that only works
+        # when the content is gzipped: the other compressions ``saveRDS`` produces
+        # (``xz`` and ``bzip2``) are rejected when read this way.
+        # So we download the file to a temporary file and read it from there to avoid
+        # this issue.
+        with fetch_to_tempfile(str(file), suffix=".rds") as local_file:
+            # Download and read content!
+            rds_content = r_fnc_read_rds(local_file.as_posix())
 
-    # Check if file exists
-    if not file.exists():
-        raise FileNotFoundError("Failed to read RDS: File does not exist.")
+    else:
+        file = Path(file)
 
-    # Read RDS
-    rds_content = r_fnc_read_rds(file.as_posix())
+        # Check if file exists
+        if not file.exists():
+            raise FileNotFoundError("Failed to read RDS: File does not exist.")
+
+        # Read RDS
+        rds_content = r_fnc_read_rds(file.as_posix())
 
     # Resolve and invoke data class
     for resolver in RDS_RESOLVERS:

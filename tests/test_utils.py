@@ -53,6 +53,26 @@ def test_read_rds(tmp_path: Path):
     assert isinstance(rds_content, SITSTimeSeriesModel)
 
 
+@pytest.mark.parametrize("compress", ["gzip", "xz", "bzip2"])
+def test_read_rds_remote(http_server, compress: str):
+    """Test read RDS from a remote file."""
+    directory, base_url = http_server
+
+    # Save RDS
+    r_fnc_save_rds = load_function_from_package("base::saveRDS")
+    r_fnc_save_rds(
+        samples_modis_ndvi._instance,
+        (directory / "samples.rds").as_posix(),
+        compress=compress,
+    )
+
+    # Read remote RDS
+    rds_content = read_rds(f"{base_url}/samples.rds")
+
+    # Check the content
+    assert isinstance(rds_content, SITSTimeSeriesModel)
+
+
 def test_read_rds_file_not_found():
     """Test read RDS file not found."""
     with pytest.raises(FileNotFoundError):

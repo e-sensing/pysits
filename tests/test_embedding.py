@@ -39,9 +39,9 @@ from pysits.sits.ml import (
     sits_contrastive_learning,
     sits_pre_train,
     sits_rfor,
+    sits_ssl_barlow_twins,
     sits_ssl_lejepa,
     sits_ssl_mae,
-    sits_ssl_barlow_twins,
     sits_ssl_vicreg,
     sits_train,
 )
