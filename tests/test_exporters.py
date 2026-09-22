@@ -25,8 +25,15 @@ import pytest
 from pysits.backend.pkgs import r_pkg_sits
 from pysits.models.data.frame import SITSFrame
 from pysits.models.data.matrix import SITSConfusionMatrix
+from pysits.models.data.ts import SITSTimeSeriesModel
 from pysits.sits.context import cerrado_2classes
-from pysits.sits.exporters import sits_timeseries_to_csv, sits_to_csv, sits_to_xlsx
+from pysits.sits.exporters import (
+    sits_from_parquet,
+    sits_timeseries_to_csv,
+    sits_to_csv,
+    sits_to_parquet,
+    sits_to_xlsx,
+)
 from pysits.sits.ml import sits_rfor
 from pysits.sits.ts import sits_sample, sits_validate
 
@@ -94,3 +101,46 @@ def test_sits_to_xlsx(tmp_path: Path, accuracy):
     r_pkg_sits.sits_to_xlsx(accuracy._instance, file=str(r_file))
 
     assert read_xlsx(py_file) == read_xlsx(r_file)
+
+
+def test_sits_parquet(tmp_path: Path):
+    """Test time series export / import using parquet."""
+    # local file
+    file = tmp_path / "samples.parquet"
+
+    # export samples as parquet
+    sits_to_parquet(cerrado_2classes, file=file)
+
+    # import samples from parquet
+    samples = sits_from_parquet(file)
+
+    # samples must be a time series model
+    assert isinstance(samples, SITSTimeSeriesModel)
+
+    # metadata and nested series must be equal to the original samples
+    metadata = samples.drop(columns="time_series")
+    expected = cerrado_2classes.drop(columns="time_series")
+
+    assert metadata.equals(expected)
+    assert all(
+        ts.equals(expected_ts)
+        for ts, expected_ts in zip(
+            samples["time_series"], cerrado_2classes["time_series"], strict=True
+        )
+    )
+
+
+def test_sits_from_parquet_remote(http_server):
+    """Test time series import using remote parquet file."""
+    # remote file
+    directory, base_url = http_server
+
+    # export samples as parquet
+    sits_to_parquet(cerrado_2classes, file=directory / "samples.parquet")
+
+    # import samples from parquet
+    samples = sits_from_parquet(f"{base_url}/samples.parquet")
+
+    # samples must be a time series model
+    assert isinstance(samples, SITSTimeSeriesModel)
+    assert len(samples) == len(cerrado_2classes)

@@ -17,10 +17,15 @@
 
 """Files exporter."""
 
+from pathlib import Path
+
 from pysits.backend.pkgs import r_pkg_sits
 from pysits.conversions.decorators import function_call
 from pysits.docs import attach_doc
 from pysits.models.data.frame import SITSFrame
+from pysits.models.data.ts import SITSTimeSeriesModel
+from pysits.models.resolver import resolve_and_invoke_content_class
+from pysits.network import fetch_to_tempfile, is_remote
 
 
 @function_call(r_pkg_sits.sits_to_csv, SITSFrame)
@@ -41,3 +46,28 @@ def sits_to_xlsx(*args, **kwargs) -> None:
 @attach_doc("sits_timeseries_to_csv")
 def sits_timeseries_to_csv(*args, **kwargs) -> None:
     """Export a full sits timeseries to CSV format."""
+
+
+@function_call(r_pkg_sits.sits_to_parquet, lambda x: None)
+@attach_doc("sits_to_parquet")
+def sits_to_parquet(*args, **kwargs) -> None:
+    """Export sits time series to the Parquet format."""
+
+
+@function_call(r_pkg_sits.sits_from_parquet, resolve_and_invoke_content_class)
+def _sits_from_parquet(*args, **kwargs) -> SITSTimeSeriesModel:
+    """Read sits time series from a local Parquet file."""
+
+
+@attach_doc("sits_from_parquet")
+def sits_from_parquet(file: str | Path) -> SITSTimeSeriesModel:
+    """Read sits time series from the Parquet format."""
+    # If file is remote
+    if is_remote(file):
+        # Download it to a temporary file
+        with fetch_to_tempfile(str(file), suffix=".parquet") as local_file:
+            # Read it
+            return _sits_from_parquet(local_file)
+
+    # Otherwise, read it directly
+    return _sits_from_parquet(file)

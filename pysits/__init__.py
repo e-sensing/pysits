@@ -87,8 +87,10 @@ from .sits.data import sits_summary as summary
 from .sits.exporters import (
     sits_as_geopandas,
     sits_as_xarray,
+    sits_from_parquet,
     sits_timeseries_to_csv,
     sits_to_csv,
+    sits_to_parquet,
     sits_to_xlsx,
 )
 from .sits.impute import (
@@ -276,6 +278,8 @@ __all__ = (
     "sits_as_geopandas",
     "sits_to_xlsx",
     "sits_timeseries_to_csv",
+    "sits_to_parquet",
+    "sits_from_parquet",
     # Tuning
     "sits_tuning_hparams",
     "sits_tuning",
