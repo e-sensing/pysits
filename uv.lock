@@ -2328,7 +2328,7 @@ wheels = [
 
 [[package]]
 name = "pysits"
-version = "2.0.0.dev8"
+version = "2.0.0.dev9"
 source = { editable = "." }
 dependencies = [
     { name = "geopandas" },
