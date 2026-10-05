@@ -87,9 +87,12 @@ from .sits.data import sits_summary as summary
 from .sits.exporters import (
     sits_as_geopandas,
     sits_as_xarray,
+    sits_config_to_hf,
+    sits_from_hf,
     sits_from_parquet,
     sits_timeseries_to_csv,
     sits_to_csv,
+    sits_to_hf,
     sits_to_parquet,
     sits_to_xlsx,
 )
@@ -280,6 +283,9 @@ __all__ = (
     "sits_timeseries_to_csv",
     "sits_to_parquet",
     "sits_from_parquet",
+    "sits_to_hf",
+    "sits_from_hf",
+    "sits_config_to_hf",
     # Tuning
     "sits_tuning_hparams",
     "sits_tuning",

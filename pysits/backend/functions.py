@@ -58,5 +58,8 @@ r_fnc_colnames = load_function_from_package("base::colnames")
 # Base - rownames (base)
 r_fnc_rownames = load_function_from_package("base::rownames")
 
+# Base - unname (base)
+r_fnc_unname = load_function_from_package("base::unname")
+
 # sits - configuration (internal)
 r_fnc_sits_conf = load_internal_function_from_package("sits:::.conf")

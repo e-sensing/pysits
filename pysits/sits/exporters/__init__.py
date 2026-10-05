@@ -24,6 +24,7 @@ from .files import (
     sits_to_parquet,
     sits_to_xlsx,
 )
+from .hf import sits_config_to_hf, sits_from_hf, sits_to_hf
 from .sf import sits_as_geopandas
 from .xarray import sits_as_xarray
 
@@ -35,4 +36,7 @@ __all__ = (
     "sits_timeseries_to_csv",
     "sits_to_parquet",
     "sits_from_parquet",
+    "sits_to_hf",
+    "sits_from_hf",
+    "sits_config_to_hf",
 )
