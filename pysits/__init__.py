@@ -21,6 +21,11 @@
 # happen before anything imports `pyarrow` or loads the R `arrow` package.
 # Keep this import above the others. See `pysits.backend.arrow`.
 from .backend import arrow as _arrow  # noqa: F401
+
+# Importing `backend.rinterface` first silences the notice `rpy2` logs while it
+# is being imported, when it falls back from API to ABI mode. Keep this import
+# above anything that imports `rpy2`
+from .backend.rinterface import r_interface_mode
 from .conversions.dsl.mask import MaskValue
 from .conversions.dsl.tuning import hparam
 from .settings import __version__
@@ -82,8 +87,13 @@ from .sits.data import sits_summary as summary
 from .sits.exporters import (
     sits_as_geopandas,
     sits_as_xarray,
+    sits_config_to_hf,
+    sits_from_hf,
+    sits_from_parquet,
     sits_timeseries_to_csv,
     sits_to_csv,
+    sits_to_hf,
+    sits_to_parquet,
     sits_to_xlsx,
 )
 from .sits.impute import (
@@ -106,6 +116,7 @@ from .sits.ml import (
     sits_pre_train,
     sits_resnet,
     sits_rfor,
+    sits_ssl_barlow_twins,
     sits_ssl_lejepa,
     sits_ssl_mae,
     sits_ssl_vicreg,
@@ -164,6 +175,7 @@ __all__ = (
     "sits_encode",
     "sits_ssl_mae",
     "sits_ssl_lejepa",
+    "sits_ssl_barlow_twins",
     "sits_ssl_vicreg",
     "sits_barlow_twins",
     "sits_contrastive_learning",
@@ -269,6 +281,11 @@ __all__ = (
     "sits_as_geopandas",
     "sits_to_xlsx",
     "sits_timeseries_to_csv",
+    "sits_to_parquet",
+    "sits_from_parquet",
+    "sits_to_hf",
+    "sits_from_hf",
+    "sits_config_to_hf",
     # Tuning
     "sits_tuning_hparams",
     "sits_tuning",
@@ -288,6 +305,7 @@ __all__ = (
     "read_rds",
     "r_package_dir",
     "r_set_seed",
+    "r_interface_mode",
     "load_samples",
     # Package settings
     "__version__",

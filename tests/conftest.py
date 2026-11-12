@@ -25,6 +25,10 @@ import os
 os.environ.setdefault("MPLBACKEND", "Agg")
 
 import webbrowser
+from functools import partial
+from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
+from pathlib import Path
+from threading import Thread
 from typing import Any
 
 import matplotlib
@@ -35,6 +39,11 @@ from pysits.models.data.cube import SITSCubeModel
 from pysits.sits.cube import sits_cube
 from pysits.sits.utils import r_package_dir
 from pysits.visualization.options import reset_plot_options
+
+#
+# Path prefix the test server answers with a redirect
+#
+REDIRECT_PREFIX = "/redirect/"
 
 
 #
@@ -107,3 +116,45 @@ def no_browser(monkeypatch):
     monkeypatch.setattr(webbrowser, "open_new_tab", lambda x: None)
 
     yield
+
+
+class _RedirectingRequestHandler(SimpleHTTPRequestHandler):
+    """Serve a directory with a redirect."""
+
+    def do_GET(self) -> None:  # noqa: N802 (name defined by the base class)
+        # If path starts with a given prefix, simulate a redirect
+        if self.path.startswith(REDIRECT_PREFIX):
+            # Simulate a redirect
+            self.send_response(302)
+            self.send_header("Location", self.path[len(REDIRECT_PREFIX) - 1 :])
+            self.end_headers()
+
+            return
+
+        super().do_GET()
+
+    def log_message(self, *args, **kwargs) -> None:
+        """Keep the per-request log out of the test output."""
+
+
+@pytest.fixture
+def http_server(tmp_path: Path):
+    """HTTP server serving a directory with a redirect."""
+    handler = partial(
+        _RedirectingRequestHandler,
+        directory=str(tmp_path),
+    )
+    server = ThreadingHTTPServer(("127.0.0.1", 0), handler)
+
+    # Start the server in a daemon thread
+    thread = Thread(target=server.serve_forever, daemon=True)
+    thread.start()
+
+    # Yield the directory and its base URL
+    try:
+        yield tmp_path, f"http://127.0.0.1:{server.server_port}"
+
+    # Shutdown the server
+    finally:
+        server.shutdown()
+        server.server_close()
