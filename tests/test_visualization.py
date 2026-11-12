@@ -143,7 +143,9 @@ def test_machine_learning_visualization():
 
 def test_representation_learning_visualization():
     """Test representation learning visualization."""
-    rl_model = sits_pre_train(samples_l8_rondonia_2bands, sits_ssl_mae())
+    rl_model = sits_pre_train(
+        samples_l8_rondonia_2bands, sits_ssl_mae(batch_size=32)
+    )
 
     assert_is_figure(sits_plot(rl_model))
 
